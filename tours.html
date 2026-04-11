@@ -9,45 +9,76 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #333; padding-bottom: 30px; }
         .container { max-width: 1200px; margin: auto; padding: 20px; }
         
-        /* رأس الصفحة */
         .page-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 25px; flex-wrap: wrap; }
         .back-btn { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; }
         .lang-switch { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; }
         h2 { color: #B8860B; }
         
-        /* قسم الترحيب */
         .welcome-section { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border-radius: 25px; padding: 30px; margin-bottom: 30px; text-align: center; }
         .welcome-section h1 { font-size: 2rem; margin-bottom: 15px; }
         .welcome-section p { font-size: 1.1rem; line-height: 1.6; opacity: 0.95; }
         
+        /* العد التنازلي */
+        .countdown-section { background: white; border-radius: 25px; padding: 20px; margin-bottom: 30px; text-align: center; border: 2px solid #DAA520; }
+        .countdown-title { color: #B8860B; font-size: 1.2rem; margin-bottom: 10px; }
+        .countdown { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .countdown-item { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; padding: 10px 20px; border-radius: 15px; min-width: 80px; }
+        .countdown-item span { font-size: 1.5rem; font-weight: bold; display: block; }
+        .countdown-item small { font-size: 0.7rem; }
         
-        /* شبكة الجولات (10 حقول - يمين/يسار) */
         .tours-grid { display: flex; flex-direction: column; gap: 30px; margin-top: 20px; }
         .tour-row { display: flex; gap: 25px; flex-wrap: wrap; }
         .tour-card { flex: 1; background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 1px solid #DAA520; transition: transform 0.2s; }
         .tour-card:hover { transform: translateY(-5px); }
         
-        .tour-img { width: 100%; height: 220px; object-fit: cover; }
+        .slider-container { position: relative; }
+        .slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; }
+        .slider img { width: 100%; min-width: 100%; height: 220px; object-fit: cover; scroll-snap-align: start; }
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 50%; font-size: 18px; }
+        .slider-btn.prev { left: 5px; }
+        .slider-btn.next { right: 5px; }
         
         .tour-info { padding: 20px; }
         .tour-name { font-size: 1.4rem; font-weight: bold; color: #B8860B; margin-bottom: 10px; }
         .tour-price { font-size: 1.2rem; margin-bottom: 10px; }
         .tour-price span { color: #DAA520; font-weight: bold; font-size: 1.3rem; }
-        
         .tour-rating { color: #FFD700; margin-bottom: 10px; font-size: 1rem; }
         .tour-details { display: flex; flex-wrap: wrap; gap: 15px; margin: 15px 0; padding: 10px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
         .tour-detail { display: flex; align-items: center; gap: 5px; font-size: 0.85rem; color: #666; }
         
-        .tour-features { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
+        /* مميزات الجولة - مخفية في البداية */
+        .tour-features {
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        .tour-features.show {
+            display: flex;
+        }
         .tour-feature { background: #f9f9f9; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; border: 1px solid #DAA520; }
+        
+        /* زر عرض المميزات */
+        .show-features-btn {
+            background: #DAA520;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin: 5px 0;
+            width: 100%;
+        }
+        .show-features-btn:hover {
+            background: #B8860B;
+        }
         
         .book-btn { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 10px; border-radius: 30px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
         
-        /* أزرار الأدمن */
         .admin-buttons { display: flex; gap: 8px; margin-top: 10px; }
         .admin-btn { background: #DAA520; color: white; border: none; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; width: 48%; }
         
-        /* المودالات */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; padding: 25px; border-radius: 30px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; border-top: 5px solid #DAA520; }
         .modal-content h3 { color: #B8860B; margin-bottom: 15px; text-align: center; }
@@ -63,291 +94,47 @@
         .image-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 2px solid #DAA520; }
         .delete-img-btn { position: absolute; top: -8px; right: -8px; background: red; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; }
         
-        @media (max-width: 768px) { .tour-row { flex-direction: column; } }
-    /* ترتيب الجولات (يمين/يسار) */
-.tour-row {
-    display: flex;
-    gap: 25px;
-    flex-wrap: wrap;
-}
-
-/* الترتيب الطبيعي: الأول يمين، الثاني يسار */
-.tour-row .tour-card:first-child {
-    order: 1;
-    flex: 1;
-}
-.tour-row .tour-card:last-child {
-    order: 2;
-    flex: 1;
-}
-
-/* في الصفوف الفردية: الأول يسار، الثاني يمين */
-.tour-row:nth-child(odd) .tour-card:first-child {
-    order: 2;
-}
-.tour-row:nth-child(odd) .tour-card:last-child {
-    order: 1;
-}
-
-@media (max-width: 768px) {
-    .tour-row {
-        flex-direction: column;
-    }
-    .tour-row .tour-card:first-child,
-    .tour-row .tour-card:last-child {
-        order: 0 !important;
-    }
-}
-/* ========== ترتيب الجولات يمين/يسار على الجوال ========== */
-@media (max-width: 768px) {
-    .tour-row {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        gap: 15px !important;
-    }
-    .tour-row .tour-card {
-        flex: 1 !important;
-        min-width: calc(50% - 15px) !important;
-    }
-}
-/* ========== ترتيب الجولات يمين/يسار على الجوال + تصغير الحقول ========== */
-@media (max-width: 768px) {
-    /* الترتيب */
-    .tour-row {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        gap: 12px !important;
-    }
-    .tour-row .tour-card {
-        flex: 1 !important;
-        min-width: calc(50% - 12px) !important;
-    }
-    
-    /* تصغير الحقول */
-    .tour-name {
-        font-size: 0.85rem !important;
-    }
-    .tour-price {
-        font-size: 0.75rem !important;
-    }
-    .tour-price span {
-        font-size: 0.85rem !important;
-    }
-    .tour-detail {
-        font-size: 0.65rem !important;
-    }
-    .tour-feature {
-        font-size: 0.65rem !important;
-        padding: 2px 6px !important;
-    }
-    .tour-info {
-        padding: 8px !important;
-    }
-    .tour-rating {
-        font-size: 0.7rem !important;
-    }
-    .book-btn {
-        padding: 6px !important;
-        font-size: 0.7rem !important;
-    }
-    .slider img {
-        height: 140px !important;
-    }
-    .welcome-section h1 {
-        font-size: 1.2rem !important;
-    }
-    .welcome-section p {
-        font-size: 0.8rem !important;
-    }
-    .welcome-section {
-        padding: 15px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .tour-row {
-        gap: 8px !important;
-    }
-    .tour-name {
-        font-size: 0.75rem !important;
-    }
-    .slider img {
-        height: 110px !important;
-    }
-}
-/* ========== تصغير حجم الجولات على الجوال ========== */
-@media (max-width: 768px) {
-    .tour-row {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        gap: 10px !important;
-    }
-    
-    .tour-row .tour-card {
-        flex: 1 !important;
-        min-width: calc(50% - 10px) !important;
-        border-radius: 15px !important;
-    }
-    
-    .slider img {
-        height: 100px !important;
-    }
-    
-    .tour-name {
-        font-size: 0.75rem !important;
-        margin-bottom: 3px !important;
-    }
-    
-    .tour-price {
-        font-size: 0.65rem !important;
-        margin: 3px 0 !important;
-    }
-    
-    .tour-price span {
-        font-size: 0.7rem !important;
-    }
-    
-    .tour-rating {
-        font-size: 0.6rem !important;
-        margin-bottom: 3px !important;
-    }
-    
-    .tour-detail {
-        font-size: 0.55rem !important;
-    }
-    
-    .tour-feature {
-        font-size: 0.55rem !important;
-        padding: 2px 5px !important;
-    }
-    
-    .tour-info {
-        padding: 6px !important;
-    }
-    
-    .book-btn {
-        padding: 5px !important;
-        font-size: 0.65rem !important;
-        margin-top: 5px !important;
-    }
-    
-    .tour-details {
-        margin: 5px 0 !important;
-        padding: 5px 0 !important;
-        gap: 8px !important;
-    }
-    
-    .tour-features {
-        margin: 5px 0 !important;
-        gap: 4px !important;
-    }
-    
-    .slider-btn {
-        padding: 3px 6px !important;
-        font-size: 10px !important;
-    }
-    
-    .welcome-section {
-        padding: 12px !important;
-    }
-    
-    .welcome-section h1 {
-        font-size: 1rem !important;
-    }
-    
-    .welcome-section p {
-        font-size: 0.7rem !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .slider img {
-        height: 85px !important;
-    }
-    
-    .tour-name {
-        font-size: 0.7rem !important;
-    }
-    
-    .tour-detail {
-        font-size: 0.5rem !important;
-    }
-}
-/* ========== تعديل حجم الصور في الجولات على الجوال ========== */
-@media (max-width: 768px) {
-    .slider img {
-        height: 140px !important;  /* كان 100px */
-    }
-    
-    .tour-name {
-        font-size: 0.8rem !important;
-    }
-    
-    .tour-price {
-        font-size: 0.7rem !important;
-    }
-    
-    .tour-detail {
-        font-size: 0.6rem !important;
-    }
-    
-    .tour-feature {
-        font-size: 0.6rem !important;
-        padding: 3px 6px !important;
-    }
-    
-    .book-btn {
-        padding: 6px !important;
-        font-size: 0.7rem !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .slider img {
-        height: 120px !important;  /* كان 85px */
-    }
-}
-/* ========== تكبير الصور في الجولات على الجوال ========== */
-@media (max-width: 768px) {
-    .slider img {
-        height: 200px !important;  /* كان 140px */
-    }
-    
-    .tour-name {
-        font-size: 0.9rem !important;
-    }
-    
-    .tour-price {
-        font-size: 0.8rem !important;
-    }
-    
-    .tour-detail {
-        font-size: 0.65rem !important;
-    }
-    
-    .tour-feature {
-        font-size: 0.65rem !important;
-        padding: 4px 8px !important;
-    }
-    
-    .book-btn {
-        padding: 8px !important;
-        font-size: 0.75rem !important;
-    }
-    
-    .tour-info {
-        padding: 10px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .slider img {
-        height: 170px !important;
-    }
-}
+        /* ترتيب الجولات يمين/يسار */
+        .tour-row {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        .tour-row .tour-card:first-child { order: 1; flex: 1; }
+        .tour-row .tour-card:last-child { order: 2; flex: 1; }
+        .tour-row:nth-child(odd) .tour-card:first-child { order: 2; }
+        .tour-row:nth-child(odd) .tour-card:last-child { order: 1; }
+        
+        /* استايلات الجوال */
+        @media (max-width: 768px) {
+            .tour-row {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                gap: 12px !important;
+            }
+            .tour-row .tour-card { flex: 1 !important; min-width: calc(50% - 12px) !important; order: 0 !important; }
+            .slider img { height: 180px !important; }
+            .tour-name { font-size: 0.85rem !important; }
+            .tour-price { font-size: 0.75rem !important; }
+            .tour-price span { font-size: 0.85rem !important; }
+            .tour-detail { font-size: 0.6rem !important; }
+            .tour-feature { font-size: 0.6rem !important; padding: 2px 6px !important; }
+            .tour-info { padding: 8px !important; }
+            .tour-rating { font-size: 0.7rem !important; }
+            .book-btn { padding: 6px !important; font-size: 0.7rem !important; }
+            .show-features-btn { font-size: 0.65rem !important; padding: 4px 8px !important; }
+            .welcome-section h1 { font-size: 1.2rem !important; }
+            .welcome-section p { font-size: 0.8rem !important; }
+            .welcome-section { padding: 15px !important; }
+            .countdown-item { padding: 5px 10px !important; min-width: 60px !important; }
+            .countdown-item span { font-size: 1rem !important; }
+        }
+        
+        @media (max-width: 480px) {
+            .slider img { height: 150px !important; }
+            .tour-name { font-size: 0.75rem !important; }
+        }
     </style>
 </head>
 <body>
@@ -358,18 +145,24 @@
         <button class="lang-switch" id="langBtn">English</button>
     </div>
 
-    <!-- قسم الترحيب -->
     <div class="welcome-section">
         <h1 id="welcomeTitle">🌟 اكتشف جمال بونشاك</h1>
         <p id="welcomeText">انطلق في رحلة لا تنسى مع أفضل الجولات السياحية في بونشاك. استمتع بالمناظر الطبيعية الخلابة، والشلالات الساحرة، ومزارع الشاي الخضراء، وتجربة ثقافية فريدة مع مرشدين محترفين.</p>
     </div>
 
-   
+    <!-- العد التنازلي -->
+    <div class="countdown-section">
+        <div class="countdown-title" id="countdownTitle">⏰ عرض خاص لفترة محدودة! احجز الآن واحصل على خصم 20%</div>
+        <div class="countdown" id="countdown">
+            <div class="countdown-item"><span id="days">00</span><small>أيام</small></div>
+            <div class="countdown-item"><span id="hours">00</span><small>ساعات</small></div>
+            <div class="countdown-item"><span id="minutes">00</span><small>دقائق</small></div>
+            <div class="countdown-item"><span id="seconds">00</span><small>ثواني</small></div>
+        </div>
+    </div>
 
-    <!-- شبكة الجولات (10 حقول) -->
     <div id="toursGrid" class="tours-grid"></div>
 
-    <!-- زر دخول/خروج الأدمن -->
     <button id="adminModeBtn" class="admin-toggle-btn">🔐 دخول الأدمن</button>
 </div>
 
@@ -379,7 +172,7 @@
         <h3 id="modalTitle">📝 حجز جولة</h3>
         <input type="text" id="custName" placeholder="الاسم الكامل">
         <input type="tel" id="custPhone" placeholder="رقم الجوال">
-        <input type="date" id="tourDate" placeholder="تاريخ الجولة">
+        <input type="date" id="tourDate">
         <input type="number" id="persons" placeholder="عدد الأشخاص" min="1" value="2">
         <textarea id="notes" rows="2" placeholder="ملاحظات إضافية"></textarea>
         <div class="order-summary">
@@ -408,52 +201,52 @@
 <script>
     // ------------------- بيانات الجولات السياحية (10 جولات) -------------------
     let toursData = [
-        { id: 1, nameAr: "جولة شلالات سيتو", nameEn: "Sitou Waterfalls Tour", price: 250, priceRange: 250, duration: "4 ساعات", maxPersons: 10, languages: "عربي/إنجليزي", 
+        { id: 1, nameAr: "جولة شلالات سيتو", nameEn: "Sitou Waterfalls Tour", price: 250, duration: "4 ساعات", maxPersons: 10, languages: "عربي/إنجليزي", 
           images: ["https://picsum.photos/id/104/400/250", "https://picsum.photos/id/15/400/250"], 
           featuresAr: ["🚌 نقل مجاني", "🍱 وجبة خفيفة", "📸 كاميرة احترافية", "🪪 مرشد سياحي"], 
           featuresEn: ["🚌 Free Transfer", "🍱 Light Meal", "📸 Professional Camera", "🪪 Tour Guide"],
           rating: 4.8, location: "شلالات سيتو" },
-        { id: 2, nameAr: "جولة مزارع الشاي", nameEn: "Tea Plantations Tour", price: 200, priceRange: 200, duration: "3 ساعات", maxPersons: 15, languages: "عربي/إنجليزي/إندونيسي",
+        { id: 2, nameAr: "جولة مزارع الشاي", nameEn: "Tea Plantations Tour", price: 200, duration: "3 ساعات", maxPersons: 15, languages: "عربي/إنجليزي/إندونيسي",
           images: ["https://picsum.photos/id/96/400/250", "https://picsum.photos/id/29/400/250"],
           featuresAr: ["🚌 نقل مجاني", "🍵 تذوق شاي", "🌿 جولة ميدانية", "📸 تصوير"], 
           featuresEn: ["🚌 Free Transfer", "🍵 Tea Tasting", "🌿 Field Tour", "📸 Photography"],
           rating: 4.7, location: "مزارع الشاي" },
-        { id: 3, nameAr: "جولة مدينة الألعاب", nameEn: "Amusement Park Tour", price: 350, priceRange: 350, duration: "6 ساعات", maxPersons: 20, languages: "عربي/إنجليزي",
+        { id: 3, nameAr: "جولة مدينة الألعاب", nameEn: "Amusement Park Tour", price: 350, duration: "6 ساعات", maxPersons: 20, languages: "عربي/إنجليزي",
           images: ["https://picsum.photos/id/106/400/250", "https://picsum.photos/id/107/400/250"],
           featuresAr: ["🎫 تذاكر دخول", "🍽️ غداء", "🎢 ألعاب مجانية", "🚌 نقل"], 
           featuresEn: ["🎫 Entry Tickets", "🍽️ Lunch", "🎢 Free Rides", "🚌 Transfer"],
           rating: 4.9, location: "مدينة الألعاب" },
-        { id: 4, nameAr: "جولة سفاري الليل", nameEn: "Night Safari Tour", price: 400, priceRange: 400, duration: "5 ساعات", maxPersons: 12, languages: "عربي/إنجليزي",
+        { id: 4, nameAr: "جولة سفاري الليل", nameEn: "Night Safari Tour", price: 400, duration: "5 ساعات", maxPersons: 12, languages: "عربي/إنجليزي",
           images: ["https://picsum.photos/id/108/400/250", "https://picsum.photos/id/116/400/250"],
           featuresAr: ["🦁 مشاهدة حيوانات", "🔦 كشافات ليلية", "🚌 نقل", "📸 تصوير ليلي"], 
           featuresEn: ["🦁 Animal Watching", "🔦 Night Lights", "🚌 Transfer", "📸 Night Photography"],
           rating: 4.6, location: "سفاري بونشاك" },
-        { id: 5, nameAr: "جولة ينابيع الماء الساخن", nameEn: "Hot Springs Tour", price: 280, priceRange: 280, duration: "4 ساعات", maxPersons: 15, languages: "عربي/إنجليزي",
+        { id: 5, nameAr: "جولة ينابيع الماء الساخن", nameEn: "Hot Springs Tour", price: 280, duration: "4 ساعات", maxPersons: 15, languages: "عربي/إنجليزي",
           images: ["https://picsum.photos/id/119/400/250", "https://picsum.photos/id/20/400/250"],
           featuresAr: ["🛁 ينابيع ساخنة", "🍵 مشروبات ساخنة", "🚌 نقل", "🪪 مرشد"], 
           featuresEn: ["🛁 Hot Springs", "🍵 Hot Drinks", "🚌 Transfer", "🪪 Guide"],
           rating: 4.5, location: "ينابيع بونشاك" },
-        { id: 6, nameAr: "جولة المغامرات والتسلق", nameEn: "Adventure & Climbing Tour", price: 450, priceRange: 450, duration: "7 ساعات", maxPersons: 8, languages: "عربي/إنجليزي",
+        { id: 6, nameAr: "جولة المغامرات والتسلق", nameEn: "Adventure & Climbing Tour", price: 450, duration: "7 ساعات", maxPersons: 8, languages: "عربي/إنجليزي",
           images: ["https://picsum.photos/id/29/400/250", "https://picsum.photos/id/96/400/250"],
           featuresAr: ["🧗 معدات تسلق", "🪂 رياضة هوائية", "🚌 نقل", "📸 تصوير جوي"], 
           featuresEn: ["🧗 Climbing Gear", "🪂 Air Sports", "🚌 Transfer", "📸 Aerial Photography"],
           rating: 4.9, location: "جبال بونشاك" },
-        { id: 7, nameAr: "جولة الثقافة والتاريخ", nameEn: "Culture & History Tour", price: 180, priceRange: 180, duration: "3 ساعات", maxPersons: 20, languages: "عربي/إنجليزي/إندونيسي",
+        { id: 7, nameAr: "جولة الثقافة والتاريخ", nameEn: "Culture & History Tour", price: 180, duration: "3 ساعات", maxPersons: 20, languages: "عربي/إنجليزي/إندونيسي",
           images: ["https://picsum.photos/id/104/400/250", "https://picsum.photos/id/106/400/250"],
           featuresAr: ["🏛️ متاحف", "📜 قصص تاريخية", "🚌 نقل", "🍱 وجبة"], 
           featuresEn: ["🏛️ Museums", "📜 History Stories", "🚌 Transfer", "🍱 Meal"],
           rating: 4.4, location: "متاحف بونشاك" },
-        { id: 8, nameAr: "جولة الطهي التقليدي", nameEn: "Traditional Cooking Tour", price: 220, priceRange: 220, duration: "4 ساعات", maxPersons: 10, languages: "عربي/إنجليزي",
+        { id: 8, nameAr: "جولة الطهي التقليدي", nameEn: "Traditional Cooking Tour", price: 220, duration: "4 ساعات", maxPersons: 10, languages: "عربي/إنجليزي",
           images: ["https://picsum.photos/id/107/400/250", "https://picsum.photos/id/116/400/250"],
           featuresAr: ["🍳 طبخ عملي", "🍽️ تذوق أطباق", "📖 وصفات", "🚌 نقل"], 
           featuresEn: ["🍳 Hands-on Cooking", "🍽️ Food Tasting", "📖 Recipes", "🚌 Transfer"],
           rating: 4.8, location: "مطبخ بونشاك" },
-        { id: 9, nameAr: "جولة ركوب الخيل", nameEn: "Horse Riding Tour", price: 300, priceRange: 300, duration: "3 ساعات", maxPersons: 8, languages: "عربي/إنجليزي",
+        { id: 9, nameAr: "جولة ركوب الخيل", nameEn: "Horse Riding Tour", price: 300, duration: "3 ساعات", maxPersons: 8, languages: "عربي/إنجليزي",
           images: ["https://picsum.photos/id/15/400/250", "https://picsum.photos/id/20/400/250"],
           featuresAr: ["🐎 خيول مدربة", "🪪 مرشد", "🌲 مسارات طبيعية", "📸 تصوير"], 
           featuresEn: ["🐎 Trained Horses", "🪪 Guide", "🌲 Nature Trails", "📸 Photography"],
           rating: 4.7, location: "مزارع الخيول" },
-        { id: 10, nameAr: "جولة الشلالات والبحيرات", nameEn: "Waterfalls & Lakes Tour", price: 320, priceRange: 320, duration: "6 ساعات", maxPersons: 15, languages: "عربي/إنجليزي",
+        { id: 10, nameAr: "جولة الشلالات والبحيرات", nameEn: "Waterfalls & Lakes Tour", price: 320, duration: "6 ساعات", maxPersons: 15, languages: "عربي/إنجليزي",
           images: ["https://picsum.photos/id/96/400/250", "https://picsum.photos/id/29/400/250"],
           featuresAr: ["💦 3 شلالات", "🏞️ بحيرة", "🍱 غداء", "🚌 نقل"], 
           featuresEn: ["💦 3 Waterfalls", "🏞️ Lake", "🍱 Lunch", "🚌 Transfer"],
@@ -466,7 +259,7 @@
     const ADMIN_PASSWORD = "admin123";
     let currentEditTourId = null;
 
-    // عد تنازلي للعرض
+    // العد التنازلي
     function startCountdown() {
         let targetDate = new Date();
         targetDate.setDate(targetDate.getDate() + 7);
@@ -495,15 +288,12 @@
         setInterval(updateCountdown, 1000);
     }
 
-    // تحميل وحفظ البيانات
     function loadToursData() { let saved = localStorage.getItem('toursData'); if(saved) toursData = JSON.parse(saved); }
     function saveToursData() { localStorage.setItem('toursData', JSON.stringify(toursData)); }
     function fileToBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); }); }
 
-    // عرض النجوم
     function getStars(rating) { let full = Math.floor(rating); let half = rating % 1 >= 0.5; let stars = '⭐'.repeat(full); if(half) stars += '½'; stars += '☆'.repeat(5 - full - (half ? 1 : 0)); return stars; }
 
-    // عرض الجولات
     function renderTours() {
         let container = document.getElementById('toursGrid');
         container.innerHTML = '';
@@ -511,28 +301,19 @@
         for (let i = 0; i < toursData.length; i += 2) {
             let row = document.createElement('div');
             row.className = 'tour-row';
-            
-            // الجولة الأولى (يمين)
-            let tour1 = toursData[i];
-            let card1 = createTourCard(tour1);
+            let card1 = createTourCard(toursData[i]);
             row.appendChild(card1);
-            
-            // الجولة الثانية (يسار)
             if (i + 1 < toursData.length) {
-                let tour2 = toursData[i + 1];
-                let card2 = createTourCard(tour2);
+                let card2 = createTourCard(toursData[i + 1]);
                 row.appendChild(card2);
             }
-            
             container.appendChild(row);
         }
         
-        // أزرار الحجز
         document.querySelectorAll('.book-btn').forEach(btn => {
             btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); currentTour = toursData.find(t => t.id === id); openOrderModal(); });
         });
         
-        // أزرار الأدمن
         if(isAdmin) {
             document.querySelectorAll('.admin-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); let action = btn.getAttribute('data-action'); currentEditTourId = id; if(action === 'images') openImageManager(id); if(action === 'edit') editTourInfo(id); });
@@ -548,13 +329,13 @@
         let slidesHtml = ''; tour.images.forEach(img => { slidesHtml += `<img src="${img}" alt="Tour">`; }); if(tour.images.length === 0) slidesHtml = '<img src="https://picsum.photos/id/104/400/250" alt="Tour">';
         
         let features = isArabic ? tour.featuresAr : tour.featuresEn;
-        let featuresHtml = '<div class="tour-features">'; features.forEach(f => { featuresHtml += `<span class="tour-feature">${f}</span>`; }); featuresHtml += '</div>';
+        let featuresHtml = '<div class="tour-features" id="features-' + tour.id + '">'; features.forEach(f => { featuresHtml += `<span class="tour-feature">${f}</span>`; }); featuresHtml += '</div>';
         
         card.innerHTML = `
-            <div class="slider-container" style="position:relative;">
-                <div class="slider" id="slider-${tour.id}" style="display:flex; overflow-x:auto;">${slidesHtml}</div>
-                <button class="slider-btn prev" data-id="${tour.id}" style="position:absolute; top:50%; left:5px; background:rgba(0,0,0,0.6); color:white; border:none; padding:5px 10px; border-radius:50%; cursor:pointer;">❮</button>
-                <button class="slider-btn next" data-id="${tour.id}" style="position:absolute; top:50%; right:5px; background:rgba(0,0,0,0.6); color:white; border:none; padding:5px 10px; border-radius:50%; cursor:pointer;">❯</button>
+            <div class="slider-container">
+                <div class="slider" id="slider-${tour.id}">${slidesHtml}</div>
+                <button class="slider-btn prev" data-id="${tour.id}">❮</button>
+                <button class="slider-btn next" data-id="${tour.id}">❯</button>
             </div>
             <div class="tour-info">
                 <div class="tour-name">${isArabic ? tour.nameAr : tour.nameEn}</div>
@@ -566,13 +347,13 @@
                     <span class="tour-detail">🗣️ ${tour.languages}</span>
                     <span class="tour-detail">📍 ${tour.location}</span>
                 </div>
+                <button class="show-features-btn" data-id="${tour.id}">📋 ${isArabic ? 'عرض المميزات' : 'Show Features'}</button>
                 ${featuresHtml}
                 <button class="book-btn" data-id="${tour.id}">📝 ${isArabic ? 'احجز الآن' : 'Book Now'}</button>
                 ${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="images" data-id="${tour.id}">📷 إدارة الصور</button><button class="admin-btn" data-action="edit" data-id="${tour.id}">✏️ تعديل</button></div>` : ''}
             </div>
         `;
         
-        // أزرار السلايدر
         setTimeout(() => {
             let prevBtn = card.querySelector('.slider-btn.prev');
             let nextBtn = card.querySelector('.slider-btn.next');
@@ -581,10 +362,20 @@
             if(nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' }); });
         }, 100);
         
+        // زر عرض المميزات
+        let showBtn = card.querySelector('.show-features-btn');
+        let featuresDiv = card.querySelector('.tour-features');
+        if(showBtn && featuresDiv) {
+            showBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                featuresDiv.classList.toggle('show');
+                showBtn.innerHTML = featuresDiv.classList.contains('show') ? '📋 ' + (isArabic ? 'إخفاء المميزات' : 'Hide Features') : '📋 ' + (isArabic ? 'عرض المميزات' : 'Show Features');
+            });
+        }
+        
         return card;
     }
 
-    // إدارة الصور
     async function openImageManager(tourId) {
         let tour = toursData.find(t => t.id === tourId);
         let modal = document.getElementById('imageModal');
@@ -596,7 +387,6 @@
         document.getElementById('addImageBtn').onclick = async () => { let fileInput = document.getElementById('imageUpload'); if(fileInput.files && fileInput.files[0]) { let url = await fileToBase64(fileInput.files[0]); tour.images.push(url); saveToursData(); renderTours(); fileInput.value = ''; openImageManager(tourId); } else { alert('الرجاء اختيار صورة أولاً'); } };
     }
 
-    // تعديل معلومات الجولة
     function editTourInfo(tourId) {
         let tour = toursData.find(t => t.id === tourId);
         let newNameAr = prompt('أدخل اسم الجولة بالعربية:', tour.nameAr);
@@ -609,7 +399,6 @@
         saveToursData(); renderTours(); alert('تم تحديث بيانات الجولة بنجاح');
     }
 
-    // الحجز
     function openOrderModal() {
         document.getElementById('modalTitle').innerText = isArabic ? `📝 حجز ${currentTour.nameAr}` : `📝 Booking ${currentTour.nameEn}`;
         document.getElementById('pricePerPerson').innerText = currentTour.price.toLocaleString();
@@ -618,7 +407,6 @@
     }
     function calculateOrder() { let persons = document.getElementById('persons').value || 0; document.getElementById('personsCount').innerText = persons; let total = persons * currentTour.price; document.getElementById('totalPrice').innerText = total.toLocaleString(); }
 
-    // تغيير اللغة
     function changeLanguage() {
         isArabic = !isArabic;
         document.body.style.direction = isArabic ? 'rtl' : 'ltr';
@@ -627,16 +415,23 @@
         document.getElementById('welcomeTitle').innerHTML = isArabic ? '🌟 اكتشف جمال بونشاك' : '🌟 Discover the Beauty of Puncak';
         document.getElementById('welcomeText').innerHTML = isArabic ? 'انطلق في رحلة لا تنسى مع أفضل الجولات السياحية في بونشاك. استمتع بالمناظر الطبيعية الخلابة، والشلالات الساحرة، ومزارع الشاي الخضراء، وتجربة ثقافية فريدة مع مرشدين محترفين.' : 'Embark on an unforgettable journey with the best tours in Puncak. Enjoy stunning landscapes, enchanting waterfalls, green tea plantations, and a unique cultural experience with professional guides.';
         document.getElementById('countdownTitle').innerHTML = isArabic ? '⏰ عرض خاص لفترة محدودة! احجز الآن واحصل على خصم 20%' : '⏰ Limited time offer! Book now and get 20% off';
+        
+        // تحديث أزرار عرض المميزات
+        document.querySelectorAll('.show-features-btn').forEach(btn => {
+            let featuresDiv = btn.parentElement.querySelector('.tour-features');
+            if(featuresDiv) {
+                btn.innerHTML = featuresDiv.classList.contains('show') ? '📋 ' + (isArabic ? 'إخفاء المميزات' : 'Hide Features') : '📋 ' + (isArabic ? 'عرض المميزات' : 'Show Features');
+            }
+        });
+        
         renderTours();
     }
 
-    // زر الأدمن
     const adminBtn = document.getElementById('adminModeBtn');
     function enterAdminMode() { let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); if(pwd === ADMIN_PASSWORD) { isAdmin = true; adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; adminBtn.style.background = '#DAA520'; renderTours(); alert('✅ تم تفعيل وضع الأدمن.'); } else if(pwd !== null) alert('❌ كلمة السر خطأ'); }
     function exitAdminMode() { isAdmin = false; adminBtn.innerHTML = '🔐 دخول الأدمن'; adminBtn.style.background = '#8B0000'; renderTours(); alert('✅ تم الخروج من وضع الأدمن.'); }
     adminBtn.addEventListener('click', () => { if(isAdmin) exitAdminMode(); else enterAdminMode(); });
 
-    // أحداث
     document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
     document.getElementById('langBtn').addEventListener('click', changeLanguage);
     document.getElementById('persons').addEventListener('input', calculateOrder);
@@ -659,7 +454,6 @@
     document.getElementById('cancelOrderBtn').addEventListener('click', () => { document.getElementById('orderModal').style.display = 'none'; });
     document.getElementById('closeImageModal').addEventListener('click', () => { document.getElementById('imageModal').style.display = 'none'; });
 
-    // تحميل الصفحة
     loadToursData();
     renderTours();
     startCountdown();

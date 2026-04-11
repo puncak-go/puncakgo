@@ -22,7 +22,7 @@
         .service-card { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 1px solid #DAA520; transition: transform 0.2s; }
         .service-card:hover { transform: translateY(-5px); }
         
-        .service-img { width: 100%; height: 200px; object-fit: cover; }
+        .service-img { width: 100%; height: 220px; object-fit: cover; }
         .service-info { padding: 20px; }
         .service-name { font-size: 1.5rem; font-weight: bold; color: #B8860B; margin-bottom: 10px; }
         .service-desc { color: #666; margin-bottom: 15px; font-size: 0.9rem; }
@@ -43,153 +43,40 @@
         
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 30px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
         
-        @media (max-width: 768px) { .services-grid { grid-template-columns: 1fr; } }
-   /* ترتيب الخدمات (يمين/يسار) */
-.services-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-}
-
-/* في الصفوف الفردية: الأول يمين، الثاني يسار */
-.services-grid .service-card:first-child {
-    order: 1;
-}
-.services-grid .service-card:last-child {
-    order: 2;
-}
-
-/* في الصفوف الزوجية: الأول يسار، الثاني يمين */
-.services-grid .service-card:nth-child(4n+3) {
-    order: 2;
-}
-.services-grid .service-card:nth-child(4n+4) {
-    order: 1;
-}
-
-@media (max-width: 768px) {
-    .services-grid {
-        grid-template-columns: 1fr;
-    }
-    .services-grid .service-card {
-        order: 0 !important;
-    }
-}
-/* ========== ترتيب الخدمات الأخرى يمين/يسار على الجوال ========== */
-@media (max-width: 768px) {
-    .services-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 15px !important;
-    }
-    .service-card {
-        margin-bottom: 0 !important;
-    }
-}
-/* ========== ترتيب الخدمات الأخرى يمين/يسار على الجوال + تصغير الحقول ========== */
-@media (max-width: 768px) {
-    /* الترتيب */
-    .services-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 12px !important;
-    }
-    
-    /* تصغير الحقول */
-    .service-name {
-        font-size: 0.85rem !important;
-    }
-    .service-desc {
-        font-size: 0.7rem !important;
-        margin-bottom: 8px !important;
-    }
-    .service-info {
-        padding: 8px !important;
-    }
-    .book-btn {
-        padding: 6px !important;
-        font-size: 0.7rem !important;
-    }
-    .service-img {
-        height: 120px !important;
-    }
-    .welcome-section h1 {
-        font-size: 1.2rem !important;
-    }
-    .welcome-section p {
-        font-size: 0.8rem !important;
-    }
-    .welcome-section {
-        padding: 15px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .services-grid {
-        gap: 8px !important;
-    }
-    .service-name {
-        font-size: 0.75rem !important;
-    }
-    .service-img {
-        height: 100px !important;
-    }
-}
-/* ========== تعديل حجم الصور في الخدمات الأخرى على الجوال ========== */
-@media (max-width: 768px) {
-    .service-img {
-        height: 130px !important;  /* كان 100px */
-    }
-    
-    .service-name {
-        font-size: 0.8rem !important;
-    }
-    
-    .service-desc {
-        font-size: 0.65rem !important;
-    }
-    
-    .book-btn {
-        padding: 6px !important;
-        font-size: 0.7rem !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .service-img {
-        height: 110px !important;  /* كان 85px */
-    }
-}
-/* ========== تكبير الصور في الخدمات الأخرى على الجوال ========== */
-@media (max-width: 768px) {
-    .service-img {
-        height: 180px !important;  /* كان 130px */
-    }
-    
-    .service-name {
-        font-size: 0.9rem !important;
-    }
-    
-    .service-desc {
-        font-size: 0.7rem !important;
-    }
-    
-    .book-btn {
-        padding: 8px !important;
-        font-size: 0.75rem !important;
-    }
-    
-    .service-info {
-        padding: 10px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .service-img {
-        height: 150px !important;
-    }
-}
-   </style>
+        /* ترتيب الخدمات يمين/يسار */
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        .services-grid .service-card:first-child { order: 1; }
+        .services-grid .service-card:last-child { order: 2; }
+        .services-grid .service-card:nth-child(4n+3) { order: 2; }
+        .services-grid .service-card:nth-child(4n+4) { order: 1; }
+        
+        /* استايلات الجوال */
+        @media (max-width: 768px) {
+            .services-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 12px !important;
+            }
+            .services-grid .service-card { order: 0 !important; }
+            .service-img { height: 180px !important; }
+            .service-name { font-size: 0.85rem !important; }
+            .service-desc { font-size: 0.7rem !important; margin-bottom: 8px !important; }
+            .service-info { padding: 8px !important; }
+            .book-btn { padding: 6px !important; font-size: 0.7rem !important; }
+            .welcome-section h1 { font-size: 1.2rem !important; }
+            .welcome-section p { font-size: 0.8rem !important; }
+            .welcome-section { padding: 15px !important; }
+        }
+        
+        @media (max-width: 480px) {
+            .service-img { height: 150px !important; }
+            .service-name { font-size: 0.75rem !important; }
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -404,7 +291,6 @@
         document.getElementById('welcomeTitle').innerHTML = isArabic ? '🌟 خدمات إضافية لراحتكم' : '🌟 Additional Services for Your Comfort';
         document.getElementById('welcomeText').innerHTML = isArabic ? 'نقدم لكم مجموعة من الخدمات الإضافية لتجعل رحلتكم أكثر راحة ومتعة. مطعم عربي، بقالة عربية، متجر عود، وتأجير سيارات مع سائق خاص.' : 'We offer a range of additional services to make your trip more comfortable and enjoyable. Arabic restaurant, Arabic grocery, Oud store, and car rental with driver.';
         
-        // تحديث خيارات الوجهة
         let destinationSelect = document.getElementById('destination');
         if(destinationSelect) {
             destinationSelect.options[0].text = isArabic ? '📍 بونشاك فقط' : '📍 Puncak Only';
@@ -415,13 +301,11 @@
         renderServices();
     }
 
-    // زر الأدمن
     const adminBtn = document.getElementById('adminModeBtn');
     function enterAdminMode() { let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); if(pwd === ADMIN_PASSWORD) { isAdmin = true; adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; adminBtn.style.background = '#DAA520'; renderServices(); alert('✅ تم تفعيل وضع الأدمن. أزرار التعديل ظاهرة الآن.'); } else if(pwd !== null) alert('❌ كلمة السر خطأ'); }
     function exitAdminMode() { isAdmin = false; adminBtn.innerHTML = '🔐 دخول الأدمن'; adminBtn.style.background = '#8B0000'; renderServices(); alert('✅ تم الخروج من وضع الأدمن.'); }
     adminBtn.addEventListener('click', () => { if(isAdmin) exitAdminMode(); else enterAdminMode(); });
 
-    // أحداث الحجز العادي
     document.getElementById('confirmOrderBtn').addEventListener('click', () => {
         let name = document.getElementById('custName').value;
         let phone = document.getElementById('custPhone').value;
@@ -452,7 +336,6 @@
         alert(isArabic ? 'تم إرسال طلبك بنجاح' : 'Your order has been sent successfully');
     });
 
-    // أحداث تأجير السيارات
     document.getElementById('carDateFrom').addEventListener('change', calculateCarPrice);
     document.getElementById('carDateTo').addEventListener('change', calculateCarPrice);
     document.getElementById('destination').addEventListener('change', calculateCarPrice);
@@ -499,14 +382,12 @@
         alert(isArabic ? 'تم إرسال طلب تأجير السيارة بنجاح' : 'Car rental request sent successfully');
     });
 
-    // أحداث الإغلاق
     document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
     document.getElementById('langBtn').addEventListener('click', changeLanguage);
     document.getElementById('cancelOrderBtn').addEventListener('click', () => { document.getElementById('orderModal').style.display = 'none'; });
     document.getElementById('cancelCarOrderBtn').addEventListener('click', () => { document.getElementById('carRentalModal').style.display = 'none'; });
     document.getElementById('closeEditModal').addEventListener('click', () => { document.getElementById('editServiceModal').style.display = 'none'; });
 
-    // تحميل الصفحة
     loadServicesData();
     renderServices();
 </script>

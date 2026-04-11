@@ -22,16 +22,44 @@
         .visa-card { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 1px solid #DAA520; transition: transform 0.2s; }
         .visa-card:hover { transform: translateY(-5px); }
         
-        .visa-img { width: 100%; height: 180px; object-fit: cover; }
+        .visa-img { width: 100%; height: 220px; object-fit: cover; }
         .visa-info { padding: 20px; }
         .visa-name { font-size: 1.5rem; font-weight: bold; color: #B8860B; margin-bottom: 10px; }
         .visa-price { font-size: 1.2rem; margin-bottom: 10px; }
         .visa-price span { color: #DAA520; font-weight: bold; font-size: 1.3rem; }
         .visa-duration { color: #666; margin-bottom: 10px; font-size: 0.9rem; }
-        .visa-requirements { background: #f9f9f9; padding: 12px; border-radius: 15px; margin: 15px 0; }
+        
+        /* المستندات - مخفية في البداية */
+        .visa-requirements {
+            display: none;
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 15px;
+            margin: 15px 0;
+        }
+        .visa-requirements.show {
+            display: block;
+        }
         .visa-requirements h4 { color: #B8860B; margin-bottom: 8px; font-size: 0.9rem; }
         .visa-requirements ul { padding-right: 20px; font-size: 0.8rem; color: #555; }
         .visa-requirements li { margin: 5px 0; }
+        
+        /* زر عرض المستندات */
+        .show-requirements-btn {
+            background: #DAA520;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin: 5px 0;
+            width: 100%;
+        }
+        .show-requirements-btn:hover {
+            background: #B8860B;
+        }
+        
         .book-btn { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
         
         .consult-card { background: linear-gradient(135deg, #f9f9f9, #fff); border: 2px dashed #DAA520; margin-top: 30px; }
@@ -52,286 +80,46 @@
         
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 30px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
         
-        @media (max-width: 768px) { .visa-grid { grid-template-columns: 1fr; } }
-    /* ترتيب الفيزا (يمين/يسار) */
-.visa-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-}
-
-/* في الصفوف الفردية: الأول يمين، الثاني يسار */
-.visa-grid .visa-card:first-child {
-    order: 1;
-}
-.visa-grid .visa-card:last-child {
-    order: 2;
-}
-
-/* في الصفوف الزوجية: الأول يسار، الثاني يمين */
-.visa-grid .visa-card:nth-child(4n+3) {
-    order: 2;
-}
-.visa-grid .visa-card:nth-child(4n+4) {
-    order: 1;
-}
-
-@media (max-width: 768px) {
-    .visa-grid {
-        grid-template-columns: 1fr;
-    }
-    .visa-grid .visa-card {
-        order: 0 !important;
-    }
-}
-/* ========== ترتيب الفيزا يمين/يسار على الجوال ========== */
-@media (max-width: 768px) {
-    .visa-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 15px !important;
-    }
-    .visa-card {
-        margin-bottom: 0 !important;
-    }
-}
-/* ========== ترتيب الفيزا يمين/يسار على الجوال + تصغير الحقول ========== */
-@media (max-width: 768px) {
-    /* الترتيب */
-    .visa-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 12px !important;
-    }
-    
-    /* تصغير الحقول */
-    .visa-name {
-        font-size: 0.85rem !important;
-    }
-    .visa-price {
-        font-size: 0.75rem !important;
-    }
-    .visa-price span {
-        font-size: 0.85rem !important;
-    }
-    .visa-duration {
-        font-size: 0.7rem !important;
-    }
-    .visa-requirements h4 {
-        font-size: 0.7rem !important;
-    }
-    .visa-requirements li {
-        font-size: 0.6rem !important;
-    }
-    .visa-info {
-        padding: 8px !important;
-    }
-    .book-btn {
-        padding: 6px !important;
-        font-size: 0.7rem !important;
-    }
-    .visa-img {
-        height: 120px !important;
-    }
-    .welcome-section h1 {
-        font-size: 1.2rem !important;
-    }
-    .welcome-section p {
-        font-size: 0.8rem !important;
-    }
-    .welcome-section {
-        padding: 15px !important;
-    }
-    .consult-icon {
-        font-size: 2rem !important;
-    }
-    .consult-card .visa-name {
-        font-size: 0.9rem !important;
-    }
-    .consult-card p {
-        font-size: 0.7rem !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .visa-grid {
-        gap: 8px !important;
-    }
-    .visa-name {
-        font-size: 0.75rem !important;
-    }
-    .visa-img {
-        height: 100px !important;
-    }
-}
-/* ========== تصغير حجم الفيزا على الجوال ========== */
-@media (max-width: 768px) {
-    .visa-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 10px !important;
-    }
-    
-    .visa-card {
-        border-radius: 15px !important;
-    }
-    
-    .visa-img {
-        height: 90px !important;
-    }
-    
-    .visa-name {
-        font-size: 0.75rem !important;
-        margin-bottom: 3px !important;
-    }
-    
-    .visa-price {
-        font-size: 0.65rem !important;
-        margin: 3px 0 !important;
-    }
-    
-    .visa-price span {
-        font-size: 0.7rem !important;
-    }
-    
-    .visa-duration {
-        font-size: 0.6rem !important;
-        margin-bottom: 5px !important;
-    }
-    
-    .visa-requirements h4 {
-        font-size: 0.6rem !important;
-        margin-bottom: 3px !important;
-    }
-    
-    .visa-requirements li {
-        font-size: 0.5rem !important;
-        margin: 2px 0 !important;
-    }
-    
-    .visa-requirements {
-        padding: 6px !important;
-        margin: 5px 0 !important;
-    }
-    
-    .visa-info {
-        padding: 6px !important;
-    }
-    
-    .book-btn {
-        padding: 5px !important;
-        font-size: 0.65rem !important;
-        margin-top: 5px !important;
-    }
-    
-    .welcome-section {
-        padding: 12px !important;
-    }
-    
-    .welcome-section h1 {
-        font-size: 1rem !important;
-    }
-    
-    .welcome-section p {
-        font-size: 0.7rem !important;
-    }
-    
-    .consult-card .visa-name {
-        font-size: 0.8rem !important;
-    }
-    
-    .consult-card p {
-        font-size: 0.6rem !important;
-    }
-    
-    .consult-icon {
-        font-size: 1.5rem !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .visa-img {
-        height: 75px !important;
-    }
-    
-    .visa-name {
-        font-size: 0.7rem !important;
-    }
-    
-    .visa-requirements li {
-        font-size: 0.45rem !important;
-    }
-}
-/* ========== تعديل حجم الصور في الفيزا على الجوال ========== */
-@media (max-width: 768px) {
-    .visa-img {
-        height: 130px !important;  /* كان 90px */
-    }
-    
-    .visa-name {
-        font-size: 0.8rem !important;
-    }
-    
-    .visa-price {
-        font-size: 0.7rem !important;
-    }
-    
-    .visa-duration {
-        font-size: 0.65rem !important;
-    }
-    
-    .visa-requirements li {
-        font-size: 0.55rem !important;
-    }
-    
-    .book-btn {
-        padding: 6px !important;
-        font-size: 0.7rem !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .visa-img {
-        height: 110px !important;  /* كان 75px */
-    }
-}
-/* ========== تكبير الصور في الفيزا على الجوال ========== */
-@media (max-width: 768px) {
-    .visa-img {
-        height: 180px !important;  /* كان 130px */
-    }
-    
-    .visa-name {
-        font-size: 0.9rem !important;
-    }
-    
-    .visa-price {
-        font-size: 0.8rem !important;
-    }
-    
-    .visa-duration {
-        font-size: 0.7rem !important;
-    }
-    
-    .visa-requirements li {
-        font-size: 0.6rem !important;
-    }
-    
-    .book-btn {
-        padding: 8px !important;
-        font-size: 0.75rem !important;
-    }
-    
-    .visa-info {
-        padding: 10px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .visa-img {
-        height: 150px !important;
-    }
-}
+        /* ترتيب الفيزا يمين/يسار */
+        .visa-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        .visa-grid .visa-card:first-child { order: 1; }
+        .visa-grid .visa-card:last-child { order: 2; }
+        .visa-grid .visa-card:nth-child(4n+3) { order: 2; }
+        .visa-grid .visa-card:nth-child(4n+4) { order: 1; }
+        
+        /* استايلات الجوال */
+        @media (max-width: 768px) {
+            .visa-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 12px !important;
+            }
+            .visa-grid .visa-card { order: 0 !important; }
+            .visa-img { height: 180px !important; }
+            .visa-name { font-size: 0.85rem !important; }
+            .visa-price { font-size: 0.75rem !important; }
+            .visa-price span { font-size: 0.85rem !important; }
+            .visa-duration { font-size: 0.7rem !important; }
+            .visa-requirements li { font-size: 0.6rem !important; }
+            .visa-info { padding: 8px !important; }
+            .book-btn { padding: 6px !important; font-size: 0.7rem !important; }
+            .show-requirements-btn { font-size: 0.65rem !important; padding: 4px 8px !important; }
+            .welcome-section h1 { font-size: 1.2rem !important; }
+            .welcome-section p { font-size: 0.8rem !important; }
+            .welcome-section { padding: 15px !important; }
+            .consult-icon { font-size: 2rem !important; }
+            .consult-card .visa-name { font-size: 0.9rem !important; }
+            .consult-card p { font-size: 0.7rem !important; }
+        }
+        
+        @media (max-width: 480px) {
+            .visa-img { height: 150px !important; }
+            .visa-name { font-size: 0.75rem !important; }
+        }
     </style>
 </head>
 <body>
@@ -461,7 +249,8 @@
                     <div class="visa-name">${isArabic ? visa.nameAr : visa.nameEn}</div>
                     <div class="visa-price">💰 <span>${visa.price.toLocaleString()}</span> ${isArabic ? 'ألف روبيه' : 'K IDR'}</div>
                     <div class="visa-duration">⏱️ ${isArabic ? 'مدة الإقامة:' : 'Duration:'} ${visa.duration}</div>
-                    <div class="visa-requirements">
+                    <button class="show-requirements-btn" data-id="${visa.id}">📋 ${isArabic ? 'عرض المستندات المطلوبة' : 'Show Required Documents'}</button>
+                    <div class="visa-requirements" id="requirements-${visa.id}">
                         <h4>📋 ${isArabic ? 'المستندات المطلوبة:' : 'Required Documents:'}</h4>
                         ${reqHtml}
                     </div>
@@ -472,6 +261,20 @@
             container.appendChild(card);
         });
         
+        // أزرار عرض المستندات
+        document.querySelectorAll('.show-requirements-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                let id = btn.getAttribute('data-id');
+                let reqDiv = document.getElementById(`requirements-${id}`);
+                if (reqDiv) {
+                    reqDiv.classList.toggle('show');
+                    btn.innerHTML = reqDiv.classList.contains('show') ? '📋 ' + (isArabic ? 'إخفاء المستندات' : 'Hide Documents') : '📋 ' + (isArabic ? 'عرض المستندات المطلوبة' : 'Show Required Documents');
+                }
+            });
+        });
+        
+        // أزرار الحجز
         document.querySelectorAll('.book-btn').forEach(btn => {
             btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); currentVisa = visaData.find(v => v.id === id); openOrderModal(); });
         });
