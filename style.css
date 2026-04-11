@@ -658,3 +658,18 @@ body {
         font-size: 0.8rem;
     }
 }
+/* ========== شعار الجوال منفصل ========== */
+@media (max-width: 768px) {
+    .logo {
+        background: white;
+        text-align: center;
+        padding: 10px 0;
+    }
+    
+    .logo img {
+        width: 70%;
+        height: auto;
+        max-height: 55px;
+        object-fit: contain;
+    }
+}
