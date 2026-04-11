@@ -764,4 +764,39 @@ body {
         font-size: 0.8rem;
     }
 }
-
+/* ========== تثبيت ترتيب الديسكفر على الجوال ========== */
+@media (max-width: 768px) {
+    .discover-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 15px !important;
+    }
+    
+    /* الكبير على اليمين، الصغيرين على اليسار */
+    .discover-row .big-card {
+        order: 2 !important;
+        flex: 2 !important;
+    }
+    .discover-row .small-cards {
+        order: 1 !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+    
+    /* الصفوف الفردية: الكبير على اليسار، الصغيرين على اليمين */
+    .discover-row:nth-child(odd) .big-card {
+        order: 1 !important;
+    }
+    .discover-row:nth-child(odd) .small-cards {
+        order: 2 !important;
+    }
+    
+    /* الصغيرين تحت بعض */
+    .small-cards .small-card {
+        flex: 1 !important;
+        min-height: 100px !important;
+    }
+}
