@@ -1,3 +1,16 @@
+// ========== متغيرات PocketBase ==========
+let pb;
+try {
+    pb = new PocketBase('http://127.0.0.1:8090');
+    pb.health.check().then(() => {
+        console.log('✅ PocketBase connected');
+    }).catch(err => {
+        console.log('❌ PocketBase error:', err);
+    });
+} catch(e) {
+    console.log('⚠️ PocketBase not loaded yet');
+}
+
 let sliderItems = [
     { type: 'image', url: 'https://picsum.photos/id/1015/300/200' },
     { type: 'image', url: 'https://picsum.photos/id/104/300/200' },
@@ -482,6 +495,33 @@ if (savedAdmin2 === 'true') {
     }, 100);
 }
 
+// ========== دوال PocketBase ==========
+async function saveBookingToPocketBase(bookingData) {
+    if (!pb) {
+        console.error('❌ PocketBase not initialized');
+        alert('PocketBase not connected');
+        return null;
+    }
+    try {
+        const record = await pb.collection('bookings').create({
+            type: bookingData.type,
+            itemId: bookingData.itemId,
+            name: bookingData.name,
+            phone: bookingData.phone,
+            date: bookingData.date,
+            notes: bookingData.notes
+        });
+        console.log('✅ Booking saved:', record);
+        alert('تم حفظ الحجز بنجاح');
+        return record;
+    } catch (error) {
+        console.error('❌ Booking error:', error);
+        alert('حدث خطأ في حفظ الحجز: ' + error.message);
+        return null;
+    }
+}
+
+// ========== تحميل الصفحة ==========
 loadSavedData();
 renderSlider();
 renderDiscover();
