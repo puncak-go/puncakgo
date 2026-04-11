@@ -573,3 +573,27 @@ body {
         flex-direction: column;
     }
 }
+/* ========== شعار الجوال - يظهر بشكل كامل ========== */
+@media (max-width: 768px) {
+    .logo {
+        background: white;
+        text-align: center;
+        padding: 5px 10px;
+        width: 100%;
+    }
+    
+    .logo img {
+        width: auto;
+        max-width: 90%;
+        height: auto;
+        max-height: 60px;
+        object-fit: contain;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo img {
+        max-width: 95%;
+        max-height: 55px;
+    }
+}
