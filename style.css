@@ -667,3 +667,21 @@ body {
         object-fit: cover;
     }
 }
+.logo-container img {
+    width: 100%; /* تجعل الصورة تأخذ كامل عرض الحاوية */
+    height: auto; /* تحافظ على أبعاد الصورة الأصلية بدون تمطيط */
+    max-height: 250px; /* يمكنك التحكم في أقصى ارتفاع تظهر به في الوضع العمودي */
+    object-fit: contain; /* تضمن أن الصورة تظهر كاملة داخل الإطار دون قص */
+    display: block;
+    margin: 0 auto;
+}
+
+/* تعديل مخصص للوضع العمودي فقط إذا لزم الأمر */
+@media (max-width: 600px) {
+    .logo-container {
+        padding: 10px; /* تعطي مساحة بسيطة حول الصورة */
+    }
+    .logo-container img {
+        max-height: 180px; /* لتقليل الارتفاع قليلاً في الجوال وضمان الوضوح */
+    }
+}
