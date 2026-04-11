@@ -499,3 +499,25 @@ body {
         flex-direction: column;
     }
 }
+/* ========== ترتيب الديسكفر يمين/يسار على الجوال ========== */
+@media (max-width: 768px) {
+    .discover-row {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+    }
+    .discover-row .big-card {
+        order: 2 !important;
+        flex: 2 !important;
+    }
+    .discover-row .small-cards {
+        order: 1 !important;
+        flex: 1 !important;
+        flex-direction: column !important;
+    }
+    .discover-row:nth-child(odd) .big-card {
+        order: 1 !important;
+    }
+    .discover-row:nth-child(odd) .small-cards {
+        order: 2 !important;
+    }
+}
