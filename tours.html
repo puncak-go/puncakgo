@@ -177,6 +177,105 @@
         height: 110px !important;
     }
 }
+/* ========== تصغير حجم الجولات على الجوال ========== */
+@media (max-width: 768px) {
+    .tour-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+    
+    .tour-row .tour-card {
+        flex: 1 !important;
+        min-width: calc(50% - 10px) !important;
+        border-radius: 15px !important;
+    }
+    
+    .slider img {
+        height: 100px !important;
+    }
+    
+    .tour-name {
+        font-size: 0.75rem !important;
+        margin-bottom: 3px !important;
+    }
+    
+    .tour-price {
+        font-size: 0.65rem !important;
+        margin: 3px 0 !important;
+    }
+    
+    .tour-price span {
+        font-size: 0.7rem !important;
+    }
+    
+    .tour-rating {
+        font-size: 0.6rem !important;
+        margin-bottom: 3px !important;
+    }
+    
+    .tour-detail {
+        font-size: 0.55rem !important;
+    }
+    
+    .tour-feature {
+        font-size: 0.55rem !important;
+        padding: 2px 5px !important;
+    }
+    
+    .tour-info {
+        padding: 6px !important;
+    }
+    
+    .book-btn {
+        padding: 5px !important;
+        font-size: 0.65rem !important;
+        margin-top: 5px !important;
+    }
+    
+    .tour-details {
+        margin: 5px 0 !important;
+        padding: 5px 0 !important;
+        gap: 8px !important;
+    }
+    
+    .tour-features {
+        margin: 5px 0 !important;
+        gap: 4px !important;
+    }
+    
+    .slider-btn {
+        padding: 3px 6px !important;
+        font-size: 10px !important;
+    }
+    
+    .welcome-section {
+        padding: 12px !important;
+    }
+    
+    .welcome-section h1 {
+        font-size: 1rem !important;
+    }
+    
+    .welcome-section p {
+        font-size: 0.7rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .slider img {
+        height: 85px !important;
+    }
+    
+    .tour-name {
+        font-size: 0.7rem !important;
+    }
+    
+    .tour-detail {
+        font-size: 0.5rem !important;
+    }
+}
     </style>
 </head>
 <body>

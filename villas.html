@@ -155,6 +155,76 @@
         height: 110px !important;
     }
 }
+/* ========== تصغير حجم الفلل على الجوال ========== */
+@media (max-width: 768px) {
+    .villas-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+    }
+    
+    .villa-card {
+        border-radius: 15px !important;
+    }
+    
+    .slider img {
+        height: 100px !important;
+    }
+    
+    .villa-name {
+        font-size: 0.75rem !important;
+        margin-bottom: 3px !important;
+    }
+    
+    .villa-price {
+        font-size: 0.65rem !important;
+        margin: 3px 0 !important;
+    }
+    
+    .villa-price span {
+        font-size: 0.7rem !important;
+    }
+    
+    .feature {
+        font-size: 0.55rem !important;
+        padding: 2px 5px !important;
+    }
+    
+    .villa-info {
+        padding: 6px !important;
+    }
+    
+    .book-btn {
+        padding: 5px !important;
+        font-size: 0.65rem !important;
+        margin-top: 5px !important;
+    }
+    
+    .slider-btn {
+        padding: 3px 6px !important;
+        font-size: 10px !important;
+    }
+    
+    .features {
+        margin: 5px 0 !important;
+        gap: 4px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .slider img {
+        height: 85px !important;
+    }
+    
+    .villa-name {
+        font-size: 0.7rem !important;
+    }
+    
+    .feature {
+        font-size: 0.5rem !important;
+        padding: 1px 4px !important;
+    }
+}
     </style>
 </head>
 <body>
