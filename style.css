@@ -606,3 +606,42 @@ body {
         font-size: 0.8rem;
     }
 }
+/* ========== ترتيب الديسكفر في الجوال (كبير + صغيرين جنبه) ========== */
+@media (max-width: 768px) {
+    .discover-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+    }
+    
+    /* الكبير يكون له عرض أكبر */
+    .discover-row .big-card {
+        flex: 2 !important;
+        min-height: 180px !important;
+        order: 0 !important;
+    }
+    
+    /* الحقلين الصغار يكونون في عمود */
+    .discover-row .small-cards {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        order: 0 !important;
+    }
+    
+    /* كل صغير يكون له ارتفاع مناسب */
+    .small-cards .small-card {
+        flex: 1 !important;
+        min-height: 85px !important;
+    }
+    
+    /* الصفوف الفردية: الكبير على اليسار، الصغيرين على اليمين */
+    .discover-row:nth-child(odd) .big-card {
+        order: 0 !important;
+    }
+    .discover-row:nth-child(odd) .small-cards {
+        order: 0 !important;
+    }
+}
