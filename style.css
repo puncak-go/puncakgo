@@ -621,3 +621,33 @@ body {
         max-height: 65px;
     }
 }
+/* ========== الشعار يتكيف مع كل الشاشات ========== */
+.logo {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    text-align: center;
+}
+
+.logo img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* للكمبيوتر */
+@media (min-width: 769px) {
+    .logo img {
+        height: 150px;
+    }
+}
+
+/* للجوال */
+@media (max-width: 768px) {
+    .logo img {
+        height: auto;
+        max-height: 80px;
+        object-fit: contain;
+    }
+}
