@@ -764,17 +764,4 @@ body {
         font-size: 0.8rem;
     }
 }
-/* ========== تكبير ارتفاع الحقول الثلاثة الأولى ========== */
-.three-fields .field-card {
-    min-height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-/* للجوال */
-@media (max-width: 768px) {
-    .three-fields .field-card {
-        min-height: 100px;
-    }
-}
