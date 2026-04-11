@@ -645,3 +645,47 @@ body {
         order: 0 !important;
     }
 }
+/* ========== ترتيب الديسكفر في الجوال (كبير + 2 صغار) ========== */
+@media (max-width: 768px) {
+    .discover-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+    }
+    
+    /* الكبير */
+    .discover-row .big-card {
+        flex: 2 !important;
+        min-height: 180px !important;
+    }
+    
+    /* الحقلين الصغار */
+    .discover-row .small-cards {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+    
+    .small-cards .small-card {
+        flex: 1 !important;
+        min-height: 85px !important;
+    }
+    
+    /* الصفوف الفردية: كبير يسار + صغيرين يمين */
+    .discover-row:nth-child(odd) .big-card {
+        order: 1 !important;
+    }
+    .discover-row:nth-child(odd) .small-cards {
+        order: 2 !important;
+    }
+    
+    /* الصفوف الزوجية: كبير يمين + صغيرين يسار */
+    .discover-row:nth-child(even) .big-card {
+        order: 2 !important;
+    }
+    .discover-row:nth-child(even) .small-cards {
+        order: 1 !important;
+    }
+}
