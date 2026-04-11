@@ -597,3 +597,27 @@ body {
         max-height: 55px;
     }
 }
+/* ========== الشعار على الجوال يمتد من اليسار إلى اليمين ========== */
+@media (max-width: 768px) {
+    .logo {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: white;
+    }
+    
+    .logo img {
+        width: 100%;
+        height: auto;
+        max-height: 80px;
+        object-fit: cover;
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo img {
+        max-height: 65px;
+    }
+}
