@@ -64,6 +64,40 @@
         .delete-img-btn { position: absolute; top: -8px; right: -8px; background: red; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; }
         
         @media (max-width: 768px) { .tour-row { flex-direction: column; } }
+    /* ترتيب الجولات (يمين/يسار) */
+.tour-row {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+/* الترتيب الطبيعي: الأول يمين، الثاني يسار */
+.tour-row .tour-card:first-child {
+    order: 1;
+    flex: 1;
+}
+.tour-row .tour-card:last-child {
+    order: 2;
+    flex: 1;
+}
+
+/* في الصفوف الفردية: الأول يسار، الثاني يمين */
+.tour-row:nth-child(odd) .tour-card:first-child {
+    order: 2;
+}
+.tour-row:nth-child(odd) .tour-card:last-child {
+    order: 1;
+}
+
+@media (max-width: 768px) {
+    .tour-row {
+        flex-direction: column;
+    }
+    .tour-row .tour-card:first-child,
+    .tour-row .tour-card:last-child {
+        order: 0 !important;
+    }
+}
     </style>
 </head>
 <body>

@@ -55,6 +55,37 @@
         .feature-item .remove-feature { background: red; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; margin-left: 5px; font-size: 10px; }
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 20px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
         @media (max-width: 768px) { .villas-grid { grid-template-columns: 1fr; } .pin { width: 22px; height: 22px; font-size: 10px; } }
+    /* ترتيب الفلل (يمين/يسار) */
+.villas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+/* في الصفوف الفردية: الأول يمين، الثاني يسار */
+.villas-grid .villa-card:first-child {
+    order: 1;
+}
+.villas-grid .villa-card:last-child {
+    order: 2;
+}
+
+/* في الصفوف الزوجية: الأول يسار، الثاني يمين */
+.villas-grid .villa-card:nth-child(4n+3) {
+    order: 2;
+}
+.villas-grid .villa-card:nth-child(4n+4) {
+    order: 1;
+}
+
+@media (max-width: 768px) {
+    .villas-grid {
+        grid-template-columns: 1fr;
+    }
+    .villas-grid .villa-card {
+        order: 0 !important;
+    }
+}
     </style>
 </head>
 <body>

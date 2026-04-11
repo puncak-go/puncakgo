@@ -150,14 +150,36 @@ body {
     object-fit: cover;
 }
 
+/* ========== ترتيب الديسكفر (معدل) ========== */
 .discover-row {
     display: flex;
     gap: 20px;
     margin-bottom: 30px;
     flex-wrap: wrap;
 }
-.big-card {
+
+/* الترتيب الطبيعي: الكبير على اليمين، الصغيرين على اليسار */
+.discover-row .big-card {
+    order: 2;
     flex: 2;
+}
+.discover-row .small-cards {
+    order: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* في الصفوف الفردية: الكبير على اليسار، الصغيرين على اليمين */
+.discover-row:nth-child(odd) .big-card {
+    order: 1;
+}
+.discover-row:nth-child(odd) .small-cards {
+    order: 2;
+}
+
+.big-card {
     background: #ddd;
     border-radius: 25px;
     min-height: 250px;
@@ -167,12 +189,7 @@ body {
     cursor: pointer;
     position: relative;
 }
-.small-cards {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
+
 .small-card {
     background: #bbb;
     border-radius: 25px;
@@ -183,6 +200,7 @@ body {
     cursor: pointer;
     position: relative;
 }
+
 .card-label {
     position: absolute;
     bottom: 10px;
@@ -453,10 +471,30 @@ body {
     background: #4CAF50 !important;
 }
 
+/* استايلات الجوال */
 @media (max-width: 768px) {
-    .three-fields, .discover-row {
+    .three-fields {
         flex-direction: column;
     }
+    
+    /* ترتيب الديسكفر على الجوال */
+    .discover-row {
+        flex-direction: column;
+    }
+    .discover-row .big-card {
+        order: 0 !important;
+        flex: none;
+    }
+    .discover-row .small-cards {
+        order: 0 !important;
+        flex: none;
+        flex-direction: row;
+        gap: 15px;
+    }
+    .small-cards .small-card {
+        flex: 1;
+    }
+    
     .share-buttons {
         flex-direction: column;
     }

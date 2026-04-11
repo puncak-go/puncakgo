@@ -53,6 +53,37 @@
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 30px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
         
         @media (max-width: 768px) { .visa-grid { grid-template-columns: 1fr; } }
+    /* ترتيب الفيزا (يمين/يسار) */
+.visa-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+/* في الصفوف الفردية: الأول يمين، الثاني يسار */
+.visa-grid .visa-card:first-child {
+    order: 1;
+}
+.visa-grid .visa-card:last-child {
+    order: 2;
+}
+
+/* في الصفوف الزوجية: الأول يسار، الثاني يمين */
+.visa-grid .visa-card:nth-child(4n+3) {
+    order: 2;
+}
+.visa-grid .visa-card:nth-child(4n+4) {
+    order: 1;
+}
+
+@media (max-width: 768px) {
+    .visa-grid {
+        grid-template-columns: 1fr;
+    }
+    .visa-grid .visa-card {
+        order: 0 !important;
+    }
+}
     </style>
 </head>
 <body>
