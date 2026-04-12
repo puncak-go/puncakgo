@@ -231,13 +231,33 @@
     let currentEditVillaId = null;
     const ADMIN_PASSWORD = "admin123";
 
-    // Supabase Client (بدون تعارض)
+    // Supabase Client
     const supabaseClient = window.supabase.createClient(
         'https://nynusiouhgjmjpunfpod.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik'
     );
     
-    console.log('✅ Supabase client ready, villas displayed from local data');
+    console.log('✅ Supabase client ready');
+
+    // حفظ فيلا في Supabase
+    async function saveVillaToSupabase(villa) {
+        try {
+            const { error } = await supabaseClient.from('villas').upsert({
+                id: villa.id,
+                name_ar: villa.name_ar,
+                name_en: villa.name_en,
+                price: villa.price,
+                price_range: villa.price_range,
+                pos_x: villa.pos_x,
+                pos_y: villa.pos_y,
+                images: villa.images,
+                features_ar: villa.features_ar,
+                features_en: villa.features_en
+            });
+            if (error) console.error('Supabase error:', error);
+            else console.log('✅ Saved villa', villa.id, 'to Supabase');
+        } catch(e) { console.error(e); }
+    }
 
     function loadVillasData() { let saved = localStorage.getItem('villasData'); if(saved) villasData = JSON.parse(saved); }
     function saveVillasData() { localStorage.setItem('villasData', JSON.stringify(villasData)); }
@@ -277,7 +297,7 @@
             let features = isArabic ? villa.features_ar : villa.features_en;
             let featuresHtml = '<div class="features" id="features-' + villa.id + '">'; features.forEach(f => { featuresHtml += `<span class="feature">${f}</span>`; }); featuresHtml += '</div>';
             
-            card.innerHTML = `<div class="slider-container"><div class="slider" id="slider-${villa.id}">${slidesHtml}</div><button class="slider-btn prev" data-id="${villa.id}">❮</button><button class="slider-btn next" data-id="${villa.id}">❯</button></div><div class="villa-info"><div class="villa-name">${isArabic ? villa.name_ar : villa.name_en}</div><div class="villa-price">💰 ${isArabic ? 'السعر لليلة:' : 'Price per night:'} <span>${(villa.price / 1000).toLocaleString()}</span> ${isArabic ? 'ألف روبيه' : 'K IDR'}</div><button class="show-features-btn" data-id="${villa.id}">📋 ${isArabic ? 'عرض المواصفات' : 'Show Features'}</button>${featuresHtml}<button class="book-btn" data-id="${villa.id}">📝 ${isArabic ? 'حجز الآن' : 'Book Now'}</button>${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="images" data-id="${villa.id}">📷 إدارة الصور</button><button class="admin-btn" data-action="features" data-id="${villa.id}">📋 إدارة المواصفات</button><button class="admin-btn" data-action="edit" data-id="${villa.id}">✏️ تعديل الاسم/السعر</button></div>` : ''}</div>`;
+            card.innerHTML = `<div class="slider-container"><div class="slider" id="slider-${villa.id}">${slidesHtml}</div><button class="slider-btn prev" data-id="${villa.id}">❮</button><button class="slider-btn next" data-id="${villa.id}">❯</button></div><div class="villa-info"><div class="villa-name">${isArabic ? villa.name_ar : villa.name_en}</div><div class="villa-price">💰 ${isArabic ? 'السعر لليلة:' : 'Price per night:'} <span>${(villa.price / 1000).toLocaleString()}</span> ${isArabic ? 'ألف روبيه' : 'K IDR'}</div><button class="show-features-btn" data-id="${villa.id}">📋 ${isArabic ? 'عرض المواصفات' : 'Show Features'}</button>${featuresHtml}<button class="book-btn" data-id="${villa.id}">📝 ${isArabic ? 'حجز الآن' : 'Book Now'}</button>${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="images" data-id="${villa.id}">📷 إدارة الصور</button><button class="admin-btn" data-action="features" data-id="${villa.id}">📋 إدارة المواصفات</button><button class="admin-btn" data-action="edit" data-id="${villa.id}">✏️ تعديل</button></div>` : ''}</div>`;
             container.appendChild(card);
         });
         
@@ -320,32 +340,94 @@
         imagesList.innerHTML = '';
         villa.images.forEach((img, idx) => { imagesList.innerHTML += `<div class="image-item"><img src="${img}"><button class="delete-img-btn" data-idx="${idx}">✕</button></div>`; });
         modal.style.display = 'flex';
-        document.querySelectorAll('.delete-img-btn').forEach(btn => { btn.addEventListener('click', () => { let idx = parseInt(btn.getAttribute('data-idx')); villa.images.splice(idx, 1); saveVillasData(); renderVillas(); renderPins(); openImageManager(villaId); }); });
-        document.getElementById('addImageBtn').onclick = async () => { let fileInput = document.getElementById('imageUpload'); if(fileInput.files && fileInput.files[0]) { let url = await fileToBase64(fileInput.files[0]); villa.images.push(url); saveVillasData(); renderVillas(); renderPins(); fileInput.value = ''; openImageManager(villaId); } else { alert('الرجاء اختيار صورة أولاً'); } };
+        
+        document.querySelectorAll('.delete-img-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                let idx = parseInt(btn.getAttribute('data-idx'));
+                villa.images.splice(idx, 1);
+                saveVillasData();
+                await saveVillaToSupabase(villa);
+                renderVillas();
+                renderPins();
+                openImageManager(villaId);
+            });
+        });
+        
+        document.getElementById('addImageBtn').onclick = async () => {
+            let fileInput = document.getElementById('imageUpload');
+            if(fileInput.files && fileInput.files[0]) {
+                let url = await fileToBase64(fileInput.files[0]);
+                villa.images.push(url);
+                saveVillasData();
+                await saveVillaToSupabase(villa);
+                renderVillas();
+                renderPins();
+                fileInput.value = '';
+                openImageManager(villaId);
+            } else {
+                alert('الرجاء اختيار صورة أولاً');
+            }
+        };
     }
 
-    function openFeaturesManager(villaId) {
+    async function openFeaturesManager(villaId) {
         let villa = villasData.find(v => v.id === villaId);
         let modal = document.getElementById('featuresModal');
         let featuresList = document.getElementById('featuresList');
+        
         function renderFeatures() {
             featuresList.innerHTML = '';
             villa.features_ar.forEach((f, idx) => { featuresList.innerHTML += `<span class="feature-item">${f}<button class="remove-feature" data-idx="${idx}" data-lang="ar">✕</button></span>`; });
             villa.features_en.forEach((f, idx) => { featuresList.innerHTML += `<span class="feature-item">${f}<button class="remove-feature" data-idx="${idx}" data-lang="en">✕</button></span>`; });
-            document.querySelectorAll('.remove-feature').forEach(btn => { btn.addEventListener('click', () => { let idx = parseInt(btn.getAttribute('data-idx')); let lang = btn.getAttribute('data-lang'); if(lang === 'ar') villa.features_ar.splice(idx, 1); else villa.features_en.splice(idx, 1); saveVillasData(); renderVillas(); renderPins(); renderFeatures(); }); });
+            
+            document.querySelectorAll('.remove-feature').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    let idx = parseInt(btn.getAttribute('data-idx'));
+                    let lang = btn.getAttribute('data-lang');
+                    if(lang === 'ar') villa.features_ar.splice(idx, 1);
+                    else villa.features_en.splice(idx, 1);
+                    saveVillasData();
+                    await saveVillaToSupabase(villa);
+                    renderVillas();
+                    renderPins();
+                    renderFeatures();
+                });
+            });
         }
+        
         renderFeatures();
         modal.style.display = 'flex';
-        document.getElementById('addFeatureBtn').onclick = () => { let newAr = document.getElementById('newFeatureAr').value.trim(); let newEn = document.getElementById('newFeatureEn').value.trim(); if(newAr) villa.features_ar.push(newAr); if(newEn) villa.features_en.push(newEn); saveVillasData(); renderVillas(); renderPins(); renderFeatures(); document.getElementById('newFeatureAr').value = ''; document.getElementById('newFeatureEn').value = ''; };
+        
+        document.getElementById('addFeatureBtn').onclick = async () => {
+            let newAr = document.getElementById('newFeatureAr').value.trim();
+            let newEn = document.getElementById('newFeatureEn').value.trim();
+            if(newAr) villa.features_ar.push(newAr);
+            if(newEn) villa.features_en.push(newEn);
+            saveVillasData();
+            await saveVillaToSupabase(villa);
+            renderVillas();
+            renderPins();
+            renderFeatures();
+            document.getElementById('newFeatureAr').value = '';
+            document.getElementById('newFeatureEn').value = '';
+        };
     }
 
-    function editVillaInfo(villaId) {
+    async function editVillaInfo(villaId) {
         let villa = villasData.find(v => v.id === villaId);
         let newNameAr = prompt('أدخل اسم الفيلا بالعربية:', villa.name_ar);
         let newNameEn = prompt('أدخل اسم الفيلا بالإنجليزية:', villa.name_en);
         let newPrice = prompt('أدخل السعر الجديد (بالروبيه):', villa.price);
-        if(newNameAr) villa.name_ar = newNameAr; if(newNameEn) villa.name_en = newNameEn; if(newPrice && !isNaN(newPrice)) villa.price = parseInt(newPrice);
-        saveVillasData(); renderVillas(); renderPins(); alert('تم تحديث بيانات الفيلا بنجاح');
+        
+        if(newNameAr) villa.name_ar = newNameAr;
+        if(newNameEn) villa.name_en = newNameEn;
+        if(newPrice && !isNaN(newPrice)) villa.price = parseInt(newPrice);
+        
+        saveVillasData();
+        await saveVillaToSupabase(villa);
+        renderVillas();
+        renderPins();
+        alert('تم تحديث بيانات الفيلا بنجاح');
     }
 
     function openOrderModal() { document.getElementById('modalTitle').innerText = isArabic ? `📝 حجز ${currentVilla.name_ar}` : `📝 Booking ${currentVilla.name_en}`; document.getElementById('pricePerNight').innerText = (currentVilla.price / 1000).toLocaleString(); document.getElementById('orderModal').style.display = 'flex'; calculateOrder(); }
