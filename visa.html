@@ -29,7 +29,6 @@
         .visa-price span { color: #DAA520; font-weight: bold; font-size: 1.3rem; }
         .visa-duration { color: #666; margin-bottom: 10px; font-size: 0.9rem; }
         
-        /* المستندات - مخفية في البداية */
         .visa-requirements {
             display: none;
             background: #f9f9f9;
@@ -44,7 +43,6 @@
         .visa-requirements ul { padding-right: 20px; font-size: 0.8rem; color: #555; }
         .visa-requirements li { margin: 5px 0; }
         
-        /* زر عرض المستندات */
         .show-requirements-btn {
             background: #DAA520;
             color: white;
@@ -80,7 +78,6 @@
         
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 30px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
         
-        /* ترتيب الفيزا يمين/يسار */
         .visa-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -91,13 +88,8 @@
         .visa-grid .visa-card:nth-child(4n+3) { order: 2; }
         .visa-grid .visa-card:nth-child(4n+4) { order: 1; }
         
-        /* استايلات الجوال */
         @media (max-width: 768px) {
-            .visa-grid {
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-                gap: 12px !important;
-            }
+            .visa-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
             .visa-grid .visa-card { order: 0 !important; }
             .visa-img { height: 180px !important; }
             .visa-name { font-size: 0.85rem !important; }
@@ -137,7 +129,6 @@
 
     <div id="visaGrid" class="visa-grid"></div>
 
-    <!-- حقل الاستشارات العامة -->
     <div id="consultCard" class="visa-card consult-card">
         <div class="visa-info">
             <div class="consult-icon">💬</div>
@@ -150,7 +141,6 @@
     <button id="adminModeBtn" class="admin-toggle-btn">🔐 دخول الأدمن</button>
 </div>
 
-<!-- مودال حجز الفيزا -->
 <div id="orderModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">📝 طلب فيزا</h3>
@@ -168,7 +158,6 @@
     </div>
 </div>
 
-<!-- مودال الاستشارات -->
 <div id="consultModal" class="modal">
     <div class="modal-content">
         <h3 id="consultModalTitle">💬 استشارة عامة</h3>
@@ -181,7 +170,6 @@
     </div>
 </div>
 
-<!-- مودال إدارة الفيزا (للأدمن) -->
 <div id="editVisaModal" class="modal">
     <div class="modal-content">
         <h3 id="editModalTitle">✏️ تعديل بيانات الفيزا</h3>
@@ -196,8 +184,10 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-    // ------------------- بيانات الفيزا (5 أنواع) -------------------
+    // بيانات الفيزا (5 أنواع)
     let visaData = [
         { id: 1, nameAr: "فيزا سياحة", nameEn: "Tourist Visa", price: 500, duration: "30 يوم", 
           requirementsAr: ["جواز سفر ساري لمدة 6 أشهر", "صور شخصية 4×6", "حجز فندق مؤكد", "تذكرة طيران ذهاب وعودة", "كشف حساب بنكي لآخر 3 أشهر"],
@@ -225,6 +215,32 @@
     let isArabic = true;
     let isAdmin = false;
     const ADMIN_PASSWORD = "admin123";
+
+    // Supabase Client
+    const supabaseClient = window.supabase.createClient(
+        'https://nynusiouhgjmjpunfpod.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik'
+    );
+    
+    console.log('✅ Supabase client ready for Visa page');
+
+    // حفظ فيزا في Supabase
+    async function saveVisaToSupabase(visa) {
+        try {
+            const { error } = await supabaseClient.from('visas').upsert({
+                id: visa.id,
+                name_ar: visa.nameAr,
+                name_en: visa.nameEn,
+                price: visa.price,
+                duration: visa.duration,
+                requirements_ar: visa.requirementsAr,
+                requirements_en: visa.requirementsEn,
+                img: visa.img
+            });
+            if (error) console.error('Supabase error:', error);
+            else console.log('✅ Saved visa', visa.id, 'to Supabase');
+        } catch(e) { console.error(e); }
+    }
 
     function loadVisaData() { let saved = localStorage.getItem('visaData'); if(saved) visaData = JSON.parse(saved); }
     function saveVisaData() { localStorage.setItem('visaData', JSON.stringify(visaData)); }
@@ -261,7 +277,6 @@
             container.appendChild(card);
         });
         
-        // أزرار عرض المستندات
         document.querySelectorAll('.show-requirements-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -274,7 +289,6 @@
             });
         });
         
-        // أزرار الحجز
         document.querySelectorAll('.book-btn').forEach(btn => {
             btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); currentVisa = visaData.find(v => v.id === id); openOrderModal(); });
         });
@@ -306,14 +320,16 @@
         document.getElementById('editVisaModal').style.display = 'flex';
     }
 
-    document.getElementById('saveVisaBtn').addEventListener('click', () => {
+    document.getElementById('saveVisaBtn').addEventListener('click', async () => {
         currentVisa.nameAr = document.getElementById('editNameAr').value;
         currentVisa.nameEn = document.getElementById('editNameEn').value;
         currentVisa.price = parseInt(document.getElementById('editPrice').value);
         currentVisa.duration = document.getElementById('editDuration').value;
         currentVisa.requirementsAr = document.getElementById('editRequirementsAr').value.split('\n').filter(s => s.trim());
         currentVisa.requirementsEn = document.getElementById('editRequirementsEn').value.split('\n').filter(s => s.trim());
+        
         saveVisaData();
+        await saveVisaToSupabase(currentVisa);
         renderVisa();
         document.getElementById('editVisaModal').style.display = 'none';
         alert(isArabic ? 'تم حفظ التغييرات بنجاح' : 'Changes saved successfully');
@@ -332,13 +348,11 @@
         renderVisa();
     }
 
-    // زر الأدمن
     const adminBtn = document.getElementById('adminModeBtn');
     function enterAdminMode() { let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); if(pwd === ADMIN_PASSWORD) { isAdmin = true; adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; adminBtn.style.background = '#DAA520'; renderVisa(); alert('✅ تم تفعيل وضع الأدمن. أزرار التعديل ظاهرة الآن.'); } else if(pwd !== null) alert('❌ كلمة السر خطأ'); }
     function exitAdminMode() { isAdmin = false; adminBtn.innerHTML = '🔐 دخول الأدمن'; adminBtn.style.background = '#8B0000'; renderVisa(); alert('✅ تم الخروج من وضع الأدمن.'); }
     adminBtn.addEventListener('click', () => { if(isAdmin) exitAdminMode(); else enterAdminMode(); });
 
-    // حجز الفيزا
     document.getElementById('confirmOrderBtn').addEventListener('click', () => {
         let name = document.getElementById('custName').value;
         let phone = document.getElementById('custPhone').value;
@@ -366,7 +380,6 @@
         alert(isArabic ? 'تم إرسال طلب الفيزا بنجاح' : 'Visa application sent successfully');
     });
 
-    // الاستشارات
     document.getElementById('consultBtn').addEventListener('click', () => { document.getElementById('consultModal').style.display = 'flex'; });
     document.getElementById('sendConsultBtn').addEventListener('click', () => {
         let name = document.getElementById('consultName').value;
@@ -391,14 +404,12 @@
         alert(isArabic ? 'تم إرسال استشارتك بنجاح' : 'Your consultation has been sent successfully');
     });
 
-    // أحداث
     document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
     document.getElementById('langBtn').addEventListener('click', changeLanguage);
     document.getElementById('cancelOrderBtn').addEventListener('click', () => { document.getElementById('orderModal').style.display = 'none'; });
     document.getElementById('closeConsultBtn').addEventListener('click', () => { document.getElementById('consultModal').style.display = 'none'; });
     document.getElementById('closeEditModal').addEventListener('click', () => { document.getElementById('editVisaModal').style.display = 'none'; });
 
-    // تحميل الصفحة
     loadVisaData();
     renderVisa();
 </script>
