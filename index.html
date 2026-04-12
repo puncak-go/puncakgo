@@ -4,22 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>PuncakGO - السياحة في بونشاك</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s ease; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: white; color: #333; padding-bottom: 80px; }
+        .overlay { background: white; min-height: 100vh; }
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+        .top-bar { background: white; border-radius: 50px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; box-shadow: 0 4px 15px rgba(218,165,32,0.3); margin-bottom: 0; border: 1px solid rgba(218,165,32,0.5); }
+        .currency-box { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; padding: 8px 15px; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        .lang-switch { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        .logo { width: 100%; margin: 0; padding: 0; overflow: hidden; background: white; line-height: 0; }
+        .logo img { width: 100%; height: 150px; display: block; object-fit: cover; }
+        @media (max-width: 768px) { .logo img { height: auto; max-height: 70px; object-fit: contain; } }
+        .promo-bar { background: linear-gradient(135deg, #DAA520, #B8860B); border-radius: 50px; margin: 0 0 30px 0; padding: 12px 20px; overflow: hidden; }
+        .promo-marquee { color: white; font-size: 1.1rem; font-weight: bold; text-align: center; white-space: nowrap; animation: marquee 15s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .three-fields { display: flex; flex-wrap: nowrap; justify-content: center; gap: 20px; margin: 30px 0; }
+        .field-card { flex: 1; background: white; border-radius: 20px; padding: 25px 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; border-bottom: 3px solid #DAA520; transition: transform 0.2s; }
+        .field-card:hover { transform: translateY(-5px); }
+        .field-text { font-weight: bold; font-size: 1.2rem; }
+        .field-card:nth-child(1) { order: 3; }
+        .field-card:nth-child(2) { order: 2; }
+        .field-card:nth-child(3) { order: 1; }
+        .wide-field { background: white; border-radius: 20px; padding: 25px 20px; cursor: pointer; margin: 30px 0; text-align: center; border-bottom: 3px solid #DAA520; width: 100%; }
+        .slider-container { margin: 40px 0; }
+        .slider-container h3 { color: #B8860B; font-size: 1.5rem; margin-bottom: 15px; border-right: 4px solid #DAA520; padding-right: 15px; }
+        .slider { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0; }
+        .slider-item { min-width: 280px; border-radius: 20px; overflow: hidden; cursor: pointer; border: 2px solid #DAA520; }
+        .slider-item img, .slider-item video { width: 100%; height: 180px; object-fit: cover; }
+        .discover-row { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+        .discover-row .big-card { order: 2; flex: 2; }
+        .discover-row .small-cards { order: 1; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .discover-row:nth-child(odd) .big-card { order: 1; }
+        .discover-row:nth-child(odd) .small-cards { order: 2; }
+        .big-card { background: #ddd; border-radius: 25px; min-height: 250px; background-size: cover; background-position: center; border: 2px solid #DAA520; cursor: pointer; position: relative; }
+        .small-card { background: #bbb; border-radius: 25px; min-height: 115px; background-size: cover; background-position: center; border: 2px solid #DAA520; cursor: pointer; position: relative; }
+        .card-label { position: absolute; bottom: 10px; left: 10px; background: linear-gradient(135deg, #DAA520, #B8860B); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; text-align: center; border-top: 5px solid #DAA520; }
+        .modal-content input, .modal-content textarea { width: 100%; margin: 10px 0; padding: 12px; border-radius: 25px; border: 1px solid #DAA520; }
+        .modal-content button { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; margin: 5px; }
+        .cancel-btn { background: #8B0000 !important; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 15px rgba(218,165,32,0.3); z-index: 99; border-top: 2px solid #DAA520; }
+        .nav-item { text-align: center; cursor: pointer; padding: 8px; font-weight: bold; }
+        .page { display: none; }
+        .active-page { display: block; }
+        .profile-header { text-align: center; margin-bottom: 30px; padding: 20px; background: white; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #DAA520; }
+        .profile-avatar { position: relative; display: inline-block; }
+        .profile-avatar img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #DAA520; }
+        .avatar-edit { position: absolute; bottom: 0; right: 0; background: #DAA520; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .profile-card-collapsible { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; border: 1px solid #eee; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; }
+        .section-title { color: #B8860B; font-size: 1.1rem; }
+        .toggle-icon { font-size: 0.8rem; color: #DAA520; }
+        .card-content { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .card-content.active { padding: 0 20px 20px 20px; max-height: 500px; }
+        .profile-field { margin-bottom: 15px; }
+        .profile-field label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .profile-field input { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #DAA520; }
+        .profile-save-btn { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 10px; border-radius: 30px; cursor: pointer; width: 100%; margin-bottom: 10px; }
+        .profile-delete-btn { background: #8B0000; color: white; border: none; padding: 10px; border-radius: 30px; cursor: pointer; width: 100%; }
+        .setting-item { margin-bottom: 15px; }
+        .setting-item select { width: 100%; padding: 10px; border-radius: 25px; border: 1px solid #DAA520; }
+        .share-buttons { display: flex; gap: 15px; }
+        .share-btn, .owner-btn, .support-btn { flex: 1; background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; }
+        .profile-logo { text-align: center; margin-top: 30px; padding: 20px; }
+        .profile-logo img { max-width: 120px; }
+        .bookings-list, .favorites-list, .coupons-list { background: #f9f9f9; border-radius: 15px; padding: 15px; text-align: center; }
+        .admin-login { text-align: center; }
+        .admin-login input { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #DAA520; margin-bottom: 10px; }
+        .admin-login button { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 10px; border-radius: 30px; cursor: pointer; width: 100%; }
+        .admin-panel { background: #f9f9f9; padding: 15px; border-radius: 20px; margin-top: 10px; }
+        .admin-panel h4 { color: #B8860B; margin: 15px 0 10px 0; }
+        .admin-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: white; padding: 10px; border-radius: 15px; }
+        .admin-controls input, .admin-controls select { padding: 8px; border-radius: 20px; border: 1px solid #DAA520; flex: 1; min-width: 100px; }
+        .admin-controls button { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; }
+        .upload-btn { background: #4CAF50 !important; }
+        @media (max-width: 768px) {
+            .three-fields { flex-wrap: nowrap; gap: 10px; }
+            .field-card { padding: 12px 8px; }
+            .field-text { font-size: 0.8rem; }
+            .discover-row { display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; gap: 12px !important; }
+            .discover-row .big-card { flex: 2 !important; min-height: 180px !important; }
+            .discover-row .small-cards { flex: 1 !important; display: flex !important; flex-direction: column !important; gap: 12px !important; }
+            .small-cards .small-card { flex: 1 !important; min-height: 85px !important; }
+            .discover-row:nth-child(odd) .big-card { order: 1 !important; }
+            .discover-row:nth-child(odd) .small-cards { order: 2 !important; }
+            .discover-row:nth-child(even) .big-card { order: 2 !important; }
+            .discover-row:nth-child(even) .small-cards { order: 1 !important; }
+            .share-buttons { flex-direction: column; }
+            .top-bar { padding: 8px 12px; }
+            .currency-box, .lang-switch { padding: 5px 12px; font-size: 0.8rem; }
+            .promo-bar { padding: 8px 12px; }
+            .promo-marquee { font-size: 0.8rem; }
+        }
+    </style>
 </head>
 <body>
 <div class="overlay">
     <div class="container">
-        <!-- الصفحة الرئيسية -->
         <div id="home-page" class="page active-page">
-            <!-- الشريط العلوي -->
             <div class="top-bar">
-                <div class="currency-box" id="currencyBtn">
-                    <span data-ar="💰 صرف العملات" data-en="💰 Currency Exchange">💰 صرف العملات</span>
-                </div>
+                <div class="currency-box" id="currencyBtn"><span data-ar="💰 صرف العملات" data-en="💰 Currency Exchange">💰 صرف العملات</span></div>
                 <button class="lang-switch" id="langBtn">English</button>
             </div>
-
-            <!-- نافذة صرف العملات -->
             <div id="currencyModal" class="modal">
                 <div class="modal-content" style="max-width: 350px;">
                     <h3 data-ar="💱 تحويل العملات" data-en="💱 Currency Exchange">💱 تحويل العملات</h3>
@@ -28,262 +115,56 @@
                         <option value="USD" data-ar="🇺🇸 دولار أمريكي" data-en="🇺🇸 US Dollar">🇺🇸 دولار أمريكي</option>
                     </select>
                     <input type="number" id="currencyAmount" placeholder="أدخل المبلغ" data-ar-placeholder="أدخل المبلغ" data-en-placeholder="Enter amount">
-                    <div id="currencyResult" style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 15px; font-weight: bold;">
-                        <span data-ar="النتيجة: " data-en="Result: ">النتيجة: </span> <span id="resultValue">0</span> IDR
-                    </div>
+                    <div id="currencyResult"><span data-ar="النتيجة: " data-en="Result: ">النتيجة: </span> <span id="resultValue">0</span> IDR</div>
                     <button id="closeCurrencyModal" data-ar="إغلاق" data-en="Close">إغلاق</button>
                 </div>
             </div>
-
-            <!-- الشعار -->
-            <div class="logo">
-                <img src="logo.jpg" alt="PuncakGO Logo">
-            </div>
-
-            <!-- الشريط المتحرك -->
+            <div class="logo"><img src="logo.jpg" alt="PuncakGO Logo"></div>
             <div class="promo-bar">
-                <div class="promo-marquee">
-                    <span data-ar="🎉 احجز الآن واحصل على تخفيض يصل إلى 30% - عروض حصرية لفترة محدودة! 🎉" 
-                          data-en="🎉 Book now and get up to 30% discount - Exclusive limited time offers! 🎉">
-                        🎉 احجز الآن واحصل على تخفيض يصل إلى 30% - عروض حصرية لفترة محدودة! 🎉
-                    </span>
-                </div>
+                <div class="promo-marquee"><span data-ar="🎉 احجز الآن واحصل على تخفيض يصل إلى 30% - عروض حصرية لفترة محدودة! 🎉" data-en="🎉 Book now and get up to 30% discount - Exclusive limited time offers! 🎉">🎉 احجز الآن واحصل على تخفيض يصل إلى 30% - عروض حصرية لفترة محدودة! 🎉</span></div>
             </div>
-
-            <!-- 3 حقول رئيسية -->
             <div class="three-fields">
-                <div class="field-card" onclick="window.location.href='villas.html'">
-                    <div class="field-text" data-ar="🏡 فلل" data-en="🏡 Villas">🏡 فلل</div>
-                </div>
-                <div class="field-card" onclick="window.location.href='tours.html'">
-                    <div class="field-text" data-ar="🗺️ جولات سياحية" data-en="🗺️ Tours">🗺️ جولات سياحية</div>
-                </div>
-                <div class="field-card" onclick="window.location.href='visa.html'">
-                    <div class="field-text" data-ar="📄 خدمات الفيزا" data-en="📄 Visa Services">📄 خدمات الفيزا</div>
-                </div>
+                <div class="field-card" onclick="window.location.href='villas.html'"><div class="field-text" data-ar="🏡 فلل" data-en="🏡 Villas">🏡 فلل</div></div>
+                <div class="field-card" onclick="window.location.href='tours.html'"><div class="field-text" data-ar="🗺️ جولات سياحية" data-en="🗺️ Tours">🗺️ جولات سياحية</div></div>
+                <div class="field-card" onclick="window.location.href='visa.html'"><div class="field-text" data-ar="📄 خدمات الفيزا" data-en="📄 Visa Services">📄 خدمات الفيزا</div></div>
             </div>
-
-            <!-- حقل عريض -->
-            <div class="wide-field" onclick="window.location.href='other-services.html'">
-                <div class="field-text" data-ar="✨ خدمات أخرى" data-en="✨ Other Services">✨ خدمات أخرى</div>
-            </div>
-
-            <!-- سلايدر -->
-            <div class="slider-container">
-                <h3 data-ar="📸 العروضات" data-en="📸 Offers">📸 العروضات</h3>
-                <div class="slider" id="slider"></div>
-            </div>
-
-            <!-- الديسكفر -->
+            <div class="wide-field" onclick="window.location.href='other-services.html'"><div class="field-text" data-ar="✨ خدمات أخرى" data-en="✨ Other Services">✨ خدمات أخرى</div></div>
+            <div class="slider-container"><h3 data-ar="📸 العروضات" data-en="📸 Offers">📸 العروضات</h3><div class="slider" id="slider"></div></div>
             <h3 data-ar="🌟 اكتشف" data-en="🌟 Discover">🌟 اكتشف</h3>
             <div id="discover-container"></div>
         </div>
-
-        <!-- صفحة رحلاتي -->
-        <div id="bookings-page" class="page">
-            <h2 data-ar="📋 رحلاتي" data-en="📋 My Bookings">📋 رحلاتي</h2>
-            <div id="bookingsList" data-ar="لا توجد حجوزات بعد" data-en="No bookings yet">لا توجد حجوزات بعد</div>
-        </div>
-
-        <!-- صفحة البروفايل -->
+        <div id="bookings-page" class="page"><h2 data-ar="📋 رحلاتي" data-en="📋 My Bookings">📋 رحلاتي</h2><div id="bookingsList">لا توجد حجوزات بعد</div></div>
         <div id="profile-page" class="page">
-            <div class="profile-header">
-                <div class="profile-avatar">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar" id="avatarImg">
-                    <div class="avatar-edit" id="editAvatarBtn">✏️</div>
-                </div>
-                <h3 id="profileName">أحمد محمد</h3>
-                <p id="profileEmail">ahmed@example.com</p>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="accountContent">
-                    <h3 class="section-title" data-ar="👤 حسابي" data-en="👤 My Account">👤 حسابي</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="accountContent">
-                    <div class="profile-field">
-                        <label data-ar="الاسم الكامل" data-en="Full Name">الاسم الكامل</label>
-                        <input type="text" id="userFullName" value="أحمد محمد">
-                    </div>
-                    <div class="profile-field">
-                        <label data-ar="رقم الجوال" data-en="Phone Number">رقم الجوال</label>
-                        <input type="tel" id="userPhone" value="+966 5XXXX XXX">
-                    </div>
-                    <button id="saveProfileBtn" class="profile-save-btn" data-ar="💾 حفظ" data-en="💾 Save">💾 حفظ</button>
-                    <button id="deleteAccountBtn" class="profile-delete-btn" data-ar="🗑️ حذف حسابي" data-en="🗑️ Delete My Account">🗑️ حذف حسابي</button>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="bookingsContent">
-                    <h3 class="section-title" data-ar="📋 حجوزاتي" data-en="📋 My Bookings">📋 حجوزاتي</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="bookingsContent">
-                    <div id="profileBookingsList" class="bookings-list" data-ar="لا توجد حجوزات بعد" data-en="No bookings yet">لا توجد حجوزات بعد</div>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="favoritesContent">
-                    <h3 class="section-title" data-ar="❤️ المفضلة" data-en="❤️ Favorites">❤️ المفضلة</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="favoritesContent">
-                    <div id="favoritesList" class="favorites-list">
-                        <p class="empty-message" data-ar="لا توجد عناصر في المفضلة" data-en="No favorites yet">لا توجد عناصر في المفضلة</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="couponsContent">
-                    <h3 class="section-title" data-ar="🎫 كوبوناتي" data-en="🎫 My Coupons">🎫 كوبوناتي</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="couponsContent">
-                    <div class="coupons-list">
-                        <p class="empty-message" data-ar="لا يوجد كوبونات حالياً" data-en="No coupons available">لا يوجد كوبونات حالياً</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="settingsContent">
-                    <h3 class="section-title" data-ar="⚙️ الإعدادات" data-en="⚙️ Settings">⚙️ الإعدادات</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="settingsContent">
-                    <div class="setting-item">
-                        <label data-ar="🌐 اللغة" data-en="🌐 Language">🌐 اللغة</label>
-                        <select id="settingsLanguage">
-                            <option value="ar" data-ar="العربية" data-en="Arabic">العربية</option>
-                            <option value="en" data-ar="الإنجليزية" data-en="English">English</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label data-ar="💰 العملة" data-en="💰 Currency">💰 العملة</label>
-                        <select id="settingsCurrency">
-                            <option value="IDR" data-ar="IDR - روبيه إندونيسي" data-en="IDR - Indonesian Rupiah">IDR - روبيه إندونيسي</option>
-                            <option value="SAR" data-ar="SAR - ريال سعودي" data-en="SAR - Saudi Riyal">SAR - ريال سعودي</option>
-                            <option value="USD" data-ar="USD - دولار أمريكي" data-en="USD - US Dollar">USD - دولار أمريكي</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="shareContent">
-                    <h3 class="section-title" data-ar="📤 مشاركة" data-en="📤 Share">📤 مشاركة</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="shareContent">
-                    <div class="share-buttons">
-                        <button id="showQrBtn" class="share-btn" data-ar="📱 رمز QR" data-en="📱 QR Code">📱 رمز QR</button>
-                        <button id="inviteFriendsBtn" class="share-btn" data-ar="👥 دعوة الأصدقاء" data-en="👥 Invite Friends">👥 دعوة الأصدقاء</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="ownersContent">
-                    <h3 class="section-title" data-ar="🏠 مالك عقار" data-en="🏠 Property Owner">🏠 مالك عقار</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="ownersContent">
-                    <button id="listPropertyBtn" class="owner-btn" data-ar="📝 اعرض منتجك" data-en="📝 List Your Property">📝 اعرض منتجك</button>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="supportContent">
-                    <h3 class="section-title" data-ar="🆘 الدعم" data-en="🆘 Support">🆘 الدعم</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="supportContent">
-                    <button id="aboutUsBtn" class="support-btn" data-ar="ℹ️ عن التطبيق" data-en="ℹ️ About Us">ℹ️ عن التطبيق</button>
-                    <button id="contactManagerBtn" class="support-btn" data-ar="📞 تواصل مع المدير" data-en="📞 Contact Manager">📞 تواصل مع المدير</button>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="adminContent">
-                    <h3 class="section-title" data-ar="🔐 منطقة الأدمن" data-en="🔐 Admin Area">🔐 منطقة الأدمن</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="adminContent">
-                    <div id="adminLoginDiv" class="admin-login">
-                        <input type="password" id="adminPassword" data-ar-placeholder="أدخل كلمة السر" data-en-placeholder="Enter password" placeholder="أدخل كلمة السر">
-                        <button id="adminLoginBtn" data-ar="دخول" data-en="Login">دخول</button>
-                    </div>
-                    <div id="adminPanel" class="admin-panel" style="display:none;">
-                        <h4 data-ar="📸 إدارة السلايدر (10 حقول)" data-en="📸 Slider Management (10 fields)">📸 إدارة السلايدر (10 حقول)</h4>
-                        <div class="admin-controls">
-                            <input type="number" id="sliderIndex" data-ar-placeholder="رقم الحقل (1-10)" data-en-placeholder="Field number (1-10)" placeholder="رقم الحقل (1-10)" min="1" max="10">
-                            <button id="sliderUploadBtn" class="upload-btn" data-ar="📁 اختيار ملف" data-en="📁 Choose File">📁 اختيار ملف</button>
-                            <input type="file" id="sliderFileInput" accept="image/*,video/*" style="display:none;">
-                            <span id="sliderFileName"></span>
-                            <select id="sliderMediaType">
-                                <option value="image" data-ar="صورة" data-en="Image">صورة</option>
-                                <option value="video" data-ar="فيديو" data-en="Video">فيديو</option>
-                            </select>
-                            <button id="updateSliderItem" data-ar="تحديث" data-en="Update">تحديث</button>
-                        </div>
-                        <h4 data-ar="🌟 إدارة الديسكفر (9 حقول)" data-en="🌟 Discover Management (9 fields)">🌟 إدارة الديسكفر (9 حقول)</h4>
-                        <div class="admin-controls">
-                            <input type="number" id="discoverIndex" data-ar-placeholder="رقم الحقل (1-9)" data-en-placeholder="Field number (1-9)" placeholder="رقم الحقل (1-9)" min="1" max="9">
-                            <button id="discoverUploadBtn" class="upload-btn" data-ar="📁 اختيار ملف" data-en="📁 Choose File">📁 اختيار ملف</button>
-                            <input type="file" id="discoverFileInput" accept="image/*,video/*" style="display:none;">
-                            <span id="discoverFileName"></span>
-                            <input type="text" id="newDiscoverLabel" data-ar-placeholder="النص التعريفي" data-en-placeholder="Label text" placeholder="النص التعريفي">
-                            <select id="discoverMediaType">
-                                <option value="big" data-ar="حقل كبير (صورة)" data-en="Big field (Image)">حقل كبير (صورة)</option>
-                                <option value="small" data-ar="حقل صغير (فيديو)" data-en="Small field (Video)">حقل صغير (فيديو)</option>
-                            </select>
-                            <button id="updateDiscoverItem" data-ar="تحديث" data-en="Update">تحديث</button>
-                        </div>
-                        <button id="logoutAdminBtn" class="cancel-btn" data-ar="تسجيل خروج" data-en="Logout">تسجيل خروج</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-logo">
-                <img src="logo.jpg" alt="PuncakGO Logo">
-                <p>© 2025 PuncakGO</p>
-            </div>
+            <div class="profile-header"><div class="profile-avatar"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar" id="avatarImg"><div class="avatar-edit" id="editAvatarBtn">✏️</div></div><h3 id="profileName">أحمد محمد</h3><p id="profileEmail">ahmed@example.com</p></div>
+            <div class="profile-card-collapsible"><div class="card-header" data-target="accountContent"><h3 class="section-title" data-ar="👤 حسابي" data-en="👤 My Account">👤 حسابي</h3><span class="toggle-icon">▼</span></div><div class="card-content" id="accountContent"><div class="profile-field"><label data-ar="الاسم الكامل" data-en="Full Name">الاسم الكامل</label><input type="text" id="userFullName" value="أحمد محمد"></div><div class="profile-field"><label data-ar="رقم الجوال" data-en="Phone Number">رقم الجوال</label><input type="tel" id="userPhone" value="+966 5XXXX XXX"></div><button id="saveProfileBtn" class="profile-save-btn">💾 حفظ</button><button id="deleteAccountBtn" class="profile-delete-btn">🗑️ حذف حسابي</button></div></div>
+            <div class="profile-card-collapsible"><div class="card-header" data-target="bookingsContent"><h3 class="section-title" data-ar="📋 حجوزاتي" data-en="📋 My Bookings">📋 حجوزاتي</h3><span class="toggle-icon">▼</span></div><div class="card-content" id="bookingsContent"><div id="profileBookingsList" class="bookings-list">لا توجد حجوزات بعد</div></div></div>
+            <div class="profile-card-collapsible"><div class="card-header" data-target="favoritesContent"><h3 class="section-title" data-ar="❤️ المفضلة" data-en="❤️ Favorites">❤️ المفضلة</h3><span class="toggle-icon">▼</span></div><div class="card-content" id="favoritesContent"><div id="favoritesList" class="favorites-list"><p class="empty-message">لا توجد عناصر في المفضلة</p></div></div></div>
+            <div class="profile-card-collapsible"><div class="card-header" data-target="couponsContent"><h3 class="section-title" data-ar="🎫 كوبوناتي" data-en="🎫 My Coupons">🎫 كوبوناتي</h3><span class="toggle-icon">▼</span></div><div class="card-content" id="couponsContent"><div class="coupons-list"><p class="empty-message">لا يوجد كوبونات حالياً</p></div></div></div>
+            <div class="profile-card-collapsible"><div class="card-header" data-target="settingsContent"><h3 class="section-title" data-ar="⚙️ الإعدادات" data-en="⚙️ Settings">⚙️ الإعدادات</h3><span class="toggle-icon">▼</span></div><div class="card-content" id="settingsContent"><div class="setting-item"><label data-ar="🌐 اللغة" data-en="🌐 Language">🌐 اللغة</label><select id="settingsLanguage"><option value="ar">العربية</option><option value="en">English</option></select></div><div class="setting-item"><label data-ar="💰 العملة" data-en="💰 Currency">💰 العملة</label><select id="settingsCurrency"><option value="IDR">IDR - روبيه إندونيسي</option><option value="SAR">SAR - ريال سعودي</option><option value="USD">USD - دولار أمريكي</option></select></div></div></div>
+            <div class="profile-card-collapsible"><div class="card-header" data-target="shareContent"><h3 class="section-title" data-ar="📤 مشاركة" data-en="📤 Share">📤 مشاركة</h3><span class="toggle-icon">▼</span></div><div class="card-content" id="shareContent"><div class="share-buttons"><button id="showQrBtn" class="share-btn">📱 رمز QR</button><button id="inviteFriendsBtn" class="share-btn">👥 دعوة الأصدقاء</button></div></div></div>
+            <div class="profile-card-collapsible"><div class="card-header" data-target="ownersContent"><h3 class="section-title" data-ar="🏠 مالك عقار" data-en="🏠 Property Owner">🏠 مالك عقار</h3><span class="toggle-icon">▼</span></div><div class="card-content" id="ownersContent"><button id="listPropertyBtn" class="owner-btn">📝 اعرض منتجك</button></div></div>
+            <div class="profile-card-collapsible"><div class="card-header" data-target="supportContent"><h3 class="section-title" data-ar="🆘 الدعم" data-en="🆘 Support">🆘 الدعم</h3><span class="toggle-icon">▼</span></div><div class="card-content" id="supportContent"><button id="aboutUsBtn" class="support-btn">ℹ️ عن التطبيق</button><button id="contactManagerBtn" class="support-btn">📞 تواصل مع المدير</button></div></div>
+            <div class="profile-card-collapsible"><div class="card-header" data-target="adminContent"><h3 class="section-title" data-ar="🔐 منطقة الأدمن" data-en="🔐 Admin Area">🔐 منطقة الأدمن</h3><span class="toggle-icon">▼</span></div><div class="card-content" id="adminContent"><div id="adminLoginDiv" class="admin-login"><input type="password" id="adminPassword" placeholder="أدخل كلمة السر"><button id="adminLoginBtn">دخول</button></div><div id="adminPanel" class="admin-panel" style="display:none;"><h4>📸 إدارة السلايدر (10 حقول)</h4><div class="admin-controls"><input type="number" id="sliderIndex" placeholder="رقم الحقل (1-10)" min="1" max="10"><button id="sliderUploadBtn" class="upload-btn">📁 اختيار ملف</button><input type="file" id="sliderFileInput" accept="image/*,video/*" style="display:none;"><span id="sliderFileName"></span><select id="sliderMediaType"><option value="image">صورة</option><option value="video">فيديو</option></select><button id="updateSliderItem">تحديث</button></div><h4>🌟 إدارة الديسكفر (9 حقول)</h4><div class="admin-controls"><input type="number" id="discoverIndex" placeholder="رقم الحقل (1-9)" min="1" max="9"><button id="discoverUploadBtn" class="upload-btn">📁 اختيار ملف</button><input type="file" id="discoverFileInput" accept="image/*,video/*" style="display:none;"><span id="discoverFileName"></span><input type="text" id="newDiscoverLabel" placeholder="النص التعريفي"><select id="discoverMediaType"><option value="big">حقل كبير (صورة)</option><option value="small">حقل صغير (فيديو)</option></select><button id="updateDiscoverItem">تحديث</button></div><button id="logoutAdminBtn" class="cancel-btn">تسجيل خروج</button></div></div></div>
+            <div class="profile-logo"><img src="logo.jpg" alt="PuncakGO Logo"><p>© 2025 PuncakGO</p></div>
         </div>
     </div>
-
     <div class="bottom-nav">
         <div class="nav-item" data-nav="home" data-ar="🏠 الرئيسية" data-en="🏠 Home">🏠 الرئيسية</div>
         <div class="nav-item" data-nav="bookings" data-ar="📅 رحلاتي" data-en="📅 My Bookings">📅 رحلاتي</div>
         <div class="nav-item" data-nav="profile" data-ar="👤 البروفايل" data-en="👤 Profile">👤 البروفايل</div>
     </div>
 </div>
-
-<!-- مودال الأوردر الرئيسي -->
 <div id="orderModal" class="modal">
     <div class="modal-content">
         <h3 data-ar="📝 طلب جديد" data-en="📝 New Order">📝 طلب جديد</h3>
-        <input type="text" id="orderName" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
-        <input type="tel" id="orderPhone" data-ar-placeholder="رقم الجوال" data-en-placeholder="Phone number" placeholder="رقم الجوال">
-        <textarea id="orderNotes" data-ar-placeholder="ملاحظات" data-en-placeholder="Notes" placeholder="ملاحظات"></textarea>
-        <button id="submitOrder" data-ar="إرسال الطلب" data-en="Submit Order">إرسال الطلب</button>
-        <button id="closeModal" class="cancel-btn" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
+        <input type="text" id="orderName" placeholder="الاسم الكامل">
+        <input type="tel" id="orderPhone" placeholder="رقم الجوال">
+        <textarea id="orderNotes" placeholder="ملاحظات"></textarea>
+        <button id="submitOrder">إرسال الطلب</button>
+        <button id="closeModal" class="cancel-btn">إلغاء</button>
     </div>
 </div>
-
-<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-    const SUPABASE_URL = 'https://nynusiouhgjmjpunfpod.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log('✅ Supabase ready');
-</script>
-
 <script src="script.js"></script>
 </body>
 </html>
