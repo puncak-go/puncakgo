@@ -1,41 +1,13 @@
-// ========== متغيرات PocketBase ==========
-let pb;
-try {
-    pb = new PocketBase('http://127.0.0.1:8090');
-    pb.health.check().then(() => {
-        console.log('✅ PocketBase connected');
-    }).catch(err => {
-        console.log('❌ PocketBase error:', err);
-    });
-} catch(e) {
-    console.log('⚠️ PocketBase not loaded yet');
-}
+// ========== Supabase Client ==========
+const SUPABASE_URL = 'https://nynusiouhgjmjpunfpod.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let sliderItems = [
-    { type: 'image', url: 'https://picsum.photos/id/1015/300/200' },
-    { type: 'image', url: 'https://picsum.photos/id/104/300/200' },
-    { type: 'image', url: 'https://picsum.photos/id/106/300/200' },
-    { type: 'image', url: 'https://picsum.photos/id/107/300/200' },
-    { type: 'image', url: 'https://picsum.photos/id/116/300/200' },
-    { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-    { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-    { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-    { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-    { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
-];
+console.log('✅ Supabase client ready');
 
-let discoverData = [
-    { type: 'big', contentUrl: 'https://picsum.photos/id/15/600/300', labelAr: 'منتجع الجبل', labelEn: 'Mountain Resort' },
-    { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو استكشافي 1', labelEn: 'Exploration Video 1' },
-    { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو استكشافي 2', labelEn: 'Exploration Video 2' },
-    { type: 'big', contentUrl: 'https://picsum.photos/id/96/600/300', labelAr: 'شلالات بونشاك', labelEn: 'Puncak Waterfalls' },
-    { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو 3', labelEn: 'Video 3' },
-    { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو 4', labelEn: 'Video 4' },
-    { type: 'big', contentUrl: 'https://picsum.photos/id/29/600/300', labelAr: 'مزارع الشاي', labelEn: 'Tea Plantations' },
-    { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو 5', labelEn: 'Video 5' },
-    { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو 6', labelEn: 'Video 6' }
-];
-
+// ========== بيانات السلايدر والديسكفر من Supabase ==========
+let sliderItems = [];
+let discoverData = [];
 let bookings = [];
 const ADMIN_PASSWORD = "admin123";
 let isArabic = true;
@@ -50,20 +22,69 @@ function fileToBase64(file) {
     });
 }
 
-function loadSavedData() {
-    let savedSlider = localStorage.getItem('sliderItems');
-    if(savedSlider) sliderItems = JSON.parse(savedSlider);
-    let savedDiscover = localStorage.getItem('discoverData');
-    if(savedDiscover) discoverData = JSON.parse(savedDiscover);
+// تحميل البيانات من Supabase
+async function loadSavedData() {
+    // تحميل السلايدر
+    const { data: slider, error: sliderError } = await supabase
+        .from('slider')
+        .select('*')
+        .order('order_index', { ascending: true });
+    if (sliderError) console.error('Slider error:', sliderError);
+    else if (slider && slider.length > 0) {
+        sliderItems = slider.map(s => ({ type: s.type, url: s.url }));
+    } else {
+        // بيانات افتراضية إذا كانت فارغة
+        sliderItems = [
+            { type: 'image', url: 'https://picsum.photos/id/1015/300/200' },
+            { type: 'image', url: 'https://picsum.photos/id/104/300/200' },
+            { type: 'image', url: 'https://picsum.photos/id/106/300/200' },
+            { type: 'image', url: 'https://picsum.photos/id/107/300/200' },
+            { type: 'image', url: 'https://picsum.photos/id/116/300/200' },
+            { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+            { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+            { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+            { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' },
+            { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
+        ];
+    }
+    
+    // تحميل الديسكفر
+    const { data: discover, error: discoverError } = await supabase
+        .from('discover')
+        .select('*')
+        .order('order_index', { ascending: true });
+    if (discoverError) console.error('Discover error:', discoverError);
+    else if (discover && discover.length > 0) {
+        discoverData = discover.map(d => ({
+            type: d.type,
+            contentUrl: d.content_url,
+            labelAr: d.label_ar,
+            labelEn: d.label_en
+        }));
+    } else {
+        // بيانات افتراضية إذا كانت فارغة
+        discoverData = [
+            { type: 'big', contentUrl: 'https://picsum.photos/id/15/600/300', labelAr: 'منتجع الجبل', labelEn: 'Mountain Resort' },
+            { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو استكشافي 1', labelEn: 'Exploration Video 1' },
+            { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو استكشافي 2', labelEn: 'Exploration Video 2' },
+            { type: 'big', contentUrl: 'https://picsum.photos/id/96/600/300', labelAr: 'شلالات بونشاك', labelEn: 'Puncak Waterfalls' },
+            { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو 3', labelEn: 'Video 3' },
+            { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو 4', labelEn: 'Video 4' },
+            { type: 'big', contentUrl: 'https://picsum.photos/id/29/600/300', labelAr: 'مزارع الشاي', labelEn: 'Tea Plantations' },
+            { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو 5', labelEn: 'Video 5' },
+            { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو 6', labelEn: 'Video 6' }
+        ];
+    }
+    
+    // تحميل الحجوزات من localStorage
     let savedBookings = localStorage.getItem('bookings');
     if(savedBookings) bookings = JSON.parse(savedBookings);
+    
     let savedAdmin = localStorage.getItem('isAdminLoggedIn');
     if(savedAdmin === 'true') isAdminLoggedIn = true;
 }
 
 function saveData() {
-    localStorage.setItem('sliderItems', JSON.stringify(sliderItems));
-    localStorage.setItem('discoverData', JSON.stringify(discoverData));
     localStorage.setItem('bookings', JSON.stringify(bookings));
 }
 
@@ -123,8 +144,12 @@ function renderSlider() {
 async function updateSliderItem(index, type, file) {
     if (index >= 1 && index <= sliderItems.length) {
         let url = await fileToBase64(file);
+        // تحديث في Supabase
+        const { data: sliderList } = await supabase.from('slider').select('*').order('order_index', { ascending: true });
+        if (sliderList && sliderList[index - 1]) {
+            await supabase.from('slider').update({ type: type, url: url }).eq('id', sliderList[index - 1].id);
+        }
         sliderItems[index - 1] = { type: type, url: url };
-        saveData();
         renderSlider();
         alert(isArabic ? 'تم التحديث' : 'Updated');
     } else {
@@ -173,8 +198,11 @@ function createDiscoverItem(item) {
 async function updateDiscoverItem(index, type, file, label) {
     if (index >= 1 && index <= discoverData.length) {
         let url = await fileToBase64(file);
+        const { data: discoverList } = await supabase.from('discover').select('*').order('order_index', { ascending: true });
+        if (discoverList && discoverList[index - 1]) {
+            await supabase.from('discover').update({ type: type, content_url: url, label_ar: label, label_en: label }).eq('id', discoverList[index - 1].id);
+        }
         discoverData[index - 1] = { type: type, contentUrl: url, labelAr: label, labelEn: label };
-        saveData();
         renderDiscover();
         alert(isArabic ? 'تم التحديث' : 'Updated');
     } else {
@@ -495,39 +523,15 @@ if (savedAdmin2 === 'true') {
     }, 100);
 }
 
-// ========== دوال PocketBase ==========
-async function saveBookingToPocketBase(bookingData) {
-    if (!pb) {
-        console.error('❌ PocketBase not initialized');
-        alert('PocketBase not connected');
-        return null;
-    }
-    try {
-        const record = await pb.collection('bookings').create({
-            type: bookingData.type,
-            itemId: bookingData.itemId,
-            name: bookingData.name,
-            phone: bookingData.phone,
-            date: bookingData.date,
-            notes: bookingData.notes
-        });
-        console.log('✅ Booking saved:', record);
-        alert('تم حفظ الحجز بنجاح');
-        return record;
-    } catch (error) {
-        console.error('❌ Booking error:', error);
-        alert('حدث خطأ في حفظ الحجز: ' + error.message);
-        return null;
-    }
-}
-
 // ========== تحميل الصفحة ==========
-loadSavedData();
-renderSlider();
-renderDiscover();
-renderBookings();
-changeLanguage();
-setupCollapsibleCards();
-loadUserData();
-renderProfileBookings();
-loadFavorites();
+(async function init() {
+    await loadSavedData();
+    renderSlider();
+    renderDiscover();
+    renderBookings();
+    changeLanguage();
+    setupCollapsibleCards();
+    loadUserData();
+    renderProfileBookings();
+    loadFavorites();
+})();
