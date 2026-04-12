@@ -43,7 +43,6 @@
         
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 30px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
         
-        /* ترتيب الخدمات يمين/يسار */
         .services-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -54,7 +53,6 @@
         .services-grid .service-card:nth-child(4n+3) { order: 2; }
         .services-grid .service-card:nth-child(4n+4) { order: 1; }
         
-        /* استايلات الجوال */
         @media (max-width: 768px) {
             .services-grid {
                 display: grid !important;
@@ -96,7 +94,6 @@
     <button id="adminModeBtn" class="admin-toggle-btn">🔐 دخول الأدمن</button>
 </div>
 
-<!-- مودال عام للحجز (للمطعم، البقالة، المتجر) -->
 <div id="orderModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">📝 حجز</h3>
@@ -112,7 +109,6 @@
     </div>
 </div>
 
-<!-- مودال تأجير السيارات -->
 <div id="carRentalModal" class="modal">
     <div class="modal-content">
         <h3 id="carModalTitle">🚗 تأجير سيارات مع سائق</h3>
@@ -139,7 +135,6 @@
     </div>
 </div>
 
-<!-- مودال تعديل الخدمة (للأدمن) -->
 <div id="editServiceModal" class="modal">
     <div class="modal-content">
         <h3 id="editModalTitle">✏️ تعديل الخدمة</h3>
@@ -155,21 +150,22 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-    // ------------------- بيانات الخدمات الأخرى -------------------
     let servicesData = [
         { id: 1, type: "restaurant", nameAr: "🍽️ مطعم عربي", nameEn: "🍽️ Arabic Restaurant", 
           descAr: "أشهى المأكولات العربية في بونشاك. جودة عالية وأسعار مناسبة.", 
           descEn: "The best Arabic cuisine in Puncak. High quality and reasonable prices.",
-          image: "https://picsum.photos/id/106/400/200", menuImage: "https://picsum.photos/id/104/500/400", pricePerDay: null },
+          image: "https://picsum.photos/id/106/400/200", menuImage: "https://picsum.photos/id/104/500/400", pricePerDay: null, pricesByDestination: null },
         { id: 2, type: "grocery", nameAr: "🛒 بقالة عربية", nameEn: "🛒 Arabic Grocery", 
           descAr: "جميع المستلزمات العربية والمنتجات الطازجة في مكان واحد.", 
           descEn: "All Arabic supplies and fresh products in one place.",
-          image: "https://picsum.photos/id/108/400/200", menuImage: "https://picsum.photos/id/116/500/400", pricePerDay: null },
+          image: "https://picsum.photos/id/108/400/200", menuImage: "https://picsum.photos/id/116/500/400", pricePerDay: null, pricesByDestination: null },
         { id: 3, type: "oud", nameAr: "🪵 متجر عود", nameEn: "🪵 Oud Store", 
           descAr: "أجود أنواع العود والبخور والعطور الشرقية الفاخرة.", 
           descEn: "The finest types of oud, incense, and luxury oriental perfumes.",
-          image: "https://picsum.photos/id/119/400/200", menuImage: "https://picsum.photos/id/20/500/400", pricePerDay: null },
+          image: "https://picsum.photos/id/119/400/200", menuImage: "https://picsum.photos/id/20/500/400", pricePerDay: null, pricesByDestination: null },
         { id: 4, type: "car", nameAr: "🚗 تأجير سيارات مع سائق", nameEn: "🚗 Car Rental with Driver", 
           descAr: "سيارات حديثة مع سائق خاص يتحدث العربية. جولات مريحة وآمنة.", 
           descEn: "Modern cars with a private Arabic-speaking driver. Comfortable and safe tours.",
@@ -181,6 +177,32 @@
     let isArabic = true;
     let isAdmin = false;
     const ADMIN_PASSWORD = "admin123";
+
+    const supabaseClient = window.supabase.createClient(
+        'https://nynusiouhgjmjpunfpod.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik'
+    );
+    
+    console.log('✅ Supabase ready for Other Services');
+
+    async function saveServiceToSupabase(service) {
+        try {
+            const { error } = await supabaseClient.from('other_services').upsert({
+                id: service.id,
+                type: service.type,
+                name_ar: service.nameAr,
+                name_en: service.nameEn,
+                desc_ar: service.descAr,
+                desc_en: service.descEn,
+                image: service.image,
+                menu_image: service.menuImage,
+                price_per_day: service.pricePerDay,
+                prices_by_destination: service.pricesByDestination
+            });
+            if (error) console.error('Supabase error:', error);
+            else console.log('✅ Saved service', service.id);
+        } catch(e) { console.error(e); }
+    }
 
     function loadServicesData() { let saved = localStorage.getItem('servicesData'); if(saved) servicesData = JSON.parse(saved); }
     function saveServicesData() { localStorage.setItem('servicesData', JSON.stringify(servicesData)); }
@@ -269,7 +291,7 @@
         document.getElementById('editServiceModal').style.display = 'flex';
     }
 
-    document.getElementById('saveServiceBtn').addEventListener('click', () => {
+    document.getElementById('saveServiceBtn').addEventListener('click', async () => {
         currentService.nameAr = document.getElementById('editNameAr').value;
         currentService.nameEn = document.getElementById('editNameEn').value;
         currentService.descAr = document.getElementById('editDescAr').value;
@@ -277,7 +299,9 @@
         currentService.image = document.getElementById('editImageUrl').value;
         if(document.getElementById('editMenuUrl').value) currentService.menuImage = document.getElementById('editMenuUrl').value;
         if(document.getElementById('editPricePerDay').value) currentService.pricePerDay = parseInt(document.getElementById('editPricePerDay').value);
+        
         saveServicesData();
+        await saveServiceToSupabase(currentService);
         renderServices();
         document.getElementById('editServiceModal').style.display = 'none';
         alert(isArabic ? 'تم حفظ التغييرات بنجاح' : 'Changes saved successfully');
