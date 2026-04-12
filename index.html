@@ -4,14 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>PuncakGO - السياحة في بونشاك</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        .overlay { background: #f5f5f5; min-height: 100vh; }
+        .container { max-width: 1200px; margin: auto; padding: 20px; padding-bottom: 80px; }
+        
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap; }
+        .currency-box { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        .lang-switch { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        
+        .logo { text-align: center; margin: 15px 0; }
+        .logo img { width: 120px; height: auto; border-radius: 20px; }
+        
+        .promo-bar { background: #B8860B; color: white; padding: 12px; border-radius: 30px; margin: 15px 0; overflow: hidden; }
+        .promo-marquee { white-space: nowrap; overflow: hidden; }
+        .promo-marquee span { display: inline-block; animation: marquee 15s linear infinite; font-weight: bold; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        
+        .three-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+        .field-card { background: linear-gradient(135deg, #DAA520, #B8860B); border-radius: 25px; padding: 35px 15px; text-align: center; cursor: pointer; transition: transform 0.2s; }
+        .field-card:hover { transform: scale(1.02); }
+        .field-text { color: white; font-size: 1.2rem; font-weight: bold; }
+        
+        .wide-field { background: linear-gradient(135deg, #DAA520, #B8860B); border-radius: 25px; padding: 30px; text-align: center; cursor: pointer; margin: 20px 0; }
+        
+        .slider-container { margin: 25px 0; }
+        .slider-container h3 { color: #B8860B; margin-bottom: 15px; }
+        .slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 10px 0; }
+        .slider-item { min-width: 280px; scroll-snap-align: start; border-radius: 25px; overflow: hidden; cursor: pointer; }
+        .slider-item img, .slider-item video { width: 100%; height: 200px; object-fit: cover; }
+        
+        .discover-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .big-card { flex: 2; min-height: 280px; border-radius: 25px; background-size: cover; background-position: center; position: relative; cursor: pointer; overflow: hidden; }
+        .small-cards { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        .small-card { min-height: 130px; border-radius: 25px; background-size: cover; background-position: center; position: relative; cursor: pointer; overflow: hidden; }
+        .card-label { position: absolute; bottom: 10px; left: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 8px; border-radius: 20px; font-size: 0.8rem; text-align: center; }
+        
+        h3 { color: #B8860B; margin: 20px 0 10px; }
+        
+        .page { display: none; }
+        .active-page { display: block; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 12px 20px; box-shadow: 0 -2px 15px rgba(0,0,0,0.1); border-radius: 30px 30px 0 0; z-index: 100; }
+        .nav-item { text-align: center; cursor: pointer; padding: 5px 15px; border-radius: 30px; transition: 0.2s; font-weight: bold; color: #B8860B; }
+        .nav-item.active { background: #DAA520; color: white; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 90%; max-width: 500px; border-top: 5px solid #DAA520; }
+        .modal-content input, .modal-content textarea, .modal-content select { width: 100%; margin: 8px 0; padding: 12px; border-radius: 25px; border: 1px solid #DAA520; }
+        .modal-content button { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        .cancel-btn { background: #8B0000 !important; }
+        
+        .profile-header { text-align: center; margin-bottom: 25px; }
+        .profile-avatar { position: relative; display: inline-block; }
+        .profile-avatar img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #DAA520; }
+        .avatar-edit { position: absolute; bottom: 0; right: 0; background: #DAA520; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; }
+        
+        .profile-card-collapsible { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #f9f9f9; cursor: pointer; border-bottom: 1px solid #eee; }
+        .card-header h3 { margin: 0; }
+        .toggle-icon { font-size: 1.2rem; transition: transform 0.3s; }
+        .card-content { display: none; padding: 15px 20px; }
+        .card-content.active { display: block; }
+        
+        .profile-field { margin-bottom: 15px; }
+        .profile-field label { display: block; margin-bottom: 5px; font-weight: bold; color: #B8860B; }
+        .profile-field input { width: 100%; padding: 10px; border-radius: 25px; border: 1px solid #DAA520; }
+        .profile-save-btn { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; width: 100%; margin-bottom: 10px; }
+        .profile-delete-btn { background: #8B0000; color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; width: 100%; }
+        
+        .setting-item { margin-bottom: 15px; }
+        .setting-item label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .setting-item select { width: 100%; padding: 10px; border-radius: 25px; border: 1px solid #DAA520; }
+        
+        .share-buttons { display: flex; gap: 10px; }
+        .share-btn, .owner-btn, .support-btn { background: #DAA520; color: white; border: none; padding: 10px; border-radius: 25px; cursor: pointer; flex: 1; }
+        
+        .admin-login { padding: 10px; }
+        .admin-panel { padding: 10px; }
+        .admin-controls { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; background: #f0f0f0; padding: 15px; border-radius: 20px; }
+        .admin-controls input, .admin-controls select { padding: 10px; border-radius: 20px; border: 1px solid #DAA520; }
+        .upload-btn { background: #DAA520; color: white; border: none; padding: 10px; border-radius: 25px; cursor: pointer; }
+        
+        .profile-logo { text-align: center; margin-top: 30px; padding: 20px; }
+        .profile-logo img { width: 80px; margin-bottom: 10px; }
+        
+        .bookings-list ul { list-style: none; }
+        .bookings-list li { margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 15px; }
+        
+        @media (max-width: 768px) {
+            .three-fields { gap: 8px; }
+            .field-text { font-size: 0.8rem; }
+            .field-card { padding: 20px 10px; }
+            .big-card { min-height: 200px; }
+            .small-card { min-height: 90px; }
+            .slider-item { min-width: 220px; }
+        }
+    </style>
 </head>
 <body>
 <div class="overlay">
     <div class="container">
         <!-- الصفحة الرئيسية -->
         <div id="home-page" class="page active-page">
-            <!-- الشريط العلوي -->
             <div class="top-bar">
                 <div class="currency-box" id="currencyBtn">
                     <span data-ar="💰 صرف العملات" data-en="💰 Currency Exchange">💰 صرف العملات</span>
@@ -19,7 +115,6 @@
                 <button class="lang-switch" id="langBtn">English</button>
             </div>
 
-            <!-- نافذة صرف العملات -->
             <div id="currencyModal" class="modal">
                 <div class="modal-content" style="max-width: 350px;">
                     <h3 data-ar="💱 تحويل العملات" data-en="💱 Currency Exchange">💱 تحويل العملات</h3>
@@ -31,16 +126,14 @@
                     <div id="currencyResult" style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 15px; font-weight: bold;">
                         <span data-ar="النتيجة: " data-en="Result: ">النتيجة: </span> <span id="resultValue">0</span> IDR
                     </div>
-                    <button id="closeCurrencyModal" data-ar="إغلاق" data-en="Close">إغلاق</button>
+                    <button id="closeCurrencyModal" class="cancel-btn" data-ar="إغلاق" data-en="Close">إغلاق</button>
                 </div>
             </div>
 
-            <!-- الشعار -->
             <div class="logo">
-                <img src="logo.jpg" alt="PuncakGO Logo">
+                <img src="logo.jpg" alt="PuncakGO Logo" onerror="this.src='https://picsum.photos/id/104/120/120'">
             </div>
 
-            <!-- الشريط المتحرك -->
             <div class="promo-bar">
                 <div class="promo-marquee">
                     <span data-ar="🎉 احجز الآن واحصل على تخفيض يصل إلى 30% - عروض حصرية لفترة محدودة! 🎉" 
@@ -50,7 +143,6 @@
                 </div>
             </div>
 
-            <!-- 3 حقول رئيسية -->
             <div class="three-fields">
                 <div class="field-card" onclick="window.location.href='villas.html'">
                     <div class="field-text" data-ar="🏡 فلل" data-en="🏡 Villas">🏡 فلل</div>
@@ -63,18 +155,15 @@
                 </div>
             </div>
 
-            <!-- حقل عريض -->
             <div class="wide-field" onclick="window.location.href='other-services.html'">
                 <div class="field-text" data-ar="✨ خدمات أخرى" data-en="✨ Other Services">✨ خدمات أخرى</div>
             </div>
 
-            <!-- سلايدر -->
             <div class="slider-container">
                 <h3 data-ar="📸 العروضات" data-en="📸 Offers">📸 العروضات</h3>
                 <div class="slider" id="slider"></div>
             </div>
 
-            <!-- الديسكفر -->
             <h3 data-ar="🌟 اكتشف" data-en="🌟 Discover">🌟 اكتشف</h3>
             <div id="discover-container"></div>
         </div>
@@ -220,7 +309,7 @@
                     <div id="adminPanel" class="admin-panel" style="display:none;">
                         <h4 data-ar="📸 إدارة السلايدر (10 حقول)" data-en="📸 Slider Management (10 fields)">📸 إدارة السلايدر (10 حقول)</h4>
                         <div class="admin-controls">
-                            <input type="number" id="sliderIndex" data-ar-placeholder="رقم الحقل (1-10)" data-en-placeholder="Field number (1-10)" placeholder="رقم الحقل (1-10)" min="1" max="10">
+                            <input type="number" id="sliderIndex" placeholder="رقم الحقل (1-10)" min="1" max="10">
                             <button id="sliderUploadBtn" class="upload-btn" data-ar="📁 اختيار ملف" data-en="📁 Choose File">📁 اختيار ملف</button>
                             <input type="file" id="sliderFileInput" accept="image/*,video/*" style="display:none;">
                             <span id="sliderFileName"></span>
@@ -232,7 +321,7 @@
                         </div>
                         <h4 data-ar="🌟 إدارة الديسكفر (9 حقول)" data-en="🌟 Discover Management (9 fields)">🌟 إدارة الديسكفر (9 حقول)</h4>
                         <div class="admin-controls">
-                            <input type="number" id="discoverIndex" data-ar-placeholder="رقم الحقل (1-9)" data-en-placeholder="Field number (1-9)" placeholder="رقم الحقل (1-9)" min="1" max="9">
+                            <input type="number" id="discoverIndex" placeholder="رقم الحقل (1-9)" min="1" max="9">
                             <button id="discoverUploadBtn" class="upload-btn" data-ar="📁 اختيار ملف" data-en="📁 Choose File">📁 اختيار ملف</button>
                             <input type="file" id="discoverFileInput" accept="image/*,video/*" style="display:none;">
                             <span id="discoverFileName"></span>
@@ -249,7 +338,7 @@
             </div>
 
             <div class="profile-logo">
-                <img src="logo.jpg" alt="PuncakGO Logo">
+                <img src="logo.jpg" alt="PuncakGO Logo" onerror="this.src='https://picsum.photos/id/104/80/80'">
                 <p>© 2025 PuncakGO</p>
             </div>
         </div>
@@ -262,7 +351,6 @@
     </div>
 </div>
 
-<!-- مودال الأوردر الرئيسي -->
 <div id="orderModal" class="modal">
     <div class="modal-content">
         <h3 data-ar="📝 طلب جديد" data-en="📝 New Order">📝 طلب جديد</h3>
@@ -274,6 +362,7 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
 </body>
 </html>
