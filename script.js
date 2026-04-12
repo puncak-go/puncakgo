@@ -5,7 +5,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 console.log('✅ Supabase client ready');
 
-// ========== بيانات السلايدر والديسكفر من Supabase ==========
+// ========== بيانات السلايدر والديسكفر ==========
 let sliderItems = [];
 let discoverData = [];
 let bookings = [];
@@ -13,23 +13,12 @@ const ADMIN_PASSWORD = "admin123";
 let isArabic = true;
 let isAdminLoggedIn = false;
 
-// عناصر سيتم إظهارها عند دخول الأدمن
-const adminElements = ['sliderSection', 'discoverSection'];
-
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
-    });
-}
-
-// إظهار/إخفاء عناصر الأدمن
-function toggleAdminElements(show) {
-    adminElements.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = show ? 'block' : 'none';
     });
 }
 
@@ -90,12 +79,7 @@ async function loadSavedData() {
     if(savedBookings) bookings = JSON.parse(savedBookings);
     
     let savedAdmin = localStorage.getItem('isAdminLoggedIn');
-    if(savedAdmin === 'true') {
-        isAdminLoggedIn = true;
-        toggleAdminElements(true);
-    } else {
-        toggleAdminElements(false);
-    }
+    if(savedAdmin === 'true') isAdminLoggedIn = true;
 }
 
 function saveData() {
@@ -456,7 +440,6 @@ document.getElementById('adminLoginBtn')?.addEventListener('click', () => {
         localStorage.setItem('isAdminLoggedIn', 'true');
         document.getElementById('adminLoginDiv').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
-        toggleAdminElements(true);
         alert(isArabic ? 'تم الدخول كأدمن' : 'Admin login');
     } else {
         alert(isArabic ? 'كلمة سر خطأ' : 'Wrong password');
@@ -468,7 +451,6 @@ document.getElementById('logoutAdminBtn')?.addEventListener('click', () => {
     localStorage.setItem('isAdminLoggedIn', 'false');
     document.getElementById('adminLoginDiv').style.display = 'block';
     document.getElementById('adminPanel').style.display = 'none';
-    toggleAdminElements(false);
     alert(isArabic ? 'تم الخروج' : 'Logged out');
 });
 
