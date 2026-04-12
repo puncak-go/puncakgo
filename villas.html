@@ -36,7 +36,6 @@
         .villa-price { margin: 10px 0; }
         .villa-price span { color: #DAA520; font-weight: bold; font-size: 1.2rem; }
         
-        /* المواصفات - مخفية في البداية */
         .features {
             display: none;
             flex-wrap: wrap;
@@ -54,7 +53,6 @@
             border: 1px solid #DAA520;
         }
         
-        /* زر عرض المواصفات */
         .show-features-btn {
             background: #DAA520;
             color: white;
@@ -88,7 +86,6 @@
         .feature-item .remove-feature { background: red; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; margin-left: 5px; font-size: 10px; }
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 20px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
         
-        /* ترتيب الفلل يمين/يسار */
         .villas-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -99,7 +96,6 @@
         .villas-grid .villa-card:nth-child(4n+3) { order: 2; }
         .villas-grid .villa-card:nth-child(4n+4) { order: 1; }
         
-        /* استايلات الجوال */
         @media (max-width: 768px) {
             .villas-grid {
                 display: grid !important;
@@ -207,26 +203,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    // ========== إعدادات Supabase (مع متغير مختلف لتجنب التعارض) ==========
+    // ========== إعدادات Supabase ==========
     const SUPABASE_URL = 'https://nynusiouhgjmjpunfpod.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik';
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
-    // اختبار الاتصال
-    async function testSupabase() {
-        const { data, error } = await supabaseClient.from('villas').select('*');
-        if (error) {
-            console.error('❌ Supabase error:', error);
-        } else {
-            console.log('✅ Supabase data:', data);
-        }
-    }
-    
-    setTimeout(testSupabase, 2000);
-</script>
-
-<script>
-    // ------------------- بيانات الفلل (25 فيلا) -------------------
+    // ========== بيانات الفلل الثابتة (للرفع الأولي) ==========
     let villasData = [
         { id: 1, name_ar: "فيلا النخيل 1", name_en: "Al Nakheel Villa 1", price: 500000, price_range: 500, pos_x: 10, pos_y: 15, images: ["https://picsum.photos/id/104/400/250", "https://picsum.photos/id/106/400/250"], features_ar: ["🏊 مسبح خاص", "📶 واي فاي مجاني", "🅿️ موقف خاص"], features_en: ["🏊 Private Pool", "📶 Free WiFi", "🅿️ Private Parking"] },
         { id: 2, name_ar: "فيلا النخيل 2", name_en: "Al Nakheel Villa 2", price: 500000, price_range: 500, pos_x: 25, pos_y: 18, images: ["https://picsum.photos/id/104/400/250", "https://picsum.photos/id/116/400/250"], features_ar: ["🏊 مسبح خاص", "📶 واي فاي", "🍳 مطبخ متكامل"], features_en: ["🏊 Private Pool", "📶 WiFi", "🍳 Full Kitchen"] },
@@ -261,11 +243,84 @@
     let isAdmin = false;
     let currentEditVillaId = null;
     const ADMIN_PASSWORD = "admin123";
+    let dataLoaded = false;
 
-    function loadVillasData() { let saved = localStorage.getItem('villasData'); if(saved) villasData = JSON.parse(saved); }
-    function saveVillasData() { localStorage.setItem('villasData', JSON.stringify(villasData)); }
-    function fileToBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); }); }
+    // ========== رفع البيانات إلى Supabase (مرة واحدة فقط) ==========
+    async function uploadToSupabase() {
+        const { count, error: countError } = await supabase.from('villas').select('*', { count: 'exact', head: true });
+        if (countError) {
+            console.error('Error checking data:', countError);
+            return;
+        }
+        
+        if (count === 0) {
+            console.log('📤 Uploading villas to Supabase...');
+            for (const villa of villasData) {
+                const { error } = await supabase.from('villas').upsert({
+                    id: villa.id,
+                    name_ar: villa.name_ar,
+                    name_en: villa.name_en,
+                    price: villa.price,
+                    price_range: villa.price_range,
+                    pos_x: villa.pos_x,
+                    pos_y: villa.pos_y,
+                    images: villa.images,
+                    features_ar: villa.features_ar,
+                    features_en: villa.features_en
+                });
+                if (error) console.error('Error uploading villa', villa.id, error);
+                else console.log('✅ Uploaded:', villa.name_ar);
+            }
+            console.log('🎉 All villas uploaded to Supabase!');
+        } else {
+            console.log('✅ Data already exists in Supabase, skipping upload.');
+        }
+    }
 
+    // ========== جلب البيانات من Supabase ==========
+    async function loadVillasFromSupabase() {
+        try {
+            const { data, error } = await supabase.from('villas').select('*').order('id', { ascending: true });
+            if (error) throw error;
+            if (data && data.length > 0) {
+                villasData = data;
+                console.log('✅ Loaded', villasData.length, 'villas from Supabase');
+            }
+            renderVillas();
+            renderPins();
+            dataLoaded = true;
+        } catch (error) {
+            console.error('❌ Error loading from Supabase:', error);
+            renderVillas();
+            renderPins();
+        }
+    }
+
+    // ========== حفظ التعديلات في Supabase ==========
+    async function saveVillaToSupabase(villa) {
+        try {
+            const { error } = await supabase.from('villas').upsert({
+                id: villa.id,
+                name_ar: villa.name_ar,
+                name_en: villa.name_en,
+                price: villa.price,
+                price_range: villa.price_range,
+                pos_x: villa.pos_x,
+                pos_y: villa.pos_y,
+                images: villa.images,
+                features_ar: villa.features_ar,
+                features_en: villa.features_en
+            });
+            if (error) throw error;
+            console.log('✅ Saved villa', villa.id, 'to Supabase');
+            return true;
+        } catch (error) {
+            console.error('❌ Error saving to Supabase:', error);
+            return false;
+        }
+    }
+
+    // ========== دوال العرض ==========
     function renderPins() {
         let container = document.getElementById('pinsContainer');
         let mapImg = document.getElementById('villaMap');
@@ -282,7 +337,11 @@
             pin.addEventListener('click', (e) => {
                 e.stopPropagation();
                 let villaCard = document.querySelector(`.villa-card[data-id="${villa.id}"]`);
-                if (villaCard) { villaCard.scrollIntoView({ behavior: 'smooth', block: 'center' }); villaCard.style.boxShadow = '0 0 0 3px #DAA520'; setTimeout(() => { villaCard.style.boxShadow = ''; }, 2000); }
+                if (villaCard) { 
+                    villaCard.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+                    villaCard.style.boxShadow = '0 0 0 3px #DAA520'; 
+                    setTimeout(() => { villaCard.style.boxShadow = ''; }, 2000);
+                }
             });
             container.appendChild(pin);
         });
@@ -291,21 +350,52 @@
     function renderVillas() {
         let filtered = currentFilter === "all" ? villasData : villasData.filter(v => v.price_range == currentFilter);
         let container = document.getElementById('villasGrid');
+        if (!container) return;
+        
+        if (!dataLoaded && villasData.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:50px;">جاري التحميل...</div>';
+            return;
+        }
+        
         container.innerHTML = '';
+        
         filtered.forEach(villa => {
             let card = document.createElement('div');
             card.className = 'villa-card';
             card.setAttribute('data-id', villa.id);
-            let slidesHtml = ''; villa.images.forEach(img => { slidesHtml += `<img src="${img}" alt="Villa">`; }); if(villa.images.length === 0) slidesHtml = '<img src="https://picsum.photos/id/104/400/250" alt="Villa">';
+            let slidesHtml = ''; 
+            if (villa.images && villa.images.length > 0) {
+                villa.images.forEach(img => { slidesHtml += `<img src="${img}" alt="Villa">`; });
+            } else {
+                slidesHtml = '<img src="https://picsum.photos/id/104/400/250" alt="Villa">';
+            }
             let features = isArabic ? villa.features_ar : villa.features_en;
-            let featuresHtml = '<div class="features" id="features-' + villa.id + '">'; features.forEach(f => { featuresHtml += `<span class="feature">${f}</span>`; }); featuresHtml += '</div>';
+            let featuresHtml = '<div class="features" id="features-' + villa.id + '">';
+            if (features && Array.isArray(features)) {
+                features.forEach(f => { featuresHtml += `<span class="feature">${f}</span>`; });
+            }
+            featuresHtml += '</div>';
             
-            card.innerHTML = `<div class="slider-container"><div class="slider" id="slider-${villa.id}">${slidesHtml}</div><button class="slider-btn prev" data-id="${villa.id}">❮</button><button class="slider-btn next" data-id="${villa.id}">❯</button></div><div class="villa-info"><div class="villa-name">${isArabic ? villa.name_ar : villa.name_en}</div><div class="villa-price">💰 ${isArabic ? 'السعر لليلة:' : 'Price per night:'} <span>${(villa.price / 1000).toLocaleString()}</span> ${isArabic ? 'ألف روبيه' : 'K IDR'}</div><button class="show-features-btn" data-id="${villa.id}">📋 ${isArabic ? 'عرض المواصفات' : 'Show Features'}</button>${featuresHtml}<button class="book-btn" data-id="${villa.id}">📝 ${isArabic ? 'حجز الآن' : 'Book Now'}</button>${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="images" data-id="${villa.id}">📷 إدارة الصور</button><button class="admin-btn" data-action="features" data-id="${villa.id}">📋 إدارة المواصفات</button><button class="admin-btn" data-action="edit" data-id="${villa.id}">✏️ تعديل الاسم/السعر</button></div>` : ''}</div>`;
+            card.innerHTML = `<div class="slider-container"><div class="slider" id="slider-${villa.id}">${slidesHtml}</div><button class="slider-btn prev" data-id="${villa.id}">❮</button><button class="slider-btn next" data-id="${villa.id}">❯</button></div><div class="villa-info"><div class="villa-name">${isArabic ? villa.name_ar : villa.name_en}</div><div class="villa-price">💰 ${isArabic ? 'السعر لليلة:' : 'Price per night:'} <span>${(villa.price / 1000).toLocaleString()}</span> ${isArabic ? 'ألف روبيه' : 'K IDR'}</div><button class="show-features-btn" data-id="${villa.id}">📋 ${isArabic ? 'عرض المواصفات' : 'Show Features'}</button>${featuresHtml}<button class="book-btn" data-id="${villa.id}">📝 ${isArabic ? 'حجز الآن' : 'Book Now'}</button>${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="images" data-id="${villa.id}">📷 إدارة الصور</button><button class="admin-btn" data-action="features" data-id="${villa.id}">📋 إدارة المواصفات</button><button class="admin-btn" data-action="edit" data-id="${villa.id}">✏️ تعديل</button></div>` : ''}</div>`;
             container.appendChild(card);
         });
         
-        document.querySelectorAll('.slider-btn.prev').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); let id = btn.getAttribute('data-id'); let slider = document.getElementById(`slider-${id}`); slider.scrollBy({ left: -slider.clientWidth, behavior: 'smooth' }); }); });
-        document.querySelectorAll('.slider-btn.next').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); let id = btn.getAttribute('data-id'); let slider = document.getElementById(`slider-${id}`); slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' }); }); });
+        document.querySelectorAll('.slider-btn.prev').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                let id = btn.getAttribute('data-id');
+                let slider = document.getElementById(`slider-${id}`);
+                if (slider) slider.scrollBy({ left: -slider.clientWidth, behavior: 'smooth' });
+            });
+        });
+        document.querySelectorAll('.slider-btn.next').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                let id = btn.getAttribute('data-id');
+                let slider = document.getElementById(`slider-${id}`);
+                if (slider) slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' });
+            });
+        });
         
         document.querySelectorAll('.show-features-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -319,103 +409,284 @@
             });
         });
         
-        document.querySelectorAll('.book-btn').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); currentVilla = villasData.find(v => v.id === id); openOrderModal(); }); });
+        document.querySelectorAll('.book-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                let id = parseInt(btn.getAttribute('data-id'));
+                currentVilla = villasData.find(v => v.id === id);
+                openOrderModal();
+            });
+        });
         
-        if(isAdmin) { 
-            document.querySelectorAll('.admin-btn').forEach(btn => { 
-                btn.addEventListener('click', (e) => { 
-                    e.stopPropagation(); 
-                    let id = parseInt(btn.getAttribute('data-id')); 
-                    let action = btn.getAttribute('data-action'); 
-                    currentEditVillaId = id; 
-                    if(action === 'images') openImageManager(id); 
-                    if(action === 'features') openFeaturesManager(id); 
-                    if(action === 'edit') editVillaInfo(id); 
-                }); 
-            }); 
+        if(isAdmin) {
+            document.querySelectorAll('.admin-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    let id = parseInt(btn.getAttribute('data-id'));
+                    let action = btn.getAttribute('data-action');
+                    currentEditVillaId = id;
+                    if(action === 'images') openImageManager(id);
+                    if(action === 'features') openFeaturesManager(id);
+                    if(action === 'edit') editVillaInfo(id);
+                });
+            });
         }
     }
 
+    // ========== إدارة الصور مع Supabase ==========
     async function openImageManager(villaId) {
         let villa = villasData.find(v => v.id === villaId);
         let modal = document.getElementById('imageModal');
         let imagesList = document.getElementById('imagesList');
         imagesList.innerHTML = '';
-        villa.images.forEach((img, idx) => { imagesList.innerHTML += `<div class="image-item"><img src="${img}"><button class="delete-img-btn" data-idx="${idx}">✕</button></div>`; });
+        if (villa.images && villa.images.length > 0) {
+            villa.images.forEach((img, idx) => {
+                imagesList.innerHTML += `<div class="image-item"><img src="${img}"><button class="delete-img-btn" data-idx="${idx}">✕</button></div>`;
+            });
+        }
         modal.style.display = 'flex';
-        document.querySelectorAll('.delete-img-btn').forEach(btn => { btn.addEventListener('click', () => { let idx = parseInt(btn.getAttribute('data-idx')); villa.images.splice(idx, 1); saveVillasData(); renderVillas(); renderPins(); openImageManager(villaId); }); });
-        document.getElementById('addImageBtn').onclick = async () => { let fileInput = document.getElementById('imageUpload'); if(fileInput.files && fileInput.files[0]) { let url = await fileToBase64(fileInput.files[0]); villa.images.push(url); saveVillasData(); renderVillas(); renderPins(); fileInput.value = ''; openImageManager(villaId); } else { alert('الرجاء اختيار صورة أولاً'); } };
+        
+        document.querySelectorAll('.delete-img-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                let idx = parseInt(btn.getAttribute('data-idx'));
+                villa.images.splice(idx, 1);
+                await saveVillaToSupabase(villa);
+                renderVillas();
+                renderPins();
+                openImageManager(villaId);
+            });
+        });
+        
+        document.getElementById('addImageBtn').onclick = async () => {
+            let fileInput = document.getElementById('imageUpload');
+            if(fileInput.files && fileInput.files[0]) {
+                let url = await fileToBase64(fileInput.files[0]);
+                if (!villa.images) villa.images = [];
+                villa.images.push(url);
+                await saveVillaToSupabase(villa);
+                renderVillas();
+                renderPins();
+                fileInput.value = '';
+                openImageManager(villaId);
+            } else {
+                alert('الرجاء اختيار صورة أولاً');
+            }
+        };
     }
 
-    function openFeaturesManager(villaId) {
+    // ========== إدارة المواصفات مع Supabase ==========
+    async function openFeaturesManager(villaId) {
         let villa = villasData.find(v => v.id === villaId);
         let modal = document.getElementById('featuresModal');
         let featuresList = document.getElementById('featuresList');
+        
         function renderFeatures() {
             featuresList.innerHTML = '';
-            villa.features_ar.forEach((f, idx) => { featuresList.innerHTML += `<span class="feature-item">${f}<button class="remove-feature" data-idx="${idx}" data-lang="ar">✕</button></span>`; });
-            villa.features_en.forEach((f, idx) => { featuresList.innerHTML += `<span class="feature-item">${f}<button class="remove-feature" data-idx="${idx}" data-lang="en">✕</button></span>`; });
-            document.querySelectorAll('.remove-feature').forEach(btn => { btn.addEventListener('click', () => { let idx = parseInt(btn.getAttribute('data-idx')); let lang = btn.getAttribute('data-lang'); if(lang === 'ar') villa.features_ar.splice(idx, 1); else villa.features_en.splice(idx, 1); saveVillasData(); renderVillas(); renderPins(); renderFeatures(); }); });
+            if (villa.features_ar && Array.isArray(villa.features_ar)) {
+                villa.features_ar.forEach((f, idx) => {
+                    featuresList.innerHTML += `<span class="feature-item">${f}<button class="remove-feature" data-idx="${idx}" data-lang="ar">✕</button></span>`;
+                });
+            }
+            if (villa.features_en && Array.isArray(villa.features_en)) {
+                villa.features_en.forEach((f, idx) => {
+                    featuresList.innerHTML += `<span class="feature-item">${f}<button class="remove-feature" data-idx="${idx}" data-lang="en">✕</button></span>`;
+                });
+            }
+            
+            document.querySelectorAll('.remove-feature').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    let idx = parseInt(btn.getAttribute('data-idx'));
+                    let lang = btn.getAttribute('data-lang');
+                    if(lang === 'ar') villa.features_ar.splice(idx, 1);
+                    else villa.features_en.splice(idx, 1);
+                    await saveVillaToSupabase(villa);
+                    renderVillas();
+                    renderPins();
+                    renderFeatures();
+                });
+            });
         }
+        
         renderFeatures();
         modal.style.display = 'flex';
-        document.getElementById('addFeatureBtn').onclick = () => { let newAr = document.getElementById('newFeatureAr').value.trim(); let newEn = document.getElementById('newFeatureEn').value.trim(); if(newAr) villa.features_ar.push(newAr); if(newEn) villa.features_en.push(newEn); saveVillasData(); renderVillas(); renderPins(); renderFeatures(); document.getElementById('newFeatureAr').value = ''; document.getElementById('newFeatureEn').value = ''; };
+        
+        document.getElementById('addFeatureBtn').onclick = async () => {
+            let newAr = document.getElementById('newFeatureAr').value.trim();
+            let newEn = document.getElementById('newFeatureEn').value.trim();
+            if(newAr) villa.features_ar.push(newAr);
+            if(newEn) villa.features_en.push(newEn);
+            await saveVillaToSupabase(villa);
+            renderVillas();
+            renderPins();
+            renderFeatures();
+            document.getElementById('newFeatureAr').value = '';
+            document.getElementById('newFeatureEn').value = '';
+        };
     }
 
-    function editVillaInfo(villaId) {
+    // ========== تعديل معلومات الفيلا ==========
+    async function editVillaInfo(villaId) {
         let villa = villasData.find(v => v.id === villaId);
         let newNameAr = prompt('أدخل اسم الفيلا بالعربية:', villa.name_ar);
         let newNameEn = prompt('أدخل اسم الفيلا بالإنجليزية:', villa.name_en);
         let newPrice = prompt('أدخل السعر الجديد (بالروبيه):', villa.price);
-        if(newNameAr) villa.name_ar = newNameAr; if(newNameEn) villa.name_en = newNameEn; if(newPrice && !isNaN(newPrice)) villa.price = parseInt(newPrice);
-        saveVillasData(); renderVillas(); renderPins(); alert('تم تحديث بيانات الفيلا بنجاح');
+        
+        if(newNameAr) villa.name_ar = newNameAr;
+        if(newNameEn) villa.name_en = newNameEn;
+        if(newPrice && !isNaN(newPrice)) villa.price = parseInt(newPrice);
+        
+        await saveVillaToSupabase(villa);
+        renderVillas();
+        renderPins();
+        alert('تم تحديث بيانات الفيلا بنجاح');
     }
 
-    function openOrderModal() { document.getElementById('modalTitle').innerText = isArabic ? `📝 حجز ${currentVilla.name_ar}` : `📝 Booking ${currentVilla.name_en}`; document.getElementById('pricePerNight').innerText = (currentVilla.price / 1000).toLocaleString(); document.getElementById('orderModal').style.display = 'flex'; calculateOrder(); }
-    function calculateOrder() { let from = document.getElementById('dateFrom').value; let to = document.getElementById('dateTo').value; let nights = 0; if (from && to) { let start = new Date(from); let end = new Date(to); nights = Math.max(0, (end - start) / (1000 * 60 * 60 * 24)); } document.getElementById('nightsCount').innerText = nights; let total = nights * (currentVilla.price / 1000); document.getElementById('totalPrice').innerText = total.toLocaleString(); }
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
 
-    function setupFilter() { document.querySelectorAll('.price-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.price-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.getAttribute('data-price'); renderVillas(); renderPins(); }); }); }
+    function openOrderModal() { 
+        document.getElementById('modalTitle').innerText = isArabic ? `📝 حجز ${currentVilla.name_ar}` : `📝 Booking ${currentVilla.name_en}`; 
+        document.getElementById('pricePerNight').innerText = (currentVilla.price / 1000).toLocaleString(); 
+        document.getElementById('orderModal').style.display = 'flex'; 
+        calculateOrder(); 
+    }
+    
+    function calculateOrder() { 
+        let from = document.getElementById('dateFrom').value; 
+        let to = document.getElementById('dateTo').value; 
+        let nights = 0; 
+        if (from && to) { 
+            let start = new Date(from); 
+            let end = new Date(to); 
+            nights = Math.max(0, (end - start) / (1000 * 60 * 60 * 24)); 
+        } 
+        document.getElementById('nightsCount').innerText = nights; 
+        let total = nights * (currentVilla.price / 1000); 
+        document.getElementById('totalPrice').innerText = total.toLocaleString(); 
+    }
 
-    function changeLanguage() { isArabic = !isArabic; document.body.style.direction = isArabic ? 'rtl' : 'ltr'; document.getElementById('pageTitle').innerText = isArabic ? '🏡 الفلل' : '🏡 Villas'; document.getElementById('filterTitle').innerHTML = isArabic ? '🔍 فلتر حسب السعر (ألف روبيه)' : '🔍 Filter by price (Thousand IDR)'; document.getElementById('langBtn').innerText = isArabic ? 'English' : 'العربية'; document.getElementById('mapNote').innerText = isArabic ? '📍 اضغط على أي دبوس للانتقال إلى الفيلا' : '📍 Click on any pin to go to the villa'; document.querySelector('.price-btn[data-price="all"]').innerText = isArabic ? 'الكل' : 'All'; renderVillas(); renderPins(); }
+    function setupFilter() { 
+        document.querySelectorAll('.price-btn').forEach(btn => { 
+            btn.addEventListener('click', () => { 
+                document.querySelectorAll('.price-btn').forEach(b => b.classList.remove('active')); 
+                btn.classList.add('active'); 
+                currentFilter = btn.getAttribute('data-price'); 
+                renderVillas(); 
+                renderPins(); 
+            }); 
+        }); 
+    }
+
+    function changeLanguage() { 
+        isArabic = !isArabic; 
+        document.body.style.direction = isArabic ? 'rtl' : 'ltr'; 
+        document.getElementById('pageTitle').innerText = isArabic ? '🏡 الفلل' : '🏡 Villas'; 
+        document.getElementById('filterTitle').innerHTML = isArabic ? '🔍 فلتر حسب السعر (ألف روبيه)' : '🔍 Filter by price (Thousand IDR)'; 
+        document.getElementById('langBtn').innerText = isArabic ? 'English' : 'العربية'; 
+        document.getElementById('mapNote').innerText = isArabic ? '📍 اضغط على أي دبوس للانتقال إلى الفيلا' : '📍 Click on any pin to go to the villa'; 
+        document.querySelector('.price-btn[data-price="all"]').innerText = isArabic ? 'الكل' : 'All'; 
+        renderVillas(); 
+        renderPins(); 
+    }
 
     const adminBtn = document.getElementById('adminModeBtn');
-    function enterAdminMode() { let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); if(pwd === ADMIN_PASSWORD) { isAdmin = true; adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; adminBtn.style.background = '#DAA520'; renderVillas(); alert('✅ تم تفعيل وضع الأدمن. أزرار الإدارة ظاهرة الآن.'); } else if(pwd !== null) { alert('❌ كلمة السر خطأ'); } }
-    function exitAdminMode() { isAdmin = false; adminBtn.innerHTML = '🔐 دخول الأدمن'; adminBtn.style.background = '#8B0000'; renderVillas(); alert('✅ تم الخروج من وضع الأدمن.'); }
-    adminBtn.addEventListener('click', () => { if(isAdmin) exitAdminMode(); else enterAdminMode(); });
+    function enterAdminMode() { 
+        let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); 
+        if(pwd === ADMIN_PASSWORD) { 
+            isAdmin = true; 
+            adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; 
+            adminBtn.style.background = '#DAA520'; 
+            renderVillas(); 
+            alert('✅ تم تفعيل وضع الأدمن. أزرار الإدارة ظاهرة الآن.'); 
+        } else if(pwd !== null) { 
+            alert('❌ كلمة السر خطأ'); 
+        } 
+    }
+    
+    function exitAdminMode() { 
+        isAdmin = false; 
+        adminBtn.innerHTML = '🔐 دخول الأدمن'; 
+        adminBtn.style.background = '#8B0000'; 
+        renderVillas(); 
+        alert('✅ تم الخروج من وضع الأدمن.'); 
+    }
+    
+    adminBtn.addEventListener('click', () => { 
+        if(isAdmin) exitAdminMode(); 
+        else enterAdminMode(); 
+    });
 
     document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
     document.getElementById('langBtn').addEventListener('click', changeLanguage);
-    document.getElementById('dateFrom').addEventListener('change', calculateOrder); 
+    document.getElementById('dateFrom').addEventListener('change', calculateOrder);
     document.getElementById('dateTo').addEventListener('change', calculateOrder);
-    document.getElementById('confirmOrderBtn').addEventListener('click', () => { 
-        let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, fromDate = document.getElementById('dateFrom').value, toDate = document.getElementById('dateTo').value, persons = document.getElementById('persons').value, notes = document.getElementById('notes').value, nights = document.getElementById('nightsCount').innerText, total = document.getElementById('totalPrice').innerText; 
-        if (!name || !phone || !fromDate || !toDate) { alert(isArabic ? 'الرجاء ملء جميع البيانات المطلوبة' : 'Please fill all required fields'); return; } 
-        let message = `*${isArabic ? 'حجز جديد من تطبيق PuncakGO' : 'New Booking from PuncakGO App'}*%0A`; 
-        message += `%0A*${isArabic ? 'الفيلا:' : 'Villa:'}* ${isArabic ? currentVilla.name_ar : currentVilla.name_en}%0A`; 
-        message += `*${isArabic ? 'الاسم:' : 'Name:'}* ${name}%0A`; 
-        message += `*${isArabic ? 'الجوال:' : 'Phone:'}* ${phone}%0A`; 
-        message += `*${isArabic ? 'تاريخ الوصول:' : 'Check-in:'}* ${fromDate}%0A`; 
-        message += `*${isArabic ? 'تاريخ المغادرة:' : 'Check-out:'}* ${toDate}%0A`; 
-        message += `*${isArabic ? 'عدد الليالي:' : 'Nights:'}* ${nights}%0A`; 
-        message += `*${isArabic ? 'عدد الأشخاص:' : 'Persons:'}* ${persons}%0A`; 
-        message += `*${isArabic ? 'السعر الإجمالي:' : 'Total Price:'}* ${total} ${isArabic ? 'ألف روبيه' : 'K IDR'}%0A`; 
-        if (notes) message += `*${isArabic ? 'ملاحظات:' : 'Notes:'}* ${notes}%0A`; 
-        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank'); 
-        document.getElementById('orderModal').style.display = 'none'; 
-        document.getElementById('custName').value = ''; document.getElementById('custPhone').value = ''; document.getElementById('dateFrom').value = ''; document.getElementById('dateTo').value = ''; document.getElementById('notes').value = ''; 
-        alert(isArabic ? 'تم إرسال طلب الحجز بنجاح' : 'Booking request sent successfully'); 
+    
+    document.getElementById('confirmOrderBtn').addEventListener('click', () => {
+        let name = document.getElementById('custName').value;
+        let phone = document.getElementById('custPhone').value;
+        let fromDate = document.getElementById('dateFrom').value;
+        let toDate = document.getElementById('dateTo').value;
+        let persons = document.getElementById('persons').value;
+        let notes = document.getElementById('notes').value;
+        let nights = document.getElementById('nightsCount').innerText;
+        let total = document.getElementById('totalPrice').innerText;
+        
+        if (!name || !phone || !fromDate || !toDate) {
+            alert(isArabic ? 'الرجاء ملء جميع البيانات المطلوبة' : 'Please fill all required fields');
+            return;
+        }
+        
+        let message = `*${isArabic ? 'حجز جديد من تطبيق PuncakGO' : 'New Booking from PuncakGO App'}*%0A`;
+        message += `%0A*${isArabic ? 'الفيلا:' : 'Villa:'}* ${isArabic ? currentVilla.name_ar : currentVilla.name_en}%0A`;
+        message += `*${isArabic ? 'الاسم:' : 'Name:'}* ${name}%0A`;
+        message += `*${isArabic ? 'الجوال:' : 'Phone:'}* ${phone}%0A`;
+        message += `*${isArabic ? 'تاريخ الوصول:' : 'Check-in:'}* ${fromDate}%0A`;
+        message += `*${isArabic ? 'تاريخ المغادرة:' : 'Check-out:'}* ${toDate}%0A`;
+        message += `*${isArabic ? 'عدد الليالي:' : 'Nights:'}* ${nights}%0A`;
+        message += `*${isArabic ? 'عدد الأشخاص:' : 'Persons:'}* ${persons}%0A`;
+        message += `*${isArabic ? 'السعر الإجمالي:' : 'Total Price:'}* ${total} ${isArabic ? 'ألف روبيه' : 'K IDR'}%0A`;
+        if (notes) message += `*${isArabic ? 'ملاحظات:' : 'Notes:'}* ${notes}%0A`;
+        
+        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+        document.getElementById('orderModal').style.display = 'none';
+        document.getElementById('custName').value = '';
+        document.getElementById('custPhone').value = '';
+        document.getElementById('dateFrom').value = '';
+        document.getElementById('dateTo').value = '';
+        document.getElementById('notes').value = '';
+        alert(isArabic ? 'تم إرسال طلب الحجز بنجاح' : 'Booking request sent successfully');
     });
-    document.getElementById('cancelOrderBtn').addEventListener('click', () => { document.getElementById('orderModal').style.display = 'none'; });
-    document.getElementById('closeImageModal').addEventListener('click', () => { document.getElementById('imageModal').style.display = 'none'; });
-    document.getElementById('closeFeaturesModal').addEventListener('click', () => { document.getElementById('featuresModal').style.display = 'none'; });
+    
+    document.getElementById('cancelOrderBtn').addEventListener('click', () => {
+        document.getElementById('orderModal').style.display = 'none';
+    });
+    
+    document.getElementById('closeImageModal').addEventListener('click', () => {
+        document.getElementById('imageModal').style.display = 'none';
+    });
+    
+    document.getElementById('closeFeaturesModal').addEventListener('click', () => {
+        document.getElementById('featuresModal').style.display = 'none';
+    });
     
     window.addEventListener('resize', () => { renderPins(); });
     window.addEventListener('load', () => { setTimeout(renderPins, 200); });
 
-    loadVillasData();
-    renderVillas();
-    setupFilter();
-    setTimeout(() => renderPins(), 300);
+    // ========== تحميل الصفحة ==========
+    async function init() {
+        await uploadToSupabase();
+        await loadVillasFromSupabase();
+        setupFilter();
+        setTimeout(() => renderPins(), 300);
+    }
+    
+    init();
 </script>
 </body>
 </html>
