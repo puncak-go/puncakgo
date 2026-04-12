@@ -36,7 +36,6 @@
         .villa-price { margin: 10px 0; }
         .villa-price span { color: #DAA520; font-weight: bold; font-size: 1.2rem; }
         
-        /* المواصفات - مخفية في البداية */
         .features {
             display: none;
             flex-wrap: wrap;
@@ -54,7 +53,6 @@
             border: 1px solid #DAA520;
         }
         
-        /* زر عرض المواصفات */
         .show-features-btn {
             background: #DAA520;
             color: white;
@@ -88,7 +86,6 @@
         .feature-item .remove-feature { background: red; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; margin-left: 5px; font-size: 10px; }
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 20px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
         
-        /* ترتيب الفلل يمين/يسار */
         .villas-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -99,13 +96,8 @@
         .villas-grid .villa-card:nth-child(4n+3) { order: 2; }
         .villas-grid .villa-card:nth-child(4n+4) { order: 1; }
         
-        /* استايلات الجوال */
         @media (max-width: 768px) {
-            .villas-grid {
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-                gap: 12px !important;
-            }
+            .villas-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
             .villas-grid .villa-card { order: 0 !important; }
             .slider img { height: 180px !important; }
             .villa-name { font-size: 0.85rem !important; }
@@ -156,7 +148,6 @@
     <button id="adminModeBtn" class="admin-toggle-btn">🔐 دخول الأدمن</button>
 </div>
 
-<!-- مودال الحجز -->
 <div id="orderModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">📝 حجز فيلا</h3>
@@ -176,7 +167,6 @@
     </div>
 </div>
 
-<!-- مودال إدارة الصور -->
 <div id="imageModal" class="modal">
     <div class="modal-content">
         <h3 id="imageModalTitle">📷 إدارة صور الفيلا</h3>
@@ -189,7 +179,6 @@
     </div>
 </div>
 
-<!-- مودال إدارة المواصفات -->
 <div id="featuresModal" class="modal">
     <div class="modal-content">
         <h3 id="featuresModalTitle">📋 إدارة المواصفات</h3>
@@ -203,8 +192,10 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-    // ------------------- بيانات الفلل (25 فيلا) -------------------
+    // بيانات الفلل الثابتة (ستبقى ظاهرة)
     let villasData = [
         { id: 1, name_ar: "فيلا النخيل 1", name_en: "Al Nakheel Villa 1", price: 500000, price_range: 500, pos_x: 10, pos_y: 15, images: ["https://picsum.photos/id/104/400/250", "https://picsum.photos/id/106/400/250"], features_ar: ["🏊 مسبح خاص", "📶 واي فاي مجاني", "🅿️ موقف خاص"], features_en: ["🏊 Private Pool", "📶 Free WiFi", "🅿️ Private Parking"] },
         { id: 2, name_ar: "فيلا النخيل 2", name_en: "Al Nakheel Villa 2", price: 500000, price_range: 500, pos_x: 25, pos_y: 18, images: ["https://picsum.photos/id/104/400/250", "https://picsum.photos/id/116/400/250"], features_ar: ["🏊 مسبح خاص", "📶 واي فاي", "🍳 مطبخ متكامل"], features_en: ["🏊 Private Pool", "📶 WiFi", "🍳 Full Kitchen"] },
@@ -239,6 +230,14 @@
     let isAdmin = false;
     let currentEditVillaId = null;
     const ADMIN_PASSWORD = "admin123";
+
+    // Supabase Client (بدون تعارض)
+    const supabaseClient = window.supabase.createClient(
+        'https://nynusiouhgjmjpunfpod.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik'
+    );
+    
+    console.log('✅ Supabase client ready, villas displayed from local data');
 
     function loadVillasData() { let saved = localStorage.getItem('villasData'); if(saved) villasData = JSON.parse(saved); }
     function saveVillasData() { localStorage.setItem('villasData', JSON.stringify(villasData)); }
@@ -363,7 +362,7 @@
 
     document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
     document.getElementById('langBtn').addEventListener('click', changeLanguage);
-    document.getElementById('dateFrom').addEventListener('change', calculateOrder); 
+    document.getElementById('dateFrom').addEventListener('change', calculateOrder);
     document.getElementById('dateTo').addEventListener('change', calculateOrder);
     document.getElementById('confirmOrderBtn').addEventListener('click', () => { 
         let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, fromDate = document.getElementById('dateFrom').value, toDate = document.getElementById('dateTo').value, persons = document.getElementById('persons').value, notes = document.getElementById('notes').value, nights = document.getElementById('nightsCount').innerText, total = document.getElementById('totalPrice').innerText; 
@@ -395,21 +394,5 @@
     setupFilter();
     setTimeout(() => renderPins(), 300);
 </script>
-  <!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-    // Supabase config
-    const SUPABASE_URL = 'https://nynusiouhgjmjpunfpod.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    // دالة لحفظ التعديلات في Supabase (تضاف لاحقاً)
-    async function saveVillaToSupabase(villa) {
-        console.log('سيتم حفظ الفيلا', villa.id, 'في Supabase قريباً');
-    }
-    
-    console.log('✅ Supabase جاهز، الفلل تظهر من البيانات المحلية');
-</script>  
 </body>
 </html>
