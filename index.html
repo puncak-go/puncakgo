@@ -68,15 +68,19 @@
                 <div class="field-text" data-ar="✨ خدمات أخرى" data-en="✨ Other Services">✨ خدمات أخرى</div>
             </div>
 
-            <!-- سلايدر -->
-            <div class="slider-container">
-                <h3 data-ar="📸 العروضات" data-en="📸 Offers">📸 العروضات</h3>
-                <div class="slider" id="slider"></div>
+            <!-- سلايدر - مخفي في البداية -->
+            <div id="sliderSection" style="display: none;">
+                <div class="slider-container">
+                    <h3 data-ar="📸 العروضات" data-en="📸 Offers">📸 العروضات</h3>
+                    <div class="slider" id="slider"></div>
+                </div>
             </div>
 
-            <!-- الديسكفر -->
-            <h3 data-ar="🌟 اكتشف" data-en="🌟 Discover">🌟 اكتشف</h3>
-            <div id="discover-container"></div>
+            <!-- الديسكفر - مخفي في البداية -->
+            <div id="discoverSection" style="display: none;">
+                <h3 data-ar="🌟 اكتشف" data-en="🌟 Discover">🌟 اكتشف</h3>
+                <div id="discover-container"></div>
+            </div>
         </div>
 
         <!-- صفحة رحلاتي -->
@@ -278,12 +282,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    // Supabase Client
     const SUPABASE_URL = 'https://nynusiouhgjmjpunfpod.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    console.log('✅ Supabase client ready');
+    console.log('✅ Supabase ready');
 </script>
 
 <script src="script.js"></script>
