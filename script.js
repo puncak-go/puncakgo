@@ -1,4 +1,10 @@
-// بيانات السلايدر
+// Supabase Client (نفس الذي في صفحة الفيزا)
+const supabaseClient = window.supabase.createClient(
+    'https://nynusiouhgjmjpunfpod.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik'
+);
+
+// بيانات السلايدر (10 حقول) - سيتم تحميلها من Supabase
 let sliderItems = [
     { type: 'image', url: 'https://picsum.photos/id/1015/300/200' },
     { type: 'image', url: 'https://picsum.photos/id/104/300/200' },
@@ -12,7 +18,7 @@ let sliderItems = [
     { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
 ];
 
-// بيانات الديسكفر
+// بيانات الديسكفر (9 حقول)
 let discoverData = [
     { type: 'big', contentUrl: 'https://picsum.photos/id/15/600/300', labelAr: 'منتجع الجبل', labelEn: 'Mountain Resort' },
     { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو استكشافي 1', labelEn: 'Exploration Video 1' },
@@ -29,6 +35,150 @@ let bookings = [];
 const ADMIN_PASSWORD = "admin123";
 let isArabic = true;
 let isAdminLoggedIn = false;
+
+// ========== دوال Supabase ==========
+
+// تحميل السلايدر من Supabase
+async function loadSliderFromSupabase() {
+    try {
+        const { data, error } = await supabaseClient.from('slider_items').select('*').order('id', { ascending: true });
+        if (error) throw error;
+        if (data && data.length === 10) {
+            sliderItems = data.map(item => ({ type: item.type, url: item.url }));
+            localStorage.setItem('sliderItems', JSON.stringify(sliderItems));
+        }
+    } catch(e) { console.error('Error loading slider:', e); }
+}
+
+// حفظ السلايدر في Supabase
+async function saveSliderToSupabase() {
+    for (let i = 0; i < sliderItems.length; i++) {
+        try {
+            await supabaseClient.from('slider_items').upsert({
+                id: i + 1,
+                type: sliderItems[i].type,
+                url: sliderItems[i].url
+            });
+        } catch(e) { console.error('Error saving slider item', i, e); }
+    }
+}
+
+// تحميل الديسكفر من Supabase
+async function loadDiscoverFromSupabase() {
+    try {
+        const { data, error } = await supabaseClient.from('discover_items').select('*').order('id', { ascending: true });
+        if (error) throw error;
+        if (data && data.length === 9) {
+            discoverData = data.map(item => ({ 
+                type: item.type, 
+                contentUrl: item.content_url, 
+                labelAr: item.label_ar, 
+                labelEn: item.label_en 
+            }));
+            localStorage.setItem('discoverData', JSON.stringify(discoverData));
+        }
+    } catch(e) { console.error('Error loading discover:', e); }
+}
+
+// حفظ الديسكفر في Supabase
+async function saveDiscoverToSupabase() {
+    for (let i = 0; i < discoverData.length; i++) {
+        try {
+            await supabaseClient.from('discover_items').upsert({
+                id: i + 1,
+                type: discoverData[i].type,
+                content_url: discoverData[i].contentUrl,
+                label_ar: discoverData[i].labelAr,
+                label_en: discoverData[i].labelEn
+            });
+        } catch(e) { console.error('Error saving discover item', i, e); }
+    }
+}
+
+// تحميل الحجوزات من Supabase
+async function loadBookingsFromSupabase() {
+    try {
+        const { data, error } = await supabaseClient.from('bookings').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        if (data) {
+            bookings = data;
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+        }
+    } catch(e) { console.error('Error loading bookings:', e); }
+}
+
+// حفظ حجز جديد في Supabase
+async function saveBookingToSupabase(booking) {
+    try {
+        const { error } = await supabaseClient.from('bookings').insert({
+            name: booking.name,
+            phone: booking.phone,
+            notes: booking.notes,
+            created_at: booking.date
+        });
+        if (error) throw error;
+    } catch(e) { console.error('Error saving booking:', e); }
+}
+
+// تحميل بيانات المستخدم من Supabase
+async function loadUserProfileFromSupabase() {
+    try {
+        const { data, error } = await supabaseClient.from('user_profiles').select('*').limit(1);
+        if (error) throw error;
+        if (data && data[0]) {
+            localStorage.setItem('userFullName', data[0].full_name);
+            localStorage.setItem('userPhone', data[0].phone);
+            if (data[0].avatar) localStorage.setItem('userAvatar', data[0].avatar);
+        }
+    } catch(e) { console.error('Error loading user profile:', e); }
+}
+
+// حفظ بيانات المستخدم في Supabase
+async function saveUserProfileToSupabase(name, phone, avatar) {
+    try {
+        const { error } = await supabaseClient.from('user_profiles').upsert({
+            id: 1,
+            full_name: name,
+            phone: phone,
+            avatar: avatar || null,
+            updated_at: new Date().toISOString()
+        });
+        if (error) throw error;
+    } catch(e) { console.error('Error saving user profile:', e); }
+}
+
+// تحميل المفضلات من Supabase
+async function loadFavoritesFromSupabase() {
+    try {
+        const { data, error } = await supabaseClient.from('favorites').select('*');
+        if (error) throw error;
+        if (data) {
+            localStorage.setItem('favorites', JSON.stringify(data));
+        }
+    } catch(e) { console.error('Error loading favorites:', e); }
+}
+
+// حفظ مفضلة جديدة في Supabase
+async function saveFavoriteToSupabase(fav) {
+    try {
+        const { error } = await supabaseClient.from('favorites').insert({
+            id: fav.id,
+            name: fav.name,
+            type: fav.type
+        });
+        if (error) throw error;
+    } catch(e) { console.error('Error saving favorite:', e); }
+}
+
+// حذف مفضلة من Supabase
+async function deleteFavoriteFromSupabase(id) {
+    try {
+        const { error } = await supabaseClient.from('favorites').delete().eq('id', id);
+        if (error) throw error;
+    } catch(e) { console.error('Error deleting favorite:', e); }
+}
+
+// ========== الدوال الأساسية (نفس الأصل مع إضافة Supabase) ==========
 
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
@@ -50,10 +200,25 @@ function loadSavedData() {
     if(savedAdmin === 'true') isAdminLoggedIn = true;
 }
 
+async function loadAllDataFromSupabase() {
+    await loadSliderFromSupabase();
+    await loadDiscoverFromSupabase();
+    await loadBookingsFromSupabase();
+    await loadUserProfileFromSupabase();
+    await loadFavoritesFromSupabase();
+    renderSlider();
+    renderDiscover();
+    renderBookings();
+    renderProfileBookings();
+    loadFavorites();
+}
+
 function saveData() {
     localStorage.setItem('sliderItems', JSON.stringify(sliderItems));
     localStorage.setItem('discoverData', JSON.stringify(discoverData));
     localStorage.setItem('bookings', JSON.stringify(bookings));
+    saveSliderToSupabase();
+    saveDiscoverToSupabase();
 }
 
 function changeLanguage() {
@@ -105,11 +270,12 @@ function renderSlider() {
             html += `<div class="slider-item"><video src="${item.url}" muted></video></div>`;
         }
     });
-    document.getElementById('slider').innerHTML = html;
+    const sliderContainer = document.getElementById('slider');
+    if (sliderContainer) sliderContainer.innerHTML = html;
     document.querySelectorAll('.slider-item').forEach(el => el.addEventListener('click', () => openOrderModal()));
 }
 
-function updateSliderItem(index, type, file) {
+async function updateSliderItem(index, type, file) {
     if (index >= 1 && index <= sliderItems.length) {
         let url = URL.createObjectURL(file);
         sliderItems[index - 1] = { type: type, url: url };
@@ -146,9 +312,9 @@ function createDiscoverItem(item) {
         div.style.backgroundSize = 'cover';
     } else {
         div.className = 'small-card';
-        if (item.contentUrl.includes('.mp4')) {
+        if (item.contentUrl && item.contentUrl.includes('.mp4')) {
             div.innerHTML = `<video src="${item.contentUrl}" style="width:100%; height:100%; object-fit:cover;" muted></video>`;
-        } else {
+        } else if (item.contentUrl) {
             div.style.backgroundImage = `url('${item.contentUrl}')`;
             div.style.backgroundSize = 'cover';
         }
@@ -161,7 +327,7 @@ function createDiscoverItem(item) {
     return div;
 }
 
-function updateDiscoverItem(index, type, file, label) {
+async function updateDiscoverItem(index, type, file, label) {
     if (index >= 1 && index <= discoverData.length) {
         let url = URL.createObjectURL(file);
         discoverData[index - 1] = { type: type, contentUrl: url, labelAr: label, labelEn: label };
@@ -177,13 +343,15 @@ function openOrderModal() {
     document.getElementById('orderModal').style.display = 'flex';
 }
 
-document.getElementById('submitOrder')?.addEventListener('click', () => {
+document.getElementById('submitOrder')?.addEventListener('click', async () => {
     let name = document.getElementById('orderName').value;
     let phone = document.getElementById('orderPhone').value;
     let notes = document.getElementById('orderNotes').value;
     if (name && phone) {
-        bookings.push({ name, phone, notes, date: new Date().toLocaleString() });
+        let newBooking = { name, phone, notes, date: new Date().toLocaleString() };
+        bookings.push(newBooking);
         saveData();
+        await saveBookingToSupabase(newBooking);
         alert(isArabic ? 'تم إرسال طلبك' : 'Order sent');
         document.getElementById('orderModal').style.display = 'none';
         document.getElementById('orderName').value = '';
@@ -277,12 +445,14 @@ function loadUserData() {
     document.getElementById('profileName').innerText = savedName || (isArabic ? 'أحمد محمد' : 'Ahmed Mohamed');
 }
 
-document.getElementById('saveProfileBtn')?.addEventListener('click', () => {
+document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
     let name = document.getElementById('userFullName').value;
     let phone = document.getElementById('userPhone').value;
+    let avatar = document.getElementById('avatarImg').src;
     localStorage.setItem('userFullName', name);
     localStorage.setItem('userPhone', phone);
     document.getElementById('profileName').innerText = name;
+    await saveUserProfileToSupabase(name, phone, avatar);
     alert(isArabic ? 'تم الحفظ' : 'Saved');
 });
 
@@ -298,14 +468,14 @@ document.getElementById('editAvatarBtn')?.addEventListener('click', () => {
     let input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
         if (e.target.files[0]) {
-            let reader = new FileReader();
-            reader.onload = (ev) => {
-                document.getElementById('avatarImg').src = ev.target.result;
-                localStorage.setItem('userAvatar', ev.target.result);
-            };
-            reader.readAsDataURL(e.target.files[0]);
+            let base64 = await fileToBase64(e.target.files[0]);
+            document.getElementById('avatarImg').src = base64;
+            localStorage.setItem('userAvatar', base64);
+            let name = document.getElementById('userFullName').value;
+            let phone = document.getElementById('userPhone').value;
+            await saveUserProfileToSupabase(name, phone, base64);
         }
     };
     input.click();
@@ -388,11 +558,12 @@ function loadFavorites() {
         html += '</div>';
         container.innerHTML = html;
         document.querySelectorAll('.remove-fav').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', async () => {
                 let id = btn.getAttribute('data-id');
                 let favs = JSON.parse(localStorage.getItem('favorites') || '[]');
                 favs = favs.filter(f => f.id != id);
                 localStorage.setItem('favorites', JSON.stringify(favs));
+                await deleteFavoriteFromSupabase(id);
                 loadFavorites();
             });
         });
@@ -469,12 +640,13 @@ document.getElementById('updateDiscoverItem')?.addEventListener('click', async (
     }
 });
 
+// ========== التهيئة النهائية ==========
 let savedAvatar = localStorage.getItem('userAvatar');
-if (savedAvatar) document.getElementById('avatarImg').src = savedAvatar;
+if (savedAvatar && document.getElementById('avatarImg')) document.getElementById('avatarImg').src = savedAvatar;
 let savedName2 = localStorage.getItem('userFullName');
-if (savedName2) {
+if (savedName2 && document.getElementById('userFullName')) {
     document.getElementById('userFullName').value = savedName2;
-    document.getElementById('profileName').innerText = savedName2;
+    if (document.getElementById('profileName')) document.getElementById('profileName').innerText = savedName2;
 }
 let savedAdmin2 = localStorage.getItem('isAdminLoggedIn');
 if (savedAdmin2 === 'true') {
@@ -486,12 +658,15 @@ if (savedAdmin2 === 'true') {
     }, 100);
 }
 
+// تحميل البيانات من Supabase أولاً ثم من localStorage كنسخة احتياطية
 loadSavedData();
-renderSlider();
-renderDiscover();
-renderBookings();
-changeLanguage();
-setupCollapsibleCards();
-loadUserData();
-renderProfileBookings();
-loadFavorites();
+loadAllDataFromSupabase().then(() => {
+    renderSlider();
+    renderDiscover();
+    renderBookings();
+    changeLanguage();
+    setupCollapsibleCards();
+    loadUserData();
+    renderProfileBookings();
+    loadFavorites();
+});
