@@ -106,7 +106,7 @@ body {
     100% { transform: translateX(-100%); }
 }
 
-/* ========== الحقول الرئيسية (يمين - وسط - يسار) ========== */
+/* ========== الحقول الرئيسية ========== */
 .three-fields {
     display: flex;
     flex-wrap: nowrap;
@@ -136,10 +136,10 @@ body {
     font-size: 1.2rem;
 }
 
-/* ترتيب الحروف: خدمات الفيزا (يسار) - جولات (وسط) - فلل (يمين) */
-.field-card:nth-child(1) { order: 3; } /* فلل - يمين */
-.field-card:nth-child(2) { order: 2; } /* جولات - وسط */
-.field-card:nth-child(3) { order: 1; } /* فيزا - يسار */
+/* ترتيب الحقول: فلل (يمين) - جولات (وسط) - فيزا (يسار) */
+.field-card:nth-child(1) { order: 3; }
+.field-card:nth-child(2) { order: 2; }
+.field-card:nth-child(3) { order: 1; }
 
 /* ========== الحقل العريض ========== */
 .wide-field {
@@ -565,49 +565,7 @@ body {
         font-size: 0.8rem;
     }
     
-    .discover-row {
-        flex-direction: column;
-    }
-    
-    .discover-row .big-card {
-        order: 0 !important;
-        flex: none;
-    }
-    
-    .discover-row .small-cards {
-        order: 0 !important;
-        flex: none;
-        flex-direction: row;
-        gap: 15px;
-    }
-    
-    .small-cards .small-card {
-        flex: 1;
-    }
-    
-    .share-buttons {
-        flex-direction: column;
-    }
-    
-    .top-bar {
-        padding: 8px 12px;
-    }
-    
-    .currency-box, .lang-switch {
-        padding: 5px 12px;
-        font-size: 0.8rem;
-    }
-    
-    .promo-bar {
-        padding: 8px 12px;
-    }
-    
-    .promo-marquee {
-        font-size: 0.8rem;
-    }
-}
-/* ========== ترتيب الديسكفر في الجوال (كبير + صغيرين جنبه) ========== */
-@media (max-width: 768px) {
+    /* ترتيب الديسكفر في الجوال */
     .discover-row {
         display: flex !important;
         flex-direction: row !important;
@@ -615,52 +573,11 @@ body {
         gap: 12px !important;
     }
     
-    /* الكبير يكون له عرض أكبر */
-    .discover-row .big-card {
-        flex: 2 !important;
-        min-height: 180px !important;
-        order: 0 !important;
-    }
-    
-    /* الحقلين الصغار يكونون في عمود */
-    .discover-row .small-cards {
-        flex: 1 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-        order: 0 !important;
-    }
-    
-    /* كل صغير يكون له ارتفاع مناسب */
-    .small-cards .small-card {
-        flex: 1 !important;
-        min-height: 85px !important;
-    }
-    
-    /* الصفوف الفردية: الكبير على اليسار، الصغيرين على اليمين */
-    .discover-row:nth-child(odd) .big-card {
-        order: 0 !important;
-    }
-    .discover-row:nth-child(odd) .small-cards {
-        order: 0 !important;
-    }
-}
-/* ========== ترتيب الديسكفر في الجوال (كبير + 2 صغار) ========== */
-@media (max-width: 768px) {
-    .discover-row {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        gap: 12px !important;
-    }
-    
-    /* الكبير */
     .discover-row .big-card {
         flex: 2 !important;
         min-height: 180px !important;
     }
     
-    /* الحقلين الصغار */
     .discover-row .small-cards {
         flex: 1 !important;
         display: flex !important;
@@ -687,5 +604,26 @@ body {
     }
     .discover-row:nth-child(even) .small-cards {
         order: 1 !important;
+    }
+    
+    .share-buttons {
+        flex-direction: column;
+    }
+    
+    .top-bar {
+        padding: 8px 12px;
+    }
+    
+    .currency-box, .lang-switch {
+        padding: 5px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .promo-bar {
+        padding: 8px 12px;
+    }
+    
+    .promo-marquee {
+        font-size: 0.8rem;
     }
 }
