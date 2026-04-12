@@ -276,15 +276,16 @@
 
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    // اتصال PocketBase
-    const pb = new PocketBase('http://127.0.0.1:8090');
+
+<script>
+    // Supabase Client
+    const SUPABASE_URL = 'https://nynusiouhgjmjpunfpod.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
-    // اختبار الاتصال
-    pb.health.check().then(() => {
-        console.log('✅ PocketBase connected');
-    }).catch(err => {
-        console.log('❌ PocketBase error:', err);
-    });
+    console.log('✅ Supabase client ready');
 </script>
+
+<script src="script.js"></script>
 </body>
 </html>
