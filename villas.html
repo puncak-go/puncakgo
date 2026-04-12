@@ -395,5 +395,21 @@
     setupFilter();
     setTimeout(() => renderPins(), 300);
 </script>
+  <!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    // Supabase config
+    const SUPABASE_URL = 'https://nynusiouhgjmjpunfpod.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    // دالة لحفظ التعديلات في Supabase (تضاف لاحقاً)
+    async function saveVillaToSupabase(villa) {
+        console.log('سيتم حفظ الفيلا', villa.id, 'في Supabase قريباً');
+    }
+    
+    console.log('✅ Supabase جاهز، الفلل تظهر من البيانات المحلية');
+</script>  
 </body>
 </html>
