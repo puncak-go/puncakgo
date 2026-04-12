@@ -1,16 +1,4 @@
-// ========== متغيرات PocketBase ==========
-let pb;
-try {
-    pb = new PocketBase('http://127.0.0.1:8090');
-    pb.health.check().then(() => {
-        console.log('✅ PocketBase connected');
-    }).catch(err => {
-        console.log('❌ PocketBase error:', err);
-    });
-} catch(e) {
-    console.log('⚠️ PocketBase not loaded yet');
-}
-
+// بيانات السلايدر
 let sliderItems = [
     { type: 'image', url: 'https://picsum.photos/id/1015/300/200' },
     { type: 'image', url: 'https://picsum.photos/id/104/300/200' },
@@ -24,6 +12,7 @@ let sliderItems = [
     { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4' }
 ];
 
+// بيانات الديسكفر
 let discoverData = [
     { type: 'big', contentUrl: 'https://picsum.photos/id/15/600/300', labelAr: 'منتجع الجبل', labelEn: 'Mountain Resort' },
     { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو استكشافي 1', labelEn: 'Exploration Video 1' },
@@ -120,9 +109,9 @@ function renderSlider() {
     document.querySelectorAll('.slider-item').forEach(el => el.addEventListener('click', () => openOrderModal()));
 }
 
-async function updateSliderItem(index, type, file) {
+function updateSliderItem(index, type, file) {
     if (index >= 1 && index <= sliderItems.length) {
-        let url = await fileToBase64(file);
+        let url = URL.createObjectURL(file);
         sliderItems[index - 1] = { type: type, url: url };
         saveData();
         renderSlider();
@@ -154,12 +143,14 @@ function createDiscoverItem(item) {
     if (item.type === 'big') {
         div.className = 'big-card';
         div.style.backgroundImage = `url('${item.contentUrl}')`;
+        div.style.backgroundSize = 'cover';
     } else {
         div.className = 'small-card';
         if (item.contentUrl.includes('.mp4')) {
             div.innerHTML = `<video src="${item.contentUrl}" style="width:100%; height:100%; object-fit:cover;" muted></video>`;
         } else {
             div.style.backgroundImage = `url('${item.contentUrl}')`;
+            div.style.backgroundSize = 'cover';
         }
     }
     let label = document.createElement('span');
@@ -170,9 +161,9 @@ function createDiscoverItem(item) {
     return div;
 }
 
-async function updateDiscoverItem(index, type, file, label) {
+function updateDiscoverItem(index, type, file, label) {
     if (index >= 1 && index <= discoverData.length) {
-        let url = await fileToBase64(file);
+        let url = URL.createObjectURL(file);
         discoverData[index - 1] = { type: type, contentUrl: url, labelAr: label, labelEn: label };
         saveData();
         renderDiscover();
@@ -495,33 +486,6 @@ if (savedAdmin2 === 'true') {
     }, 100);
 }
 
-// ========== دوال PocketBase ==========
-async function saveBookingToPocketBase(bookingData) {
-    if (!pb) {
-        console.error('❌ PocketBase not initialized');
-        alert('PocketBase not connected');
-        return null;
-    }
-    try {
-        const record = await pb.collection('bookings').create({
-            type: bookingData.type,
-            itemId: bookingData.itemId,
-            name: bookingData.name,
-            phone: bookingData.phone,
-            date: bookingData.date,
-            notes: bookingData.notes
-        });
-        console.log('✅ Booking saved:', record);
-        alert('تم حفظ الحجز بنجاح');
-        return record;
-    } catch (error) {
-        console.error('❌ Booking error:', error);
-        alert('حدث خطأ في حفظ الحجز: ' + error.message);
-        return null;
-    }
-}
-
-// ========== تحميل الصفحة ==========
 loadSavedData();
 renderSlider();
 renderDiscover();
