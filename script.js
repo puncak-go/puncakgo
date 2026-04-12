@@ -1,10 +1,10 @@
-// Supabase Client (نفس الذي في صفحة الفيزا)
+// Supabase Client
 const supabaseClient = window.supabase.createClient(
     'https://nynusiouhgjmjpunfpod.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik'
 );
 
-// بيانات السلايدر (10 حقول) - سيتم تحميلها من Supabase
+// بيانات السلايدر (10 حقول)
 let sliderItems = [
     { type: 'image', url: 'https://picsum.photos/id/1015/300/200' },
     { type: 'image', url: 'https://picsum.photos/id/104/300/200' },
@@ -38,7 +38,6 @@ let isAdminLoggedIn = false;
 
 // ========== دوال Supabase ==========
 
-// تحميل السلايدر من Supabase
 async function loadSliderFromSupabase() {
     try {
         const { data, error } = await supabaseClient.from('slider_items').select('*').order('id', { ascending: true });
@@ -50,7 +49,6 @@ async function loadSliderFromSupabase() {
     } catch(e) { console.error('Error loading slider:', e); }
 }
 
-// حفظ السلايدر في Supabase
 async function saveSliderToSupabase() {
     for (let i = 0; i < sliderItems.length; i++) {
         try {
@@ -63,7 +61,6 @@ async function saveSliderToSupabase() {
     }
 }
 
-// تحميل الديسكفر من Supabase
 async function loadDiscoverFromSupabase() {
     try {
         const { data, error } = await supabaseClient.from('discover_items').select('*').order('id', { ascending: true });
@@ -80,7 +77,6 @@ async function loadDiscoverFromSupabase() {
     } catch(e) { console.error('Error loading discover:', e); }
 }
 
-// حفظ الديسكفر في Supabase
 async function saveDiscoverToSupabase() {
     for (let i = 0; i < discoverData.length; i++) {
         try {
@@ -95,7 +91,6 @@ async function saveDiscoverToSupabase() {
     }
 }
 
-// تحميل الحجوزات من Supabase
 async function loadBookingsFromSupabase() {
     try {
         const { data, error } = await supabaseClient.from('bookings').select('*').order('created_at', { ascending: false });
@@ -107,7 +102,6 @@ async function loadBookingsFromSupabase() {
     } catch(e) { console.error('Error loading bookings:', e); }
 }
 
-// حفظ حجز جديد في Supabase
 async function saveBookingToSupabase(booking) {
     try {
         const { error } = await supabaseClient.from('bookings').insert({
@@ -120,7 +114,6 @@ async function saveBookingToSupabase(booking) {
     } catch(e) { console.error('Error saving booking:', e); }
 }
 
-// تحميل بيانات المستخدم من Supabase
 async function loadUserProfileFromSupabase() {
     try {
         const { data, error } = await supabaseClient.from('user_profiles').select('*').limit(1);
@@ -133,7 +126,6 @@ async function loadUserProfileFromSupabase() {
     } catch(e) { console.error('Error loading user profile:', e); }
 }
 
-// حفظ بيانات المستخدم في Supabase
 async function saveUserProfileToSupabase(name, phone, avatar) {
     try {
         const { error } = await supabaseClient.from('user_profiles').upsert({
@@ -147,7 +139,6 @@ async function saveUserProfileToSupabase(name, phone, avatar) {
     } catch(e) { console.error('Error saving user profile:', e); }
 }
 
-// تحميل المفضلات من Supabase
 async function loadFavoritesFromSupabase() {
     try {
         const { data, error } = await supabaseClient.from('favorites').select('*');
@@ -158,7 +149,6 @@ async function loadFavoritesFromSupabase() {
     } catch(e) { console.error('Error loading favorites:', e); }
 }
 
-// حفظ مفضلة جديدة في Supabase
 async function saveFavoriteToSupabase(fav) {
     try {
         const { error } = await supabaseClient.from('favorites').insert({
@@ -170,7 +160,6 @@ async function saveFavoriteToSupabase(fav) {
     } catch(e) { console.error('Error saving favorite:', e); }
 }
 
-// حذف مفضلة من Supabase
 async function deleteFavoriteFromSupabase(id) {
     try {
         const { error } = await supabaseClient.from('favorites').delete().eq('id', id);
@@ -178,7 +167,7 @@ async function deleteFavoriteFromSupabase(id) {
     } catch(e) { console.error('Error deleting favorite:', e); }
 }
 
-// ========== الدوال الأساسية (نفس الأصل مع إضافة Supabase) ==========
+// ========== الدوال الأساسية ==========
 
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
@@ -262,17 +251,32 @@ function changeLanguage() {
 }
 
 function renderSlider() {
-    let html = '';
-    sliderItems.forEach((item) => {
-        if (item.type === 'image') {
-            html += `<div class="slider-item"><img src="${item.url}"></div>`;
-        } else {
-            html += `<div class="slider-item"><video src="${item.url}" muted></video></div>`;
-        }
-    });
     const sliderContainer = document.getElementById('slider');
-    if (sliderContainer) sliderContainer.innerHTML = html;
-    document.querySelectorAll('.slider-item').forEach(el => el.addEventListener('click', () => openOrderModal()));
+    if (!sliderContainer) return;
+    sliderContainer.innerHTML = '';
+    
+    for (let i = 0; i < sliderItems.length; i++) {
+        const item = sliderItems[i];
+        let div = document.createElement('div');
+        div.className = 'slider-item';
+        
+        if (item.type === 'image') {
+            div.style.backgroundImage = `url('${item.url}')`;
+            div.style.backgroundSize = 'cover';
+            div.style.backgroundPosition = 'center';
+        } else {
+            const video = document.createElement('video');
+            video.src = item.url;
+            video.muted = true;
+            video.style.width = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'cover';
+            div.appendChild(video);
+        }
+        
+        div.addEventListener('click', () => openOrderModal());
+        sliderContainer.appendChild(div);
+    }
 }
 
 async function updateSliderItem(index, type, file) {
@@ -291,10 +295,13 @@ function renderDiscover() {
     let container = document.getElementById('discover-container');
     if (!container) return;
     container.innerHTML = '';
+    
     for (let i = 0; i < discoverData.length; i += 3) {
         let row = document.createElement('div');
         row.className = 'discover-row';
+        
         if (discoverData[i]) row.appendChild(createDiscoverItem(discoverData[i]));
+        
         let smallDiv = document.createElement('div');
         smallDiv.className = 'small-cards';
         if (discoverData[i+1]) smallDiv.appendChild(createDiscoverItem(discoverData[i+1]));
@@ -306,19 +313,29 @@ function renderDiscover() {
 
 function createDiscoverItem(item) {
     let div = document.createElement('div');
+    
     if (item.type === 'big') {
         div.className = 'big-card';
         div.style.backgroundImage = `url('${item.contentUrl}')`;
         div.style.backgroundSize = 'cover';
+        div.style.backgroundPosition = 'center';
     } else {
         div.className = 'small-card';
-        if (item.contentUrl && item.contentUrl.includes('.mp4')) {
-            div.innerHTML = `<video src="${item.contentUrl}" style="width:100%; height:100%; object-fit:cover;" muted></video>`;
+        if (item.contentUrl && (item.contentUrl.includes('.mp4') || item.contentUrl.includes('blob:'))) {
+            const video = document.createElement('video');
+            video.src = item.contentUrl;
+            video.muted = true;
+            video.style.width = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'cover';
+            div.appendChild(video);
         } else if (item.contentUrl) {
             div.style.backgroundImage = `url('${item.contentUrl}')`;
             div.style.backgroundSize = 'cover';
+            div.style.backgroundPosition = 'center';
         }
     }
+    
     let label = document.createElement('span');
     label.className = 'card-label';
     label.innerText = isArabic ? item.labelAr : item.labelEn;
@@ -658,7 +675,6 @@ if (savedAdmin2 === 'true') {
     }, 100);
 }
 
-// تحميل البيانات من Supabase أولاً ثم من localStorage كنسخة احتياطية
 loadSavedData();
 loadAllDataFromSupabase().then(() => {
     renderSlider();
