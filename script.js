@@ -13,12 +13,23 @@ const ADMIN_PASSWORD = "admin123";
 let isArabic = true;
 let isAdminLoggedIn = false;
 
+// عناصر سيتم إظهارها عند دخول الأدمن
+const adminElements = ['sliderSection', 'discoverSection'];
+
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
+    });
+}
+
+// إظهار/إخفاء عناصر الأدمن
+function toggleAdminElements(show) {
+    adminElements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = show ? 'block' : 'none';
     });
 }
 
@@ -33,7 +44,6 @@ async function loadSavedData() {
     else if (slider && slider.length > 0) {
         sliderItems = slider.map(s => ({ type: s.type, url: s.url }));
     } else {
-        // بيانات افتراضية إذا كانت فارغة
         sliderItems = [
             { type: 'image', url: 'https://picsum.photos/id/1015/300/200' },
             { type: 'image', url: 'https://picsum.photos/id/104/300/200' },
@@ -62,7 +72,6 @@ async function loadSavedData() {
             labelEn: d.label_en
         }));
     } else {
-        // بيانات افتراضية إذا كانت فارغة
         discoverData = [
             { type: 'big', contentUrl: 'https://picsum.photos/id/15/600/300', labelAr: 'منتجع الجبل', labelEn: 'Mountain Resort' },
             { type: 'small', contentUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', labelAr: 'فيديو استكشافي 1', labelEn: 'Exploration Video 1' },
@@ -81,7 +90,12 @@ async function loadSavedData() {
     if(savedBookings) bookings = JSON.parse(savedBookings);
     
     let savedAdmin = localStorage.getItem('isAdminLoggedIn');
-    if(savedAdmin === 'true') isAdminLoggedIn = true;
+    if(savedAdmin === 'true') {
+        isAdminLoggedIn = true;
+        toggleAdminElements(true);
+    } else {
+        toggleAdminElements(false);
+    }
 }
 
 function saveData() {
@@ -144,7 +158,6 @@ function renderSlider() {
 async function updateSliderItem(index, type, file) {
     if (index >= 1 && index <= sliderItems.length) {
         let url = await fileToBase64(file);
-        // تحديث في Supabase
         const { data: sliderList } = await supabase.from('slider').select('*').order('order_index', { ascending: true });
         if (sliderList && sliderList[index - 1]) {
             await supabase.from('slider').update({ type: type, url: url }).eq('id', sliderList[index - 1].id);
@@ -443,6 +456,7 @@ document.getElementById('adminLoginBtn')?.addEventListener('click', () => {
         localStorage.setItem('isAdminLoggedIn', 'true');
         document.getElementById('adminLoginDiv').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
+        toggleAdminElements(true);
         alert(isArabic ? 'تم الدخول كأدمن' : 'Admin login');
     } else {
         alert(isArabic ? 'كلمة سر خطأ' : 'Wrong password');
@@ -454,6 +468,7 @@ document.getElementById('logoutAdminBtn')?.addEventListener('click', () => {
     localStorage.setItem('isAdminLoggedIn', 'false');
     document.getElementById('adminLoginDiv').style.display = 'block';
     document.getElementById('adminPanel').style.display = 'none';
+    toggleAdminElements(false);
     alert(isArabic ? 'تم الخروج' : 'Logged out');
 });
 
@@ -523,7 +538,6 @@ if (savedAdmin2 === 'true') {
     }, 100);
 }
 
-// ========== تحميل الصفحة ==========
 (async function init() {
     await loadSavedData();
     renderSlider();
