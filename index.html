@@ -275,19 +275,5 @@
 </div>
 
 <script src="script.js"></script>
-<!-- PocketBase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/pocketbase@0.21.1/dist/pocketbase.umd.js"></script>
-
-<script>
-    // اتصال PocketBase
-    const pb = new PocketBase('http://127.0.0.1:8090');
-    
-    // اختبار الاتصال
-    pb.health.check().then(() => {
-        console.log('✅ PocketBase connected');
-    }).catch(err => {
-        console.log('❌ PocketBase error:', err);
-    });
-</script>
 </body>
 </html>
