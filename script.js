@@ -4,6 +4,33 @@ const supabaseClient = window.supabase.createClient(
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik'
 );
 
+console.log('🟡 Supabase Client initialized');
+
+// ========== اختبار الاتصال بقاعدة البيانات ==========
+(async function testSupabaseConnection() {
+    console.log('🟡 جاري اختبار الاتصال بـ Supabase...');
+    
+    try {
+        const { data: sliderData, error: sliderError } = await supabaseClient.from('slider_items').select('count');
+        if (sliderError) throw sliderError;
+        console.log('✅ الاتصال بقاعدة البيانات ناجح!');
+        console.log('📊 جدول slider_items موجود ويعمل');
+        
+        const { data: discoverData, error: discoverError } = await supabaseClient.from('discover_items').select('count');
+        if (discoverError) throw discoverError;
+        console.log('📊 جدول discover_items موجود ويعمل');
+        
+        const { data: bookingsData, error: bookingsError } = await supabaseClient.from('bookings').select('count');
+        if (bookingsError) throw bookingsError;
+        console.log('📊 جدول bookings موجود ويعمل');
+        
+        console.log('🎉 Supabase يعمل بشكل طبيعي!');
+        
+    } catch (error) {
+        console.error('❌ فشل الاتصال بـ Supabase:', error.message);
+    }
+})();
+
 // بيانات السلايدر (10 حقول)
 let sliderItems = [
     { type: 'image', url: 'https://picsum.photos/id/1015/300/200' },
@@ -42,36 +69,50 @@ async function uploadFileToStorage(file, folder) {
     const fileName = `${folder}_${Date.now()}.${fileExt}`;
     const filePath = `${folder}/${fileName}`;
     
-    const { data, error } = await supabaseClient.storage
-        .from('puncakgo-media')
-        .upload(filePath, file);
+    console.log('🚀 بدء رفع الملف:', fileName);
+    console.log('📁 المسار:', filePath);
     
-    if (error) {
-        console.error('Error uploading file:', error);
+    try {
+        const { data, error } = await supabaseClient.storage
+            .from('puncakgo-media')
+            .upload(filePath, file);
+        
+        if (error) {
+            console.error('❌ خطأ في رفع الملف:', error);
+            return null;
+        }
+        
+        console.log('✅ تم رفع الملف بنجاح');
+        
+        const { data: urlData } = supabaseClient.storage
+            .from('puncakgo-media')
+            .getPublicUrl(filePath);
+        
+        console.log('🔗 الرابط العام:', urlData.publicUrl);
+        return urlData.publicUrl;
+    } catch(e) {
+        console.error('❌ استثناء في رفع الملف:', e);
         return null;
     }
-    
-    const { data: urlData } = supabaseClient.storage
-        .from('puncakgo-media')
-        .getPublicUrl(filePath);
-    
-    return urlData.publicUrl;
 }
 
 // ========== دوال Supabase للجداول ==========
 
 async function loadSliderFromSupabase() {
     try {
+        console.log('🟡 جاري تحميل بيانات السلايدر من Supabase...');
         const { data, error } = await supabaseClient.from('slider_items').select('*').order('id', { ascending: true });
         if (error) throw error;
         if (data && data.length === 10) {
             sliderItems = data.map(item => ({ type: item.type, url: item.url }));
             localStorage.setItem('sliderItems', JSON.stringify(sliderItems));
+            console.log('✅ تم تحميل 10 حقول للسلايدر');
         }
-    } catch(e) { console.error('Error loading slider:', e); }
+    } catch(e) { console.error('❌ Error loading slider:', e); }
 }
 
 async function saveSliderToSupabase() {
+    console.log('🟡 جاري حفظ بيانات السلايدر في Supabase...');
     for (let i = 0; i < sliderItems.length; i++) {
         try {
             await supabaseClient.from('slider_items').upsert({
@@ -79,12 +120,14 @@ async function saveSliderToSupabase() {
                 type: sliderItems[i].type,
                 url: sliderItems[i].url
             });
-        } catch(e) { console.error('Error saving slider item', i, e); }
+        } catch(e) { console.error('❌ Error saving slider item', i, e); }
     }
+    console.log('✅ تم حفظ السلايدر');
 }
 
 async function loadDiscoverFromSupabase() {
     try {
+        console.log('🟡 جاري تحميل بيانات الديسكفر من Supabase...');
         const { data, error } = await supabaseClient.from('discover_items').select('*').order('id', { ascending: true });
         if (error) throw error;
         if (data && data.length === 9) {
@@ -95,11 +138,13 @@ async function loadDiscoverFromSupabase() {
                 labelEn: item.label_en 
             }));
             localStorage.setItem('discoverData', JSON.stringify(discoverData));
+            console.log('✅ تم تحميل 9 حقول للديسكفر');
         }
-    } catch(e) { console.error('Error loading discover:', e); }
+    } catch(e) { console.error('❌ Error loading discover:', e); }
 }
 
 async function saveDiscoverToSupabase() {
+    console.log('🟡 جاري حفظ بيانات الديسكفر في Supabase...');
     for (let i = 0; i < discoverData.length; i++) {
         try {
             await supabaseClient.from('discover_items').upsert({
@@ -109,23 +154,27 @@ async function saveDiscoverToSupabase() {
                 label_ar: discoverData[i].labelAr,
                 label_en: discoverData[i].labelEn
             });
-        } catch(e) { console.error('Error saving discover item', i, e); }
+        } catch(e) { console.error('❌ Error saving discover item', i, e); }
     }
+    console.log('✅ تم حفظ الديسكفر');
 }
 
 async function loadBookingsFromSupabase() {
     try {
+        console.log('🟡 جاري تحميل الحجوزات من Supabase...');
         const { data, error } = await supabaseClient.from('bookings').select('*').order('created_at', { ascending: false });
         if (error) throw error;
         if (data) {
             bookings = data;
             localStorage.setItem('bookings', JSON.stringify(bookings));
+            console.log('✅ تم تحميل', bookings.length, 'حجز');
         }
-    } catch(e) { console.error('Error loading bookings:', e); }
+    } catch(e) { console.error('❌ Error loading bookings:', e); }
 }
 
 async function saveBookingToSupabase(booking) {
     try {
+        console.log('🟡 جاري حفظ حجز جديد:', booking.name);
         const { error } = await supabaseClient.from('bookings').insert({
             name: booking.name,
             phone: booking.phone,
@@ -133,23 +182,27 @@ async function saveBookingToSupabase(booking) {
             created_at: booking.date
         });
         if (error) throw error;
-    } catch(e) { console.error('Error saving booking:', e); }
+        console.log('✅ تم حفظ الحجز');
+    } catch(e) { console.error('❌ Error saving booking:', e); }
 }
 
 async function loadUserProfileFromSupabase() {
     try {
+        console.log('🟡 جاري تحميل بيانات المستخدم من Supabase...');
         const { data, error } = await supabaseClient.from('user_profiles').select('*').limit(1);
         if (error) throw error;
         if (data && data[0]) {
             localStorage.setItem('userFullName', data[0].full_name);
             localStorage.setItem('userPhone', data[0].phone);
             if (data[0].avatar) localStorage.setItem('userAvatar', data[0].avatar);
+            console.log('✅ تم تحميل بيانات المستخدم');
         }
-    } catch(e) { console.error('Error loading user profile:', e); }
+    } catch(e) { console.error('❌ Error loading user profile:', e); }
 }
 
 async function saveUserProfileToSupabase(name, phone, avatar) {
     try {
+        console.log('🟡 جاري حفظ بيانات المستخدم...');
         const { error } = await supabaseClient.from('user_profiles').upsert({
             id: 1,
             full_name: name,
@@ -158,24 +211,29 @@ async function saveUserProfileToSupabase(name, phone, avatar) {
             updated_at: new Date().toISOString()
         });
         if (error) throw error;
-    } catch(e) { console.error('Error saving user profile:', e); }
+        console.log('✅ تم حفظ بيانات المستخدم');
+    } catch(e) { console.error('❌ Error saving user profile:', e); }
 }
 
 async function loadFavoritesFromSupabase() {
     try {
+        console.log('🟡 جاري تحميل المفضلات من Supabase...');
         const { data, error } = await supabaseClient.from('favorites').select('*');
         if (error) throw error;
         if (data) {
             localStorage.setItem('favorites', JSON.stringify(data));
+            console.log('✅ تم تحميل', data.length, 'مفضلة');
         }
-    } catch(e) { console.error('Error loading favorites:', e); }
+    } catch(e) { console.error('❌ Error loading favorites:', e); }
 }
 
 async function deleteFavoriteFromSupabase(id) {
     try {
+        console.log('🟡 جاري حذف مفضلة:', id);
         const { error } = await supabaseClient.from('favorites').delete().eq('id', id);
         if (error) throw error;
-    } catch(e) { console.error('Error deleting favorite:', e); }
+        console.log('✅ تم حذف المفضلة');
+    } catch(e) { console.error('❌ Error deleting favorite:', e); }
 }
 
 // ========== الدوال الأساسية ==========
@@ -291,6 +349,8 @@ function renderSlider() {
 }
 
 async function updateSliderItem(index, type, file) {
+    console.log('🟡 جاري تحديث الحقل رقم', index, 'نوعه:', type);
+    
     if (index >= 1 && index <= sliderItems.length) {
         let url;
         if (type === 'image') {
@@ -303,8 +363,10 @@ async function updateSliderItem(index, type, file) {
             sliderItems[index - 1] = { type: type, url: url };
             saveData();
             renderSlider();
+            console.log('✅ تم تحديث الحقل', index);
             alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
         } else {
+            console.error('❌ فشل رفع الملف');
             alert(isArabic ? 'فشل رفع الملف' : 'File upload failed');
         }
     } else {
@@ -366,6 +428,8 @@ function createDiscoverItem(item) {
 }
 
 async function updateDiscoverItem(index, type, file, label) {
+    console.log('🟡 جاري تحديث حقل الديسكفر رقم', index, 'نوعه:', type);
+    
     if (index >= 1 && index <= discoverData.length) {
         let url;
         if (type === 'big') {
@@ -378,8 +442,10 @@ async function updateDiscoverItem(index, type, file, label) {
             discoverData[index - 1] = { type: type, contentUrl: url, labelAr: label, labelEn: label };
             saveData();
             renderDiscover();
+            console.log('✅ تم تحديث حقل الديسكفر', index);
             alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
         } else {
+            console.error('❌ فشل رفع الملف');
             alert(isArabic ? 'فشل رفع الملف' : 'File upload failed');
         }
     } else {
@@ -652,6 +718,7 @@ document.getElementById('sliderFileInput')?.addEventListener('change', (e) => {
     if (e.target.files[0]) {
         selectedSliderFile = e.target.files[0];
         document.getElementById('sliderFileName').innerText = selectedSliderFile.name;
+        console.log('📁 تم اختيار ملف للسلايدر:', selectedSliderFile.name);
     }
 });
 document.getElementById('updateSliderItem')?.addEventListener('click', async () => {
@@ -674,6 +741,7 @@ document.getElementById('discoverFileInput')?.addEventListener('change', (e) => 
     if (e.target.files[0]) {
         selectedDiscoverFile = e.target.files[0];
         document.getElementById('discoverFileName').innerText = selectedDiscoverFile.name;
+        console.log('📁 تم اختيار ملف للديسكفر:', selectedDiscoverFile.name);
     }
 });
 document.getElementById('updateDiscoverItem')?.addEventListener('click', async () => {
@@ -719,4 +787,5 @@ loadAllDataFromSupabase().then(() => {
     loadUserData();
     renderProfileBookings();
     loadFavorites();
+    console.log('🎉 تم تحميل جميع البيانات بنجاح!');
 });
