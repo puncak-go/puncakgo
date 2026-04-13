@@ -36,7 +36,29 @@ const ADMIN_PASSWORD = "admin123";
 let isArabic = true;
 let isAdminLoggedIn = false;
 
-// ========== دوال Supabase ==========
+// ========== رفع الملف إلى Supabase Storage ==========
+async function uploadFileToStorage(file, folder) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${folder}_${Date.now()}.${fileExt}`;
+    const filePath = `${folder}/${fileName}`;
+    
+    const { data, error } = await supabaseClient.storage
+        .from('puncakgo-media')
+        .upload(filePath, file);
+    
+    if (error) {
+        console.error('Error uploading file:', error);
+        return null;
+    }
+    
+    const { data: urlData } = supabaseClient.storage
+        .from('puncakgo-media')
+        .getPublicUrl(filePath);
+    
+    return urlData.publicUrl;
+}
+
+// ========== دوال Supabase للجداول ==========
 
 async function loadSliderFromSupabase() {
     try {
@@ -147,17 +169,6 @@ async function loadFavoritesFromSupabase() {
             localStorage.setItem('favorites', JSON.stringify(data));
         }
     } catch(e) { console.error('Error loading favorites:', e); }
-}
-
-async function saveFavoriteToSupabase(fav) {
-    try {
-        const { error } = await supabaseClient.from('favorites').insert({
-            id: fav.id,
-            name: fav.name,
-            type: fav.type
-        });
-        if (error) throw error;
-    } catch(e) { console.error('Error saving favorite:', e); }
 }
 
 async function deleteFavoriteFromSupabase(id) {
@@ -281,11 +292,21 @@ function renderSlider() {
 
 async function updateSliderItem(index, type, file) {
     if (index >= 1 && index <= sliderItems.length) {
-        let url = URL.createObjectURL(file);
-        sliderItems[index - 1] = { type: type, url: url };
-        saveData();
-        renderSlider();
-        alert(isArabic ? 'تم التحديث' : 'Updated');
+        let url;
+        if (type === 'image') {
+            url = await uploadFileToStorage(file, 'slider');
+        } else {
+            url = URL.createObjectURL(file);
+        }
+        
+        if (url) {
+            sliderItems[index - 1] = { type: type, url: url };
+            saveData();
+            renderSlider();
+            alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
+        } else {
+            alert(isArabic ? 'فشل رفع الملف' : 'File upload failed');
+        }
     } else {
         alert(isArabic ? 'رقم غير صحيح (1-10)' : 'Invalid number (1-10)');
     }
@@ -346,11 +367,21 @@ function createDiscoverItem(item) {
 
 async function updateDiscoverItem(index, type, file, label) {
     if (index >= 1 && index <= discoverData.length) {
-        let url = URL.createObjectURL(file);
-        discoverData[index - 1] = { type: type, contentUrl: url, labelAr: label, labelEn: label };
-        saveData();
-        renderDiscover();
-        alert(isArabic ? 'تم التحديث' : 'Updated');
+        let url;
+        if (type === 'big') {
+            url = await uploadFileToStorage(file, 'discover');
+        } else {
+            url = URL.createObjectURL(file);
+        }
+        
+        if (url) {
+            discoverData[index - 1] = { type: type, contentUrl: url, labelAr: label, labelEn: label };
+            saveData();
+            renderDiscover();
+            alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
+        } else {
+            alert(isArabic ? 'فشل رفع الملف' : 'File upload failed');
+        }
     } else {
         alert(isArabic ? 'رقم غير صحيح (1-9)' : 'Invalid number (1-9)');
     }
@@ -487,12 +518,15 @@ document.getElementById('editAvatarBtn')?.addEventListener('click', () => {
     input.accept = 'image/*';
     input.onchange = async (e) => {
         if (e.target.files[0]) {
-            let base64 = await fileToBase64(e.target.files[0]);
-            document.getElementById('avatarImg').src = base64;
-            localStorage.setItem('userAvatar', base64);
-            let name = document.getElementById('userFullName').value;
-            let phone = document.getElementById('userPhone').value;
-            await saveUserProfileToSupabase(name, phone, base64);
+            let avatarUrl = await uploadFileToStorage(e.target.files[0], 'avatars');
+            if (avatarUrl) {
+                document.getElementById('avatarImg').src = avatarUrl;
+                localStorage.setItem('userAvatar', avatarUrl);
+                let name = document.getElementById('userFullName').value;
+                let phone = document.getElementById('userPhone').value;
+                await saveUserProfileToSupabase(name, phone, avatarUrl);
+                alert(isArabic ? 'تم تحديث الصورة' : 'Avatar updated');
+            }
         }
     };
     input.click();
