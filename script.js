@@ -14,15 +14,14 @@ console.log('🟡 Supabase Client initialized');
         const { data: sliderData, error: sliderError } = await supabaseClient.from('slider_items').select('count');
         if (sliderError) throw sliderError;
         console.log('✅ الاتصال بقاعدة البيانات ناجح!');
-        console.log('📊 جدول slider_items موجود ويعمل');
         
         const { data: discoverData, error: discoverError } = await supabaseClient.from('discover_items').select('count');
         if (discoverError) throw discoverError;
-        console.log('📊 جدول discover_items موجود ويعمل');
+        console.log('📊 جدول discover_items موجود');
         
         const { data: bookingsData, error: bookingsError } = await supabaseClient.from('bookings').select('count');
         if (bookingsError) throw bookingsError;
-        console.log('📊 جدول bookings موجود ويعمل');
+        console.log('📊 جدول bookings موجود');
         
         console.log('🎉 Supabase يعمل بشكل طبيعي!');
         
@@ -62,39 +61,6 @@ let bookings = [];
 const ADMIN_PASSWORD = "admin123";
 let isArabic = true;
 let isAdminLoggedIn = false;
-
-// ========== رفع الملف إلى Supabase Storage ==========
-async function uploadFileToStorage(file, folder) {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${folder}_${Date.now()}.${fileExt}`;
-    const filePath = `${folder}/${fileName}`;
-    
-    console.log('🚀 بدء رفع الملف:', fileName);
-    console.log('📁 المسار:', filePath);
-    
-    try {
-        const { data, error } = await supabaseClient.storage
-            .from('puncakgo-media')
-            .upload(filePath, file);
-        
-        if (error) {
-            console.error('❌ خطأ في رفع الملف:', error);
-            return null;
-        }
-        
-        console.log('✅ تم رفع الملف بنجاح');
-        
-        const { data: urlData } = supabaseClient.storage
-            .from('puncakgo-media')
-            .getPublicUrl(filePath);
-        
-        console.log('🔗 الرابط العام:', urlData.publicUrl);
-        return urlData.publicUrl;
-    } catch(e) {
-        console.error('❌ استثناء في رفع الملف:', e);
-        return null;
-    }
-}
 
 // ========== دوال Supabase للجداول ==========
 
@@ -333,6 +299,7 @@ function renderSlider() {
             div.style.backgroundImage = `url('${item.url}')`;
             div.style.backgroundSize = 'cover';
             div.style.backgroundPosition = 'center';
+            div.style.backgroundRepeat = 'no-repeat';
         } else {
             const video = document.createElement('video');
             video.src = item.url;
@@ -350,11 +317,38 @@ function renderSlider() {
 
 async function updateSliderItem(index, type, file) {
     console.log('🟡 جاري تحديث الحقل رقم', index, 'نوعه:', type);
+    console.log('📁 اسم الملف:', file.name);
+    console.log('📏 حجم الملف:', (file.size / 1024).toFixed(2), 'KB');
     
     if (index >= 1 && index <= sliderItems.length) {
         let url;
+        
         if (type === 'image') {
-            url = await uploadFileToStorage(file, 'slider');
+            const fileExt = file.name.split('.').pop();
+            const fileName = `slider_${Date.now()}.${fileExt}`;
+            const filePath = `slider/${fileName}`;
+            
+            console.log('🚀 جاري الرفع إلى:', filePath);
+            
+            const { data, error } = await supabaseClient.storage
+                .from('puncakgo-media')
+                .upload(filePath, file);
+            
+            if (error) {
+                console.error('❌ خطأ في الرفع:', error);
+                alert('فشل الرفع: ' + error.message);
+                return;
+            }
+            
+            console.log('✅ تم الرفع بنجاح');
+            
+            const { data: urlData } = supabaseClient.storage
+                .from('puncakgo-media')
+                .getPublicUrl(filePath);
+            
+            url = urlData.publicUrl;
+            console.log('🔗 الرابط:', url);
+            
         } else {
             url = URL.createObjectURL(file);
         }
@@ -366,7 +360,7 @@ async function updateSliderItem(index, type, file) {
             console.log('✅ تم تحديث الحقل', index);
             alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
         } else {
-            console.error('❌ فشل رفع الملف');
+            console.error('❌ لا يوجد رابط للملف');
             alert(isArabic ? 'فشل رفع الملف' : 'File upload failed');
         }
     } else {
@@ -402,6 +396,7 @@ function createDiscoverItem(item) {
         div.style.backgroundImage = `url('${item.contentUrl}')`;
         div.style.backgroundSize = 'cover';
         div.style.backgroundPosition = 'center';
+        div.style.backgroundRepeat = 'no-repeat';
     } else {
         div.className = 'small-card';
         if (item.contentUrl && (item.contentUrl.includes('.mp4') || item.contentUrl.includes('blob:'))) {
@@ -416,6 +411,7 @@ function createDiscoverItem(item) {
             div.style.backgroundImage = `url('${item.contentUrl}')`;
             div.style.backgroundSize = 'cover';
             div.style.backgroundPosition = 'center';
+            div.style.backgroundRepeat = 'no-repeat';
         }
     }
     
@@ -432,8 +428,33 @@ async function updateDiscoverItem(index, type, file, label) {
     
     if (index >= 1 && index <= discoverData.length) {
         let url;
+        
         if (type === 'big') {
-            url = await uploadFileToStorage(file, 'discover');
+            const fileExt = file.name.split('.').pop();
+            const fileName = `discover_${Date.now()}.${fileExt}`;
+            const filePath = `discover/${fileName}`;
+            
+            console.log('🚀 جاري الرفع إلى:', filePath);
+            
+            const { data, error } = await supabaseClient.storage
+                .from('puncakgo-media')
+                .upload(filePath, file);
+            
+            if (error) {
+                console.error('❌ خطأ في الرفع:', error);
+                alert('فشل الرفع: ' + error.message);
+                return;
+            }
+            
+            console.log('✅ تم الرفع بنجاح');
+            
+            const { data: urlData } = supabaseClient.storage
+                .from('puncakgo-media')
+                .getPublicUrl(filePath);
+            
+            url = urlData.publicUrl;
+            console.log('🔗 الرابط:', url);
+            
         } else {
             url = URL.createObjectURL(file);
         }
@@ -445,7 +466,7 @@ async function updateDiscoverItem(index, type, file, label) {
             console.log('✅ تم تحديث حقل الديسكفر', index);
             alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
         } else {
-            console.error('❌ فشل رفع الملف');
+            console.error('❌ لا يوجد رابط للملف');
             alert(isArabic ? 'فشل رفع الملف' : 'File upload failed');
         }
     } else {
@@ -584,15 +605,31 @@ document.getElementById('editAvatarBtn')?.addEventListener('click', () => {
     input.accept = 'image/*';
     input.onchange = async (e) => {
         if (e.target.files[0]) {
-            let avatarUrl = await uploadFileToStorage(e.target.files[0], 'avatars');
-            if (avatarUrl) {
-                document.getElementById('avatarImg').src = avatarUrl;
-                localStorage.setItem('userAvatar', avatarUrl);
-                let name = document.getElementById('userFullName').value;
-                let phone = document.getElementById('userPhone').value;
-                await saveUserProfileToSupabase(name, phone, avatarUrl);
-                alert(isArabic ? 'تم تحديث الصورة' : 'Avatar updated');
+            const file = e.target.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `avatar_${Date.now()}.${fileExt}`;
+            const filePath = `avatars/${fileName}`;
+            
+            const { data, error } = await supabaseClient.storage
+                .from('puncakgo-media')
+                .upload(filePath, file);
+            
+            if (error) {
+                alert('فشل رفع الصورة: ' + error.message);
+                return;
             }
+            
+            const { data: urlData } = supabaseClient.storage
+                .from('puncakgo-media')
+                .getPublicUrl(filePath);
+            
+            const avatarUrl = urlData.publicUrl;
+            document.getElementById('avatarImg').src = avatarUrl;
+            localStorage.setItem('userAvatar', avatarUrl);
+            let name = document.getElementById('userFullName').value;
+            let phone = document.getElementById('userPhone').value;
+            await saveUserProfileToSupabase(name, phone, avatarUrl);
+            alert(isArabic ? 'تم تحديث الصورة' : 'Avatar updated');
         }
     };
     input.click();
