@@ -73,6 +73,9 @@ async function loadSliderFromSupabase() {
             sliderItems = data.map(item => ({ type: item.type, url: item.url }));
             localStorage.setItem('sliderItems', JSON.stringify(sliderItems));
             console.log('✅ تم تحميل 10 حقول للسلايدر');
+        } else {
+            console.warn('⚠️ لم يتم العثور على 10 حقول في قاعدة البيانات، جاري حفظ البيانات الحالية.');
+            await saveSliderToSupabase(); // حفظ البيانات الحالية إذا كانت الجداول فارغة
         }
     } catch(e) { console.error('❌ Error loading slider:', e); }
 }
@@ -81,12 +84,13 @@ async function saveSliderToSupabase() {
     console.log('🟡 جاري حفظ بيانات السلايدر في Supabase...');
     for (let i = 0; i < sliderItems.length; i++) {
         try {
-            await supabaseClient.from('slider_items').upsert({
+            const { error } = await supabaseClient.from('slider_items').upsert({
                 id: i + 1,
                 type: sliderItems[i].type,
                 url: sliderItems[i].url
             });
-        } catch(e) { console.error('❌ Error saving slider item', i, e); }
+            if (error) throw error;
+        } catch(e) { console.error(`❌ Error saving slider item ${i+1}:`, e); }
     }
     console.log('✅ تم حفظ السلايدر');
 }
@@ -105,6 +109,9 @@ async function loadDiscoverFromSupabase() {
             }));
             localStorage.setItem('discoverData', JSON.stringify(discoverData));
             console.log('✅ تم تحميل 9 حقول للديسكفر');
+        } else {
+            console.warn('⚠️ لم يتم العثور على 9 حقول في قاعدة البيانات، جاري حفظ البيانات الحالية.');
+            await saveDiscoverToSupabase();
         }
     } catch(e) { console.error('❌ Error loading discover:', e); }
 }
@@ -113,14 +120,15 @@ async function saveDiscoverToSupabase() {
     console.log('🟡 جاري حفظ بيانات الديسكفر في Supabase...');
     for (let i = 0; i < discoverData.length; i++) {
         try {
-            await supabaseClient.from('discover_items').upsert({
+            const { error } = await supabaseClient.from('discover_items').upsert({
                 id: i + 1,
                 type: discoverData[i].type,
                 content_url: discoverData[i].contentUrl,
                 label_ar: discoverData[i].labelAr,
                 label_en: discoverData[i].labelEn
             });
-        } catch(e) { console.error('❌ Error saving discover item', i, e); }
+            if (error) throw error;
+        } catch(e) { console.error(`❌ Error saving discover item ${i+1}:`, e); }
     }
     console.log('✅ تم حفظ الديسكفر');
 }
@@ -355,7 +363,7 @@ async function updateSliderItem(index, type, file) {
         
         if (url) {
             sliderItems[index - 1] = { type: type, url: url };
-            saveData();
+            await saveData(); // تأكد من أن `saveData` هي دالة غير متزامنة (async)
             renderSlider();
             console.log('✅ تم تحديث الحقل', index);
             alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
@@ -461,7 +469,7 @@ async function updateDiscoverItem(index, type, file, label) {
         
         if (url) {
             discoverData[index - 1] = { type: type, contentUrl: url, labelAr: label, labelEn: label };
-            saveData();
+            await saveData();
             renderDiscover();
             console.log('✅ تم تحديث حقل الديسكفر', index);
             alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
