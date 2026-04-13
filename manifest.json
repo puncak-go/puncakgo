@@ -1,18 +1,18 @@
 {
   "name": "بونشاك جو",
   "short_name": "PuncakGo",
-  "start_url": "./index.html",
+  "start_url": "/puncakgo/index.html",
   "display": "standalone",
   "theme_color": "#FFD700",
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "./logo.jpg",
+      "src": "logo.jpg",
       "sizes": "192x192",
       "type": "image/jpeg"
     },
     {
-      "src": "./logo.jpg",
+      "src": "logo.jpg",
       "sizes": "512x512",
       "type": "image/jpeg"
     }
