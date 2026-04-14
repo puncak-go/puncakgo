@@ -119,6 +119,13 @@
     <div class="page-header">
         <button class="back-btn" id="backBtn">← رجوع</button>
         <h2 id="pageTitle">📄 خدمات الفيزا</h2>
+        <!-- ========== إضافة جديدة: قائمة العملات ========== -->
+        <select id="currencySelector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer;">
+            <option value="IDR" selected>🇮🇩 IDR - روبيه</option>
+            <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
+            <option value="USD">🇺🇸 USD - دولار أمريكي</option>
+        </select>
+        <!-- ========== انتهت الإضافة ========== -->
         <button class="lang-switch" id="langBtn">English</button>
     </div>
 
@@ -187,6 +194,23 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+    // ========== إضافة جديدة: العملات ==========
+    let currentCurrency = localStorage.getItem('preferredCurrency') || 'IDR';
+    function convertPrice(priceInKIDR) {
+        let priceInIDR = priceInKIDR * 1000;
+        if (currentCurrency === 'IDR') return priceInKIDR.toLocaleString() + ' IDR';
+        if (currentCurrency === 'SAR') return ((priceInIDR / 3800).toFixed(2)).toLocaleString() + ' SAR';
+        if (currentCurrency === 'USD') return ((priceInIDR / 15000).toFixed(2)).toLocaleString() + ' USD';
+    }
+    
+    document.getElementById('currencySelector').value = currentCurrency;
+    document.getElementById('currencySelector').addEventListener('change', (e) => {
+        currentCurrency = e.target.value;
+        localStorage.setItem('preferredCurrency', currentCurrency);
+        renderVisa();
+    });
+    // ========== نهاية الإضافة ==========
+
     // بيانات الفيزا (5 أنواع)
     let visaData = [
         { id: 1, nameAr: "فيزا سياحة", nameEn: "Tourist Visa", price: 500, duration: "30 يوم", 
@@ -259,11 +283,12 @@
             requirements.forEach(req => { reqHtml += `<li>✓ ${req}</li>`; });
             reqHtml += '</ul>';
             
+            // ========== تعديل عرض السعر لاستخدام convertPrice ==========
             card.innerHTML = `
                 <img src="${visa.img}" class="visa-img" onerror="this.src='https://picsum.photos/id/104/400/200'">
                 <div class="visa-info">
                     <div class="visa-name">${isArabic ? visa.nameAr : visa.nameEn}</div>
-                    <div class="visa-price">💰 <span>${visa.price.toLocaleString()}</span> ${isArabic ? 'ألف روبيه' : 'K IDR'}</div>
+                    <div class="visa-price">💰 <span data-original-price="${visa.price}">${convertPrice(visa.price)}</span></div>
                     <div class="visa-duration">⏱️ ${isArabic ? 'مدة الإقامة:' : 'Duration:'} ${visa.duration}</div>
                     <button class="show-requirements-btn" data-id="${visa.id}">📋 ${isArabic ? 'عرض المستندات المطلوبة' : 'Show Required Documents'}</button>
                     <div class="visa-requirements" id="requirements-${visa.id}">
@@ -274,6 +299,7 @@
                     ${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="edit" data-id="${visa.id}">✏️ تعديل</button></div>` : ''}
                 </div>
             `;
+            // ========== انتهى تعديل السعر ==========
             container.appendChild(card);
         });
         
