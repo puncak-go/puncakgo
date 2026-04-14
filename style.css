@@ -450,6 +450,7 @@ body {
 .share-buttons {
     display: flex;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
 .share-btn, .owner-btn, .support-btn {
@@ -543,6 +544,87 @@ body {
 
 .upload-btn {
     background: #4CAF50 !important;
+}
+
+/* ========== إضافات جديدة ========== */
+
+/* Dark Mode */
+body.dark-mode {
+    background: #121212;
+    color: #ffffff;
+}
+body.dark-mode .overlay,
+body.dark-mode .container {
+    background: #121212;
+}
+body.dark-mode .top-bar,
+body.dark-mode .field-card,
+body.dark-mode .wide-field,
+body.dark-mode .villa-card,
+body.dark-mode .tour-card,
+body.dark-mode .visa-card,
+body.dark-mode .service-card,
+body.dark-mode .profile-header,
+body.dark-mode .profile-card-collapsible,
+body.dark-mode .modal-content {
+    background: #1e1e1e;
+    color: #ffffff;
+    border-color: #DAA520;
+}
+body.dark-mode .feature,
+body.dark-mode .tour-feature,
+body.dark-mode .visa-requirements {
+    background: #2a2a2a;
+    color: #ffffff;
+}
+body.dark-mode .bottom-nav {
+    background: #1e1e1e;
+}
+body.dark-mode .nav-item {
+    color: #ffffff;
+}
+
+/* Toast Notifications */
+.toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    z-index: 9999;
+    animation: fadeInOut 3s ease;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+@keyframes fadeInOut {
+    0% { opacity: 0; bottom: 60px; }
+    15% { opacity: 1; bottom: 80px; }
+    85% { opacity: 1; bottom: 80px; }
+    100% { opacity: 0; bottom: 60px; }
+}
+
+/* Loading Spinner */
+.spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #DAA520;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 10000;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+}
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* استايلات الجوال */
