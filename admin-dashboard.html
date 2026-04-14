@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head><title>لوحة التحكم - PuncakGO</title>
+<style>
+    body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+    .stats { display: flex; gap: 20px; flex-wrap: wrap; }
+    .card { background: white; border-radius: 20px; padding: 20px; flex: 1; text-align: center; border-top: 4px solid #DAA520; }
+    .number { font-size: 2rem; font-weight: bold; color: #DAA520; }
+</style>
+</head>
+<body>
+<h2>📊 لوحة التحكم - PuncakGO</h2>
+<div class="stats" id="stats"></div>
+<script>
+    const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+    const total = bookings.length;
+    const today = new Date().toLocaleDateString();
+    const todayBookings = bookings.filter(b => b.date?.includes(today)).length;
+    document.getElementById('stats').innerHTML = `
+        <div class="card"><div class="number">${total}</div><div>إجمالي الحجوزات</div></div>
+        <div class="card"><div class="number">${todayBookings}</div><div>حجوزات اليوم</div></div>
+        <div class="card"><div class="number">${bookings.slice(-7).length}</div><div>آخر 7 أيام</div></div>
+    `;
+</script>
+</body>
+</html>
