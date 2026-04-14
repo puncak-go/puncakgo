@@ -1,3 +1,32 @@
+// ========== إضافة جديدة: العملات ==========
+let currentCurrency = localStorage.getItem('preferredCurrency') || 'IDR';
+const exchangeRates = { IDR: 1, SAR: 1/3800, USD: 1/15000 };
+
+function convertPrice(priceInIDR) {
+    if (currentCurrency === 'IDR') return priceInIDR.toLocaleString() + ' IDR';
+    if (currentCurrency === 'SAR') return ((priceInIDR / 3800).toFixed(2)).toLocaleString() + ' SAR';
+    if (currentCurrency === 'USD') return ((priceInIDR / 15000).toFixed(2)).toLocaleString() + ' USD';
+}
+
+function updateAllPricesOnPage() {
+    document.querySelectorAll('[data-original-price]').forEach(el => {
+        let original = parseInt(el.getAttribute('data-original-price'));
+        if (!isNaN(original)) el.innerText = convertPrice(original);
+    });
+}
+
+document.getElementById('currencySelector')?.addEventListener('change', (e) => {
+    currentCurrency = e.target.value;
+    localStorage.setItem('preferredCurrency', currentCurrency);
+    updateAllPricesOnPage();
+});
+
+// تحميل العملة المحفوظة
+if (document.getElementById('currencySelector')) {
+    document.getElementById('currencySelector').value = currentCurrency;
+}
+// ========== نهاية الإضافة ==========
+
 // Supabase Client
 const supabaseClient = window.supabase.createClient(
     'https://nynusiouhgjmjpunfpod.supabase.co',
@@ -75,7 +104,7 @@ async function loadSliderFromSupabase() {
             console.log('✅ تم تحميل 10 حقول للسلايدر');
         } else {
             console.warn('⚠️ لم يتم العثور على 10 حقول في قاعدة البيانات، جاري حفظ البيانات الحالية.');
-            await saveSliderToSupabase(); // حفظ البيانات الحالية إذا كانت الجداول فارغة
+            await saveSliderToSupabase();
         }
     } catch(e) { console.error('❌ Error loading slider:', e); }
 }
@@ -363,7 +392,7 @@ async function updateSliderItem(index, type, file) {
         
         if (url) {
             sliderItems[index - 1] = { type: type, url: url };
-            await saveData(); // تأكد من أن `saveData` هي دالة غير متزامنة (async)
+            await saveData();
             renderSlider();
             console.log('✅ تم تحديث الحقل', index);
             alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
