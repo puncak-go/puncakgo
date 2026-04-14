@@ -16,13 +16,18 @@
                 <div class="currency-box" id="currencyBtn">
                     <span data-ar="💰 صرف العملات" data-en="💰 Currency Exchange">💰 صرف العملات</span>
                 </div>
-                <!-- ========== إضافة جديدة: قائمة العملات ========== -->
-                <select id="currencySelector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer; margin-left: 10px;">
+                <select id="currencySelector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer;">
                     <option value="IDR" selected>🇮🇩 IDR - روبيه</option>
                     <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
                     <option value="USD">🇺🇸 USD - دولار أمريكي</option>
                 </select>
-                <!-- ========== انتهت الإضافة ========== -->
+                <button id="darkModeBtn" class="lang-switch" style="background: #333;">🌙</button>
+                <select id="googleTranslate" style="background: #DAA520; color: white; border: none; padding: 8px; border-radius: 30px;">
+                    <option value="ar">🇸🇦 العربية</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="id">🇮🇩 Indonesia</option>
+                    <option value="fr">🇫🇷 Français</option>
+                </select>
                 <button class="lang-switch" id="langBtn">English</button>
             </div>
 
@@ -56,9 +61,7 @@
 
             <div class="three-fields">
                 <div class="field-card" onclick="window.location.href='villas.html'">
-                    <!-- ========== إضافة جديدة: صورة ========== -->
                     <img src="https://picsum.photos/id/104/80/80" style="width: 50px; height: 50px; border-radius: 50%; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;">
-                    <!-- ========== انتهت الإضافة ========== -->
                     <div class="field-text" data-ar="🏡 فلل" data-en="🏡 Villas">🏡 فلل</div>
                 </div>
                 <div class="field-card" onclick="window.location.href='tours.html'">
@@ -188,6 +191,7 @@
                     <div class="share-buttons">
                         <button id="showQrBtn" class="share-btn" data-ar="📱 رمز QR" data-en="📱 QR Code">📱 رمز QR</button>
                         <button id="inviteFriendsBtn" class="share-btn" data-ar="👥 دعوة الأصدقاء" data-en="👥 Invite Friends">👥 دعوة الأصدقاء</button>
+                        <button id="shareAppBtn" class="share-btn">📢 مشاركة التطبيق</button>
                     </div>
                 </div>
             </div>
@@ -274,10 +278,16 @@
         <input type="text" id="orderName" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
         <input type="tel" id="orderPhone" data-ar-placeholder="رقم الجوال" data-en-placeholder="Phone number" placeholder="رقم الجوال">
         <textarea id="orderNotes" data-ar-placeholder="ملاحظات" data-en-placeholder="Notes" placeholder="ملاحظات"></textarea>
+        <div class="order-summary">
+            <input type="text" id="couponCode" placeholder="كود الخصم" style="width: 70%; display: inline-block;">
+            <button id="applyCouponBtn" style="width: 25%; display: inline-block;">تطبيق</button>
+        </div>
         <button id="submitOrder" data-ar="إرسال الطلب" data-en="Submit Order">إرسال الطلب</button>
         <button id="closeModal" class="cancel-btn" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
     </div>
 </div>
+
+<a href="https://wa.me/6281234567890?text=مرحباً، أحتاج مساعدة" target="_blank" style="position: fixed; bottom: 80px; right: 20px; background: #25D366; color: white; padding: 12px; border-radius: 50px; text-decoration: none; z-index: 99; font-weight: bold;">💬 واتساب</a>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
