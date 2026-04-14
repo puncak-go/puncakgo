@@ -81,6 +81,13 @@
     <div class="page-header">
         <button class="back-btn" id="backBtn">← رجوع</button>
         <h2 id="pageTitle">✨ خدمات أخرى</h2>
+        <!-- ========== إضافة جديدة: قائمة العملات ========== -->
+        <select id="currencySelector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer;">
+            <option value="IDR" selected>🇮🇩 IDR - روبيه</option>
+            <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
+            <option value="USD">🇺🇸 USD - دولار أمريكي</option>
+        </select>
+        <!-- ========== انتهت الإضافة ========== -->
         <button class="lang-switch" id="langBtn">English</button>
     </div>
 
@@ -153,6 +160,23 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+    // ========== إضافة جديدة: العملات ==========
+    let currentCurrency = localStorage.getItem('preferredCurrency') || 'IDR';
+    function convertPrice(priceInKIDR) {
+        let priceInIDR = priceInKIDR * 1000;
+        if (currentCurrency === 'IDR') return priceInKIDR.toLocaleString() + ' IDR';
+        if (currentCurrency === 'SAR') return ((priceInIDR / 3800).toFixed(2)).toLocaleString() + ' SAR';
+        if (currentCurrency === 'USD') return ((priceInIDR / 15000).toFixed(2)).toLocaleString() + ' USD';
+    }
+    
+    document.getElementById('currencySelector').value = currentCurrency;
+    document.getElementById('currencySelector').addEventListener('change', (e) => {
+        currentCurrency = e.target.value;
+        localStorage.setItem('preferredCurrency', currentCurrency);
+        renderServices();
+    });
+    // ========== نهاية الإضافة ==========
+
     let servicesData = [
         { id: 1, type: "restaurant", nameAr: "🍽️ مطعم عربي", nameEn: "🍽️ Arabic Restaurant", 
           descAr: "أشهى المأكولات العربية في بونشاك. جودة عالية وأسعار مناسبة.", 
