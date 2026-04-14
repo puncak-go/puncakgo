@@ -19,13 +19,97 @@ document.getElementById('currencySelector')?.addEventListener('change', (e) => {
     currentCurrency = e.target.value;
     localStorage.setItem('preferredCurrency', currentCurrency);
     updateAllPricesOnPage();
+    if (typeof renderDiscover === 'function') renderDiscover();
+    if (typeof renderSlider === 'function') renderSlider();
 });
 
-// تحميل العملة المحفوظة
 if (document.getElementById('currencySelector')) {
     document.getElementById('currencySelector').value = currentCurrency;
 }
 // ========== نهاية الإضافة ==========
+
+// ========== Toast Notifications ==========
+function showToast(message) {
+    let toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+// ========== نهاية Toast ==========
+
+// ========== Loading Spinner ==========
+function showLoading() {
+    let spinner = document.createElement('div');
+    spinner.className = 'spinner';
+    spinner.id = 'loadingSpinner';
+    document.body.appendChild(spinner);
+}
+function hideLoading() {
+    let spinner = document.getElementById('loadingSpinner');
+    if (spinner) spinner.remove();
+}
+// ========== نهاية Spinner ==========
+
+// ========== Dark Mode ==========
+const darkModeBtn = document.getElementById('darkModeBtn');
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    if (darkModeBtn) darkModeBtn.innerHTML = '☀️';
+}
+darkModeBtn?.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+        darkModeBtn.innerHTML = '☀️';
+        showToast('تم تفعيل الوضع الليلي');
+    } else {
+        localStorage.setItem('darkMode', 'disabled');
+        darkModeBtn.innerHTML = '🌙';
+        showToast('تم إلغاء الوضع الليلي');
+    }
+});
+// ========== نهاية Dark Mode ==========
+
+// ========== Share App ==========
+document.getElementById('shareAppBtn')?.addEventListener('click', () => {
+    if (navigator.share) {
+        navigator.share({ title: 'PuncakGO', text: 'اكتشف بونشاك مع PuncakGO', url: window.location.href });
+    } else {
+        navigator.clipboard.writeText(window.location.href);
+        showToast('تم نسخ الرابط!');
+    }
+});
+// ========== نهاية Share App ==========
+
+// ========== Coupons System ==========
+const coupons = { 'SAVE10': 0.9, 'WELCOME': 0.95, 'PUNCAK20': 0.8 };
+document.getElementById('applyCouponBtn')?.addEventListener('click', () => {
+    let code = document.getElementById('couponCode')?.value;
+    if (!code) {
+        showToast('الرجاء إدخال كود الخصم');
+        return;
+    }
+    if (coupons[code.toUpperCase()]) {
+        let totalElement = document.getElementById('totalPrice');
+        if (totalElement) {
+            let total = parseFloat(totalElement.innerText.replace(/[^0-9.-]/g, ''));
+            let newTotal = total * coupons[code.toUpperCase()];
+            totalElement.innerText = newTotal.toFixed(0);
+            showToast('تم تطبيق الخصم بنجاح!');
+        }
+    } else {
+        showToast('كود غير صالح');
+    }
+});
+// ========== نهاية Coupons ==========
+
+// ========== Google Translate ==========
+document.getElementById('googleTranslate')?.addEventListener('change', (e) => {
+    let lang = e.target.value;
+    window.location.href = `?lang=${lang}`;
+});
+// ========== نهاية Google Translate ==========
 
 // Supabase Client
 const supabaseClient = window.supabase.createClient(
@@ -38,7 +122,7 @@ console.log('🟡 Supabase Client initialized');
 // ========== اختبار الاتصال بقاعدة البيانات ==========
 (async function testSupabaseConnection() {
     console.log('🟡 جاري اختبار الاتصال بـ Supabase...');
-    
+    showLoading();
     try {
         const { data: sliderData, error: sliderError } = await supabaseClient.from('slider_items').select('count');
         if (sliderError) throw sliderError;
@@ -53,9 +137,12 @@ console.log('🟡 Supabase Client initialized');
         console.log('📊 جدول bookings موجود');
         
         console.log('🎉 Supabase يعمل بشكل طبيعي!');
-        
+        showToast('تم الاتصال بقاعدة البيانات');
     } catch (error) {
         console.error('❌ فشل الاتصال بـ Supabase:', error.message);
+        showToast('فشل الاتصال بقاعدة البيانات');
+    } finally {
+        hideLoading();
     }
 })();
 
@@ -262,6 +349,7 @@ function loadSavedData() {
 }
 
 async function loadAllDataFromSupabase() {
+    showLoading();
     await loadSliderFromSupabase();
     await loadDiscoverFromSupabase();
     await loadBookingsFromSupabase();
@@ -272,6 +360,7 @@ async function loadAllDataFromSupabase() {
     renderBookings();
     renderProfileBookings();
     loadFavorites();
+    hideLoading();
 }
 
 function saveData() {
@@ -373,7 +462,7 @@ async function updateSliderItem(index, type, file) {
             
             if (error) {
                 console.error('❌ خطأ في الرفع:', error);
-                alert('فشل الرفع: ' + error.message);
+                showToast('فشل الرفع: ' + error.message);
                 return;
             }
             
@@ -395,13 +484,13 @@ async function updateSliderItem(index, type, file) {
             await saveData();
             renderSlider();
             console.log('✅ تم تحديث الحقل', index);
-            alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
+            showToast(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
         } else {
             console.error('❌ لا يوجد رابط للملف');
-            alert(isArabic ? 'فشل رفع الملف' : 'File upload failed');
+            showToast(isArabic ? 'فشل رفع الملف' : 'File upload failed');
         }
     } else {
-        alert(isArabic ? 'رقم غير صحيح (1-10)' : 'Invalid number (1-10)');
+        showToast(isArabic ? 'رقم غير صحيح (1-10)' : 'Invalid number (1-10)');
     }
 }
 
@@ -479,7 +568,7 @@ async function updateDiscoverItem(index, type, file, label) {
             
             if (error) {
                 console.error('❌ خطأ في الرفع:', error);
-                alert('فشل الرفع: ' + error.message);
+                showToast('فشل الرفع: ' + error.message);
                 return;
             }
             
@@ -501,13 +590,13 @@ async function updateDiscoverItem(index, type, file, label) {
             await saveData();
             renderDiscover();
             console.log('✅ تم تحديث حقل الديسكفر', index);
-            alert(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
+            showToast(isArabic ? 'تم التحديث بنجاح' : 'Updated successfully');
         } else {
             console.error('❌ لا يوجد رابط للملف');
-            alert(isArabic ? 'فشل رفع الملف' : 'File upload failed');
+            showToast(isArabic ? 'فشل رفع الملف' : 'File upload failed');
         }
     } else {
-        alert(isArabic ? 'رقم غير صحيح (1-9)' : 'Invalid number (1-9)');
+        showToast(isArabic ? 'رقم غير صحيح (1-9)' : 'Invalid number (1-9)');
     }
 }
 
@@ -524,15 +613,16 @@ document.getElementById('submitOrder')?.addEventListener('click', async () => {
         bookings.push(newBooking);
         saveData();
         await saveBookingToSupabase(newBooking);
-        alert(isArabic ? 'تم إرسال طلبك' : 'Order sent');
+        showToast(isArabic ? 'تم إرسال طلبك' : 'Order sent');
         document.getElementById('orderModal').style.display = 'none';
         document.getElementById('orderName').value = '';
         document.getElementById('orderPhone').value = '';
         document.getElementById('orderNotes').value = '';
+        document.getElementById('couponCode').value = '';
         renderBookings();
         renderProfileBookings();
     } else {
-        alert(isArabic ? 'املأ الاسم والرقم' : 'Fill name and phone');
+        showToast(isArabic ? 'املأ الاسم والرقم' : 'Fill name and phone');
     }
 });
 
@@ -625,13 +715,13 @@ document.getElementById('saveProfileBtn')?.addEventListener('click', async () =>
     localStorage.setItem('userPhone', phone);
     document.getElementById('profileName').innerText = name;
     await saveUserProfileToSupabase(name, phone, avatar);
-    alert(isArabic ? 'تم الحفظ' : 'Saved');
+    showToast(isArabic ? 'تم الحفظ' : 'Saved');
 });
 
 document.getElementById('deleteAccountBtn')?.addEventListener('click', () => {
     if (confirm(isArabic ? 'حذف الحساب؟' : 'Delete account?')) {
         localStorage.clear();
-        alert(isArabic ? 'تم الحذف' : 'Deleted');
+        showToast(isArabic ? 'تم الحذف' : 'Deleted');
         location.reload();
     }
 });
@@ -642,6 +732,7 @@ document.getElementById('editAvatarBtn')?.addEventListener('click', () => {
     input.accept = 'image/*';
     input.onchange = async (e) => {
         if (e.target.files[0]) {
+            showLoading();
             const file = e.target.files[0];
             const fileExt = file.name.split('.').pop();
             const fileName = `avatar_${Date.now()}.${fileExt}`;
@@ -652,7 +743,8 @@ document.getElementById('editAvatarBtn')?.addEventListener('click', () => {
                 .upload(filePath, file);
             
             if (error) {
-                alert('فشل رفع الصورة: ' + error.message);
+                showToast('فشل رفع الصورة: ' + error.message);
+                hideLoading();
                 return;
             }
             
@@ -666,7 +758,8 @@ document.getElementById('editAvatarBtn')?.addEventListener('click', () => {
             let name = document.getElementById('userFullName').value;
             let phone = document.getElementById('userPhone').value;
             await saveUserProfileToSupabase(name, phone, avatarUrl);
-            alert(isArabic ? 'تم تحديث الصورة' : 'Avatar updated');
+            hideLoading();
+            showToast(isArabic ? 'تم تحديث الصورة' : 'Avatar updated');
         }
     };
     input.click();
@@ -680,7 +773,7 @@ document.getElementById('settingsLanguage')?.addEventListener('change', (e) => {
 
 document.getElementById('settingsCurrency')?.addEventListener('change', (e) => {
     localStorage.setItem('preferredCurrency', e.target.value);
-    alert(isArabic ? 'تم تغيير العملة' : 'Currency changed');
+    showToast(isArabic ? 'تم تغيير العملة' : 'Currency changed');
 });
 
 document.getElementById('showQrBtn')?.addEventListener('click', () => {
@@ -696,7 +789,8 @@ document.getElementById('inviteFriendsBtn')?.addEventListener('click', () => {
     if (navigator.share) {
         navigator.share({ title: 'PuncakGO', text: isArabic ? 'انضم إلينا' : 'Join us', url: 'https://puncakgo.com' });
     } else {
-        prompt(isArabic ? 'انسخ الرابط:' : 'Copy link:', 'https://puncakgo.com');
+        navigator.clipboard.writeText('https://puncakgo.com');
+        showToast(isArabic ? 'تم نسخ الرابط' : 'Link copied');
     }
 });
 
@@ -768,9 +862,9 @@ document.getElementById('adminLoginBtn')?.addEventListener('click', () => {
         localStorage.setItem('isAdminLoggedIn', 'true');
         document.getElementById('adminLoginDiv').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
-        alert(isArabic ? 'تم الدخول كأدمن' : 'Admin login');
+        showToast(isArabic ? 'تم الدخول كأدمن' : 'Admin login');
     } else {
-        alert(isArabic ? 'كلمة سر خطأ' : 'Wrong password');
+        showToast(isArabic ? 'كلمة سر خطأ' : 'Wrong password');
     }
 });
 
@@ -779,7 +873,7 @@ document.getElementById('logoutAdminBtn')?.addEventListener('click', () => {
     localStorage.setItem('isAdminLoggedIn', 'false');
     document.getElementById('adminLoginDiv').style.display = 'block';
     document.getElementById('adminPanel').style.display = 'none';
-    alert(isArabic ? 'تم الخروج' : 'Logged out');
+    showToast(isArabic ? 'تم الخروج' : 'Logged out');
 });
 
 let selectedSliderFile = null;
@@ -804,7 +898,7 @@ document.getElementById('updateSliderItem')?.addEventListener('click', async () 
         document.getElementById('sliderFileName').innerText = '';
         selectedSliderFile = null;
     } else {
-        alert(isArabic ? 'أدخل رقم واختر ملف' : 'Enter number and select file');
+        showToast(isArabic ? 'أدخل رقم واختر ملف' : 'Enter number and select file');
     }
 });
 
@@ -829,7 +923,7 @@ document.getElementById('updateDiscoverItem')?.addEventListener('click', async (
         document.getElementById('newDiscoverLabel').value = '';
         selectedDiscoverFile = null;
     } else {
-        alert(isArabic ? 'أدخل رقم واختر ملف ونص' : 'Enter number, select file, and label');
+        showToast(isArabic ? 'أدخل رقم واختر ملف ونص' : 'Enter number, select file, and label');
     }
 });
 
@@ -862,4 +956,5 @@ loadAllDataFromSupabase().then(() => {
     renderProfileBookings();
     loadFavorites();
     console.log('🎉 تم تحميل جميع البيانات بنجاح!');
+    showToast('مرحباً بك في PuncakGO');
 });
