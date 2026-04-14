@@ -115,6 +115,69 @@
             .slider img { height: 150px !important; }
             .villa-name { font-size: 0.75rem !important; }
         }
+              /* Dark Mode */
+        body.dark-mode {
+            background: #121212;
+            color: #ffffff;
+        }
+        body.dark-mode .container {
+            background: #121212;
+        }
+        body.dark-mode .price-filter,
+        body.dark-mode .villa-card,
+        body.dark-mode .modal-content {
+            background: #1e1e1e;
+            color: #ffffff;
+            border-color: #DAA520;
+        }
+        body.dark-mode .feature {
+            background: #2a2a2a;
+            color: #ffffff;
+        }
+        body.dark-mode .pin {
+            background: #DAA520;
+            color: white;
+        }
+        body.dark-mode .price-btn {
+            background: #2a2a2a;
+            color: #ffffff;
+            border-color: #DAA520;
+        }
+        body.dark-mode .price-btn.active {
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            color: white;
+        }
+        body.dark-mode .map-note {
+            color: #DAA520;
+        }
+        body.dark-mode .show-features-btn {
+            background: #DAA520;
+            color: white;
+        }
+        body.dark-mode .admin-toggle-btn {
+            background: #8B0000;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            z-index: 9999;
+            animation: fadeInOut 3s ease;
+            font-weight: bold;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; bottom: 60px; }
+            15% { opacity: 1; bottom: 80px; }
+            85% { opacity: 1; bottom: 80px; }
+            100% { opacity: 0; bottom: 60px; }
+        }  
     </style>
 </head>
 <body>
