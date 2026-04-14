@@ -16,6 +16,13 @@
                 <div class="currency-box" id="currencyBtn">
                     <span data-ar="💰 صرف العملات" data-en="💰 Currency Exchange">💰 صرف العملات</span>
                 </div>
+                <!-- ========== إضافة جديدة: قائمة العملات ========== -->
+                <select id="currencySelector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer; margin-left: 10px;">
+                    <option value="IDR" selected>🇮🇩 IDR - روبيه</option>
+                    <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
+                    <option value="USD">🇺🇸 USD - دولار أمريكي</option>
+                </select>
+                <!-- ========== انتهت الإضافة ========== -->
                 <button class="lang-switch" id="langBtn">English</button>
             </div>
 
@@ -49,17 +56,23 @@
 
             <div class="three-fields">
                 <div class="field-card" onclick="window.location.href='villas.html'">
+                    <!-- ========== إضافة جديدة: صورة ========== -->
+                    <img src="https://picsum.photos/id/104/80/80" style="width: 50px; height: 50px; border-radius: 50%; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;">
+                    <!-- ========== انتهت الإضافة ========== -->
                     <div class="field-text" data-ar="🏡 فلل" data-en="🏡 Villas">🏡 فلل</div>
                 </div>
                 <div class="field-card" onclick="window.location.href='tours.html'">
+                    <img src="https://picsum.photos/id/15/80/80" style="width: 50px; height: 50px; border-radius: 50%; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;">
                     <div class="field-text" data-ar="🗺️ جولات سياحية" data-en="🗺️ Tours">🗺️ جولات سياحية</div>
                 </div>
                 <div class="field-card" onclick="window.location.href='visa.html'">
+                    <img src="https://picsum.photos/id/106/80/80" style="width: 50px; height: 50px; border-radius: 50%; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;">
                     <div class="field-text" data-ar="📄 خدمات الفيزا" data-en="📄 Visa Services">📄 خدمات الفيزا</div>
                 </div>
             </div>
 
             <div class="wide-field" onclick="window.location.href='other-services.html'">
+                <img src="https://picsum.photos/id/107/80/80" style="width: 50px; height: 50px; border-radius: 50%; vertical-align: middle; margin-left: 10px;">
                 <div class="field-text" data-ar="✨ خدمات أخرى" data-en="✨ Other Services">✨ خدمات أخرى</div>
             </div>
 
@@ -268,14 +281,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
-    <script>
+<script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js', { scope: './' })
       .then(reg => console.log('PuncakGo App Ready!'))
       .catch(err => console.log('Registration Failed', err));
   }
 </script>
-    <!-- رابط سياسة الخصوصية -->
 <div style="text-align: center; padding: 15px; margin-top: 20px; border-top: 1px solid #ddd;">
     <a href="privacy.html" style="color: #1976D2; text-decoration: none;" data-ar="🔒 سياسة الخصوصية" data-en="🔒 Privacy Policy">🔒 سياسة الخصوصية</a>
     <span style="margin: 0 10px">|</span>
