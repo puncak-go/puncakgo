@@ -122,6 +122,13 @@
     <div class="page-header">
         <button class="back-btn" id="backBtn">← رجوع</button>
         <h2 id="pageTitle">🏡 الفلل</h2>
+        <!-- ========== إضافة جديدة: قائمة العملات ========== -->
+        <select id="currencySelector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer;">
+            <option value="IDR" selected>🇮🇩 IDR - روبيه</option>
+            <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
+            <option value="USD">🇺🇸 USD - دولار أمريكي</option>
+        </select>
+        <!-- ========== انتهت الإضافة ========== -->
         <button class="lang-switch" id="langBtn">English</button>
     </div>
 
@@ -195,6 +202,23 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+    // ========== إضافة جديدة: العملات ==========
+    let currentCurrency = localStorage.getItem('preferredCurrency') || 'IDR';
+    function convertPrice(priceInIDR) {
+        if (currentCurrency === 'IDR') return (priceInIDR / 1000).toLocaleString() + ' IDR';
+        if (currentCurrency === 'SAR') return ((priceInIDR / 1000 / 3800).toFixed(2)).toLocaleString() + ' SAR';
+        if (currentCurrency === 'USD') return ((priceInIDR / 1000 / 15000).toFixed(2)).toLocaleString() + ' USD';
+    }
+    
+    document.getElementById('currencySelector').value = currentCurrency;
+    document.getElementById('currencySelector').addEventListener('change', (e) => {
+        currentCurrency = e.target.value;
+        localStorage.setItem('preferredCurrency', currentCurrency);
+        renderVillas();
+        renderPins();
+    });
+    // ========== نهاية الإضافة ==========
+
     // بيانات الفلل الثابتة (ستبقى ظاهرة)
     let villasData = [
         { id: 1, name_ar: "فيلا النخيل 1", name_en: "Al Nakheel Villa 1", price: 500000, price_range: 500, pos_x: 10, pos_y: 15, images: ["https://picsum.photos/id/104/400/250", "https://picsum.photos/id/106/400/250"], features_ar: ["🏊 مسبح خاص", "📶 واي فاي مجاني", "🅿️ موقف خاص"], features_en: ["🏊 Private Pool", "📶 Free WiFi", "🅿️ Private Parking"] },
@@ -297,7 +321,9 @@
             let features = isArabic ? villa.features_ar : villa.features_en;
             let featuresHtml = '<div class="features" id="features-' + villa.id + '">'; features.forEach(f => { featuresHtml += `<span class="feature">${f}</span>`; }); featuresHtml += '</div>';
             
-            card.innerHTML = `<div class="slider-container"><div class="slider" id="slider-${villa.id}">${slidesHtml}</div><button class="slider-btn prev" data-id="${villa.id}">❮</button><button class="slider-btn next" data-id="${villa.id}">❯</button></div><div class="villa-info"><div class="villa-name">${isArabic ? villa.name_ar : villa.name_en}</div><div class="villa-price">💰 ${isArabic ? 'السعر لليلة:' : 'Price per night:'} <span>${(villa.price / 1000).toLocaleString()}</span> ${isArabic ? 'ألف روبيه' : 'K IDR'}</div><button class="show-features-btn" data-id="${villa.id}">📋 ${isArabic ? 'عرض المواصفات' : 'Show Features'}</button>${featuresHtml}<button class="book-btn" data-id="${villa.id}">📝 ${isArabic ? 'حجز الآن' : 'Book Now'}</button>${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="images" data-id="${villa.id}">📷 إدارة الصور</button><button class="admin-btn" data-action="features" data-id="${villa.id}">📋 إدارة المواصفات</button><button class="admin-btn" data-action="edit" data-id="${villa.id}">✏️ تعديل</button></div>` : ''}</div>`;
+            // ========== تعديل عرض السعر فقط ==========
+            card.innerHTML = `<div class="slider-container"><div class="slider" id="slider-${villa.id}">${slidesHtml}</div><button class="slider-btn prev" data-id="${villa.id}">❮</button><button class="slider-btn next" data-id="${villa.id}">❯</button></div><div class="villa-info"><div class="villa-name">${isArabic ? villa.name_ar : villa.name_en}</div><div class="villa-price">💰 ${isArabic ? 'السعر لليلة:' : 'Price per night:'} <span data-original-price="${villa.price}">${convertPrice(villa.price)}</span></div><button class="show-features-btn" data-id="${villa.id}">📋 ${isArabic ? 'عرض المواصفات' : 'Show Features'}</button>${featuresHtml}<button class="book-btn" data-id="${villa.id}">📝 ${isArabic ? 'حجز الآن' : 'Book Now'}</button>${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="images" data-id="${villa.id}">📷 إدارة الصور</button><button class="admin-btn" data-action="features" data-id="${villa.id}">📋 إدارة المواصفات</button><button class="admin-btn" data-action="edit" data-id="${villa.id}">✏️ تعديل</button></div>` : ''}</div>`;
+            // ========== انتهى تعديل السعر ==========
             container.appendChild(card);
         });
         
