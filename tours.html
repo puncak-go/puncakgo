@@ -137,6 +137,13 @@
     <div class="page-header">
         <button class="back-btn" id="backBtn">← رجوع</button>
         <h2 id="pageTitle">🗺️ الجولات السياحية</h2>
+        <!-- ========== إضافة جديدة: قائمة العملات ========== -->
+        <select id="currencySelector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer;">
+            <option value="IDR" selected>🇮🇩 IDR - روبيه</option>
+            <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
+            <option value="USD">🇺🇸 USD - دولار أمريكي</option>
+        </select>
+        <!-- ========== انتهت الإضافة ========== -->
         <button class="lang-switch" id="langBtn">English</button>
     </div>
 
@@ -193,6 +200,23 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+    // ========== إضافة جديدة: العملات ==========
+    let currentCurrency = localStorage.getItem('preferredCurrency') || 'IDR';
+    function convertPrice(priceInIDR) {
+        if (currentCurrency === 'IDR') return priceInIDR.toLocaleString() + ' IDR';
+        if (currentCurrency === 'SAR') return ((priceInIDR / 3800).toFixed(2)).toLocaleString() + ' SAR';
+        if (currentCurrency === 'USD') return ((priceInIDR / 15000).toFixed(2)).toLocaleString() + ' USD';
+    }
+    
+    // تحديث العملة عند تغييرها
+    document.getElementById('currencySelector').value = currentCurrency;
+    document.getElementById('currencySelector').addEventListener('change', (e) => {
+        currentCurrency = e.target.value;
+        localStorage.setItem('preferredCurrency', currentCurrency);
+        renderTours();
+    });
+    // ========== نهاية الإضافة ==========
+
     // بيانات الجولات السياحية (10 جولات)
     let toursData = [
         { id: 1, nameAr: "جولة شلالات سيتو", nameEn: "Sitou Waterfalls Tour", price: 250, duration: "4 ساعات", maxPersons: 10, languages: "عربي/إنجليزي", 
@@ -326,6 +350,7 @@
         let features = isArabic ? tour.featuresAr : tour.featuresEn;
         let featuresHtml = '<div class="tour-features" id="features-' + tour.id + '">'; features.forEach(f => { featuresHtml += `<span class="tour-feature">${f}</span>`; }); featuresHtml += '</div>';
         
+        // ========== تعديل عرض السعر لاستخدام convertPrice ==========
         card.innerHTML = `
             <div class="slider-container">
                 <div class="slider" id="slider-${tour.id}">${slidesHtml}</div>
@@ -335,7 +360,7 @@
             <div class="tour-info">
                 <div class="tour-name">${isArabic ? tour.nameAr : tour.nameEn}</div>
                 <div class="tour-rating">${getStars(tour.rating)} (${tour.rating}/5)</div>
-                <div class="tour-price">💰 <span>${tour.price.toLocaleString()}</span> ${isArabic ? 'ألف روبيه للشخص' : 'K IDR per person'}</div>
+                <div class="tour-price">💰 <span data-original-price="${tour.price}">${convertPrice(tour.price)}</span> ${isArabic ? 'للشخص' : 'per person'}</div>
                 <div class="tour-details">
                     <span class="tour-detail">⏱️ ${tour.duration}</span>
                     <span class="tour-detail">👥 ${isArabic ? 'حتى' : 'Up to'} ${tour.maxPersons} ${isArabic ? 'أشخاص' : 'persons'}</span>
@@ -348,6 +373,7 @@
                 ${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="images" data-id="${tour.id}">📷 إدارة الصور</button><button class="admin-btn" data-action="edit" data-id="${tour.id}">✏️ تعديل</button></div>` : ''}
             </div>
         `;
+        // ========== انتهى تعديل السعر ==========
         
         setTimeout(() => {
             let prevBtn = card.querySelector('.slider-btn.prev');
