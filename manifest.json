@@ -4,8 +4,10 @@
   "id": "/puncakgo/index.html",
   "start_url": "/puncakgo/index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#1976D2",
   "background_color": "#ffffff",
+  "categories": ["travel", "lifestyle", "tourism"],
   "icons": [
     {
       "src": "icon-192.png",
@@ -20,7 +22,6 @@
       "purpose": "any"
     }
   ],
-  "description": "هل تخطط لزيارة منطقة \"بنشاك\" الساحرة في إندونيسيا؟ تطبيق Puncak Go هو رفيقك المثالي في السفر. لقد صممنا هذا التطبيق ليوفر لك كل ما تحتاجه لقضاء عطلة لا تُنسى: حجز الفيلات، تأجير السيارات، الدليل السياحي، واجهة سهلة. مع Puncak Go، جمال إندونيسيا بات بين يديك. حمل التطبيق الآن وابدأ مغامرتك!",
   "screenshots": [
     {
       "src": "screen1.png",
@@ -40,5 +41,6 @@
       "type": "image/png",
       "form_factor": "narrow"
     }
-  ]
+  ],
+  "description": "هل تخطط لزيارة منطقة بنشاك الساحرة في إندونيسيا؟ تطبيق Puncak Go هو رفيقك المثالي في السفر. حجز الفيلات، تأجير السيارات، الدليل السياحي، واجهة سهلة. مع Puncak Go، جمال إندونيسيا بات بين يديك."
 }
