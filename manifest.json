@@ -20,5 +20,25 @@
       "purpose": "any"
     }
   ],
-  "description": "العربية:\nهل تخطط لزيارة منطقة \"بنشاك\" الساحرة في إندونيسيا؟ تطبيق Puncak Go هو رفيقك المثالي في السفر. لقد صممنا هذا التطبيق ليوفر لك كل ما تحتاجه لقضاء عطلة لا تُنسى:\nحجز الفيلات: استعرض مجموعة واسعة من الفيلات الفاخرة والمريحة التي تناسب العائلات والأفراد.\nتأجير السيارات: خدمات نقل وتأجير سيارات مع سائقين محترفين لتنقل آمن وسهل.\nالدليل السياحي: تعرف على أفضل المطاعم، المتنزهات، والمعالم المخفية في بنشاك وديبوك.\nواجهة سهلة: تصميم عصري وبسيط يضمن لك الوصول لما تريده بسرعة.\nمع Puncak Go، جمال إندونيسيا بات بين يديك. حمل التطبيق الآن وابدأ مغامرتك!\nEnglish:\nPlanning a trip to the enchanting \"Puncak\" region in Indonesia? Puncak Go is your perfect travel companion. We designed this app to provide everything you need for an unforgettable vacation:\nVilla Booking: Browse a wide range of luxury and cozy villas suitable for families and individuals.\nCar Rentals: Transportation services and car rentals with professional drivers for safe and easy travel.\nTourist Guide: Discover the best restaurants, parks, and hidden gems in Puncak and Depok.\nUser-Friendly Interface: A modern and simple design that ensures you get what you need quickly.\nWith Puncak Go, the beauty of Indonesia is in your hands. Download the app now and start your adventure!"
+  "description": "هل تخطط لزيارة منطقة \"بنشاك\" الساحرة في إندونيسيا؟ تطبيق Puncak Go هو رفيقك المثالي في السفر. لقد صممنا هذا التطبيق ليوفر لك كل ما تحتاجه لقضاء عطلة لا تُنسى: حجز الفيلات، تأجير السيارات، الدليل السياحي، واجهة سهلة. مع Puncak Go، جمال إندونيسيا بات بين يديك. حمل التطبيق الآن وابدأ مغامرتك!",
+  "screenshots": [
+    {
+      "src": "screen1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screen2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screen3.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
 }
