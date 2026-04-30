@@ -16,7 +16,7 @@
                 <div class="currency-box" id="currencyBtn">
                     <span data-ar="💰 صرف العملات" data-en="💰 Currency Exchange">💰 صرف العملات</span>
                 </div>
-                <select id="currencySelector" class="currency-selector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer;">
+                <select id="currencySelector" class="currency-selector">
                     <option value="IDR" selected>🇮🇩 IDR</option>
                     <option value="SAR">🇸🇦 SAR</option>
                     <option value="USD">🇺🇸 USD</option>
@@ -30,61 +30,60 @@
 
             <div class="promo-bar">
                 <div class="promo-marquee">
-                    <span data-ar="🎉 احجز الآن واحصل على تخفيض يصل إلى 30% - عروض حصرية لفترة محدودة! 🎉" 
-                          data-en="🎉 Book now and get up to 30% discount - Exclusive limited time offers! 🎉">
-                        🎉 احجز الآن واحصل على تخفيض يصل إلى 30% - عروض حصرية لفترة محدودة! 🎉
-                    </span>
+                    <span>🎉 احجز الآن واحصل على تخفيض يصل إلى 30% - عروض حصرية لفترة محدودة! 🎉</span>
                 </div>
             </div>
 
-            <!-- الكروت الحديثة - 4 أقسام رئيسية -->
-            <div class="services-cards-grid">
-                <!-- 1. فلل -->
-                <div class="service-card-modern" data-service="villas" onclick="window.location.href='villas.html'">
+            <!-- الصف الأول: فلل (يمين) + جولات سياحية (يسار) -->
+            <div class="two-columns">
+                <div class="service-card" data-service="villas" onclick="location.href='villas.html'">
                     <div class="card-icon">🏡</div>
-                    <div class="card-title" data-ar="فلل فاخرة" data-en="Luxury Villas">فلل فاخرة</div>
-                    <div class="card-desc" data-ar="أفضل الفلل في بونشاك مع إطلالات خلابة وخدمات راقية" data-en="The best villas in Puncak with stunning views and premium services">أفضل الفلل في بونشاك مع إطلالات خلابة وخدمات راقية</div>
+                    <div class="card-title">فلل فاخرة</div>
+                    <div class="card-desc">أفضل الفلل في بونشاك مع إطلالات خلابة وخدمات راقية</div>
                     <button class="card-btn">استكشف الفلل ←</button>
                 </div>
 
-                <!-- 2. جولات سياحية -->
-                <div class="service-card-modern" data-service="tours" onclick="window.location.href='tours.html'">
+                <div class="service-card" data-service="tours" onclick="location.href='tours.html'">
                     <div class="card-icon">🗺️</div>
-                    <div class="card-title" data-ar="جولات سياحية" data-en="Tours">جولات سياحية</div>
-                    <div class="card-desc" data-ar="اكتشف أجمل الأماكن في بونشاك مع مرشدين محترفين" data-en="Discover the best places in Puncak with professional guides">اكتشف أجمل الأماكن في بونشاك مع مرشدين محترفين</div>
+                    <div class="card-title">جولات سياحية</div>
+                    <div class="card-desc">اكتشف أجمل الأماكن في بونشاك مع مرشدين محترفين</div>
                     <button class="card-btn">استكشف الجولات ←</button>
                 </div>
+            </div>
 
-                <!-- 3. خدمات الفيزا -->
-                <div class="service-card-modern" data-service="visa" onclick="window.location.href='visa.html'">
+            <!-- الصف الثاني: خدمات الفيزا (في النص) -->
+            <div class="center-card">
+                <div class="service-card" data-service="visa" onclick="location.href='visa.html'">
                     <div class="card-icon">📄</div>
-                    <div class="card-title" data-ar="خدمات الفيزا" data-en="Visa Services">خدمات الفيزا</div>
-                    <div class="card-desc" data-ar="تأشيرات دخول سريعة وسهلة للسفر إلى إندونيسيا" data-en="Fast and easy entry visas for travel to Indonesia">تأشيرات دخول سريعة وسهلة للسفر إلى إندونيسيا</div>
+                    <div class="card-title">خدمات الفيزا</div>
+                    <div class="card-desc">تأشيرات دخول سريعة وسهلة للسفر إلى إندونيسيا</div>
                     <button class="card-btn">استكشف الخدمات ←</button>
                 </div>
+            </div>
 
-                <!-- 4. خدمات أخرى -->
-                <div class="service-card-modern" data-service="other" onclick="window.location.href='other-services.html'">
+            <!-- الصف الثالث: خدمات أخرى (عرض كامل) -->
+            <div class="full-width-card">
+                <div class="service-card" data-service="other" onclick="location.href='other-services.html'">
                     <div class="card-icon">✨</div>
-                    <div class="card-title" data-ar="خدمات أخرى" data-en="Other Services">خدمات أخرى</div>
-                    <div class="card-desc" data-ar="مطاعم عربية، بقالة، عطور، تأجير سيارات والمزيد" data-en="Arabic restaurants, grocery, perfumes, car rental and more">مطاعم عربية، بقالة، عطور، تأجير سيارات والمزيد</div>
+                    <div class="card-title">خدمات أخرى</div>
+                    <div class="card-desc">مطاعم عربية، بقالة، عطور، تأجير سيارات والمزيد</div>
                     <button class="card-btn">استكشف الخدمات ←</button>
                 </div>
             </div>
 
             <div class="slider-container">
-                <h3 data-ar="📸 العروضات" data-en="📸 Offers">📸 العروضات</h3>
+                <h3>📸 العروضات</h3>
                 <div class="slider" id="slider"></div>
             </div>
 
-            <h3 data-ar="🌟 اكتشف" data-en="🌟 Discover">🌟 اكتشف</h3>
+            <h3>🌟 اكتشف</h3>
             <div id="discover-container"></div>
         </div>
 
         <!-- صفحة رحلاتي -->
         <div id="bookings-page" class="page">
-            <h2 data-ar="📋 رحلاتي" data-en="📋 My Bookings">📋 رحلاتي</h2>
-            <div id="bookingsList" data-ar="لا توجد حجوزات بعد" data-en="No bookings yet">لا توجد حجوزات بعد</div>
+            <h2>📋 رحلاتي</h2>
+            <div id="bookingsList">لا توجد حجوزات بعد</div>
         </div>
 
         <!-- صفحة البروفايل -->
@@ -95,221 +94,63 @@
                     <div class="avatar-edit" id="editAvatarBtn">✏️</div>
                 </div>
                 <h3 id="profileName">أحمد محمد</h3>
-                <p id="profileEmail">ahmed@example.com</p>
             </div>
-
             <div class="profile-card-collapsible">
                 <div class="card-header" data-target="accountContent">
-                    <h3 class="section-title" data-ar="👤 حسابي" data-en="👤 My Account">👤 حسابي</h3>
+                    <h3 class="section-title">👤 حسابي</h3>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div class="card-content" id="accountContent">
                     <div class="profile-field">
-                        <label data-ar="الاسم الكامل" data-en="Full Name">الاسم الكامل</label>
+                        <label>الاسم الكامل</label>
                         <input type="text" id="userFullName" value="أحمد محمد">
                     </div>
                     <div class="profile-field">
-                        <label data-ar="رقم الجوال" data-en="Phone Number">رقم الجوال</label>
+                        <label>رقم الجوال</label>
                         <input type="tel" id="userPhone" value="+966 5XXXX XXX">
                     </div>
-                    <button id="saveProfileBtn" class="profile-save-btn" data-ar="💾 حفظ" data-en="💾 Save">💾 حفظ</button>
-                    <button id="deleteAccountBtn" class="profile-delete-btn" data-ar="🗑️ حذف حسابي" data-en="🗑️ Delete My Account">🗑️ حذف حسابي</button>
+                    <button id="saveProfileBtn" class="profile-save-btn">💾 حفظ</button>
                 </div>
             </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="bookingsContent">
-                    <h3 class="section-title" data-ar="📋 حجوزاتي" data-en="📋 My Bookings">📋 حجوزاتي</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="bookingsContent">
-                    <div id="profileBookingsList" class="bookings-list" data-ar="لا توجد حجوزات بعد" data-en="No bookings yet">لا توجد حجوزات بعد</div>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="favoritesContent">
-                    <h3 class="section-title" data-ar="❤️ المفضلة" data-en="❤️ Favorites">❤️ المفضلة</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="favoritesContent">
-                    <div id="favoritesList" class="favorites-list">
-                        <p class="empty-message" data-ar="لا توجد عناصر في المفضلة" data-en="No favorites yet">لا توجد عناصر في المفضلة</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="couponsContent">
-                    <h3 class="section-title" data-ar="🎫 كوبوناتي" data-en="🎫 My Coupons">🎫 كوبوناتي</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="couponsContent">
-                    <div class="coupons-list">
-                        <p class="empty-message" data-ar="لا يوجد كوبونات حالياً" data-en="No coupons available">لا يوجد كوبونات حالياً</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="settingsContent">
-                    <h3 class="section-title" data-ar="⚙️ الإعدادات" data-en="⚙️ Settings">⚙️ الإعدادات</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="settingsContent">
-                    <div class="setting-item">
-                        <label data-ar="🌐 اللغة" data-en="🌐 Language">🌐 اللغة</label>
-                        <select id="settingsLanguage">
-                            <option value="ar" data-ar="العربية" data-en="Arabic">العربية</option>
-                            <option value="en" data-ar="الإنجليزية" data-en="English">English</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <label data-ar="💰 العملة" data-en="💰 Currency">💰 العملة</label>
-                        <select id="settingsCurrency">
-                            <option value="IDR" data-ar="IDR - روبيه إندونيسي" data-en="IDR - Indonesian Rupiah">IDR - روبيه إندونيسي</option>
-                            <option value="SAR" data-ar="SAR - ريال سعودي" data-en="SAR - Saudi Riyal">SAR - ريال سعودي</option>
-                            <option value="USD" data-ar="USD - دولار أمريكي" data-en="USD - US Dollar">USD - دولار أمريكي</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="shareContent">
-                    <h3 class="section-title" data-ar="📤 مشاركة" data-en="📤 Share">📤 مشاركة</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="shareContent">
-                    <div class="share-buttons">
-                        <button id="showQrBtn" class="share-btn" data-ar="📱 رمز QR" data-en="📱 QR Code">📱 رمز QR</button>
-                        <button id="inviteFriendsBtn" class="share-btn" data-ar="👥 دعوة الأصدقاء" data-en="👥 Invite Friends">👥 دعوة الأصدقاء</button>
-                        <button id="shareAppBtn" class="share-btn">📢 مشاركة التطبيق</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="ownersContent">
-                    <h3 class="section-title" data-ar="🏠 مالك عقار" data-en="🏠 Property Owner">🏠 مالك عقار</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="ownersContent">
-                    <button id="listPropertyBtn" class="owner-btn" data-ar="📝 اعرض منتجك" data-en="📝 List Your Property">📝 اعرض منتجك</button>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="supportContent">
-                    <h3 class="section-title" data-ar="🆘 الدعم" data-en="🆘 Support">🆘 الدعم</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="supportContent">
-                    <button id="aboutUsBtn" class="support-btn" data-ar="ℹ️ عن التطبيق" data-en="ℹ️ About Us">ℹ️ عن التطبيق</button>
-                    <button id="contactManagerBtn" class="support-btn" data-ar="📞 تواصل مع المدير" data-en="📞 Contact Manager">📞 تواصل مع المدير</button>
-                </div>
-            </div>
-
-            <div class="profile-card-collapsible">
-                <div class="card-header" data-target="adminContent">
-                    <h3 class="section-title" data-ar="🔐 منطقة الأدمن" data-en="🔐 Admin Area">🔐 منطقة الأدمن</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="card-content" id="adminContent">
-                    <div id="adminLoginDiv" class="admin-login">
-                        <input type="password" id="adminPassword" data-ar-placeholder="أدخل كلمة السر" data-en-placeholder="Enter password" placeholder="أدخل كلمة السر">
-                        <button id="adminLoginBtn" data-ar="دخول" data-en="Login">دخول</button>
-                    </div>
-                    <div id="adminPanel" class="admin-panel" style="display:none;">
-                        <h4 data-ar="📸 إدارة السلايدر (10 حقول)" data-en="📸 Slider Management (10 fields)">📸 إدارة السلايدر (10 حقول)</h4>
-                        <div class="admin-controls">
-                            <input type="number" id="sliderIndex" placeholder="رقم الحقل (1-10)" min="1" max="10">
-                            <button id="sliderUploadBtn" class="upload-btn" data-ar="📁 اختيار ملف" data-en="📁 Choose File">📁 اختيار ملف</button>
-                            <input type="file" id="sliderFileInput" accept="image/*,video/*" style="display:none;">
-                            <span id="sliderFileName"></span>
-                            <select id="sliderMediaType">
-                                <option value="image" data-ar="صورة" data-en="Image">صورة</option>
-                                <option value="video" data-ar="فيديو" data-en="Video">فيديو</option>
-                            </select>
-                            <button id="updateSliderItem" data-ar="تحديث" data-en="Update">تحديث</button>
-                        </div>
-                        <h4 data-ar="🌟 إدارة الديسكفر (9 حقول)" data-en="🌟 Discover Management (9 fields)">🌟 إدارة الديسكفر (9 حقول)</h4>
-                        <div class="admin-controls">
-                            <input type="number" id="discoverIndex" placeholder="رقم الحقل (1-9)" min="1" max="9">
-                            <button id="discoverUploadBtn" class="upload-btn" data-ar="📁 اختيار ملف" data-en="📁 Choose File">📁 اختيار ملف</button>
-                            <input type="file" id="discoverFileInput" accept="image/*,video/*" style="display:none;">
-                            <span id="discoverFileName"></span>
-                            <input type="text" id="newDiscoverLabel" data-ar-placeholder="النص التعريفي" data-en-placeholder="Label text" placeholder="النص التعريفي">
-                            <select id="discoverMediaType">
-                                <option value="big" data-ar="حقل كبير (صورة)" data-en="Big field (Image)">حقل كبير (صورة)</option>
-                                <option value="small" data-ar="حقل صغير (فيديو)" data-en="Small field (Video)">حقل صغير (فيديو)</option>
-                            </select>
-                            <button id="updateDiscoverItem" data-ar="تحديث" data-en="Update">تحديث</button>
-                        </div>
-                        <button id="logoutAdminBtn" class="cancel-btn" data-ar="تسجيل خروج" data-en="Logout">تسجيل خروج</button>
-                    </div>
-                </div>
-            </div>
-
             <div class="profile-logo">
-                <img src="logo.jpg" alt="PuncakGO Logo" onerror="this.src='https://picsum.photos/id/104/80/80'">
+                <img src="logo.jpg" alt="Logo">
                 <p>© 2025 PuncakGO</p>
             </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item active" data-nav="home" data-ar="🏠 الرئيسية" data-en="🏠 Home">🏠 الرئيسية</div>
-        <div class="nav-item" data-nav="bookings" data-ar="📅 رحلاتي" data-en="📅 My Bookings">📅 رحلاتي</div>
-        <div class="nav-item" data-nav="profile" data-ar="👤 البروفايل" data-en="👤 Profile">👤 البروفايل</div>
+        <div class="nav-item active" data-nav="home">🏠 الرئيسية</div>
+        <div class="nav-item" data-nav="bookings">📅 رحلاتي</div>
+        <div class="nav-item" data-nav="profile">👤 البروفايل</div>
     </div>
 </div>
 
 <div id="orderModal" class="modal">
     <div class="modal-content">
-        <h3 data-ar="📝 طلب جديد" data-en="📝 New Order">📝 طلب جديد</h3>
-        <input type="text" id="orderName" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
-        <input type="tel" id="orderPhone" data-ar-placeholder="رقم الجوال" data-en-placeholder="Phone number" placeholder="رقم الجوال">
-        <textarea id="orderNotes" data-ar-placeholder="ملاحظات" data-en-placeholder="Notes" placeholder="ملاحظات"></textarea>
-        <div class="order-summary">
-            <input type="text" id="couponCode" placeholder="كود الخصم" style="width: 70%; display: inline-block;">
-            <button id="applyCouponBtn" style="width: 25%; display: inline-block;">تطبيق</button>
-        </div>
-        <button id="submitOrder" data-ar="إرسال الطلب" data-en="Submit Order">إرسال الطلب</button>
-        <button id="closeModal" class="cancel-btn" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
+        <h3>📝 طلب جديد</h3>
+        <input type="text" id="orderName" placeholder="الاسم الكامل">
+        <input type="tel" id="orderPhone" placeholder="رقم الجوال">
+        <textarea id="orderNotes" placeholder="ملاحظات"></textarea>
+        <button id="submitOrder">إرسال الطلب</button>
+        <button id="closeModal" class="cancel-btn">إلغاء</button>
     </div>
 </div>
 
 <div id="currencyModal" class="modal">
-    <div class="modal-content" style="max-width: 350px;">
-        <h3 data-ar="💱 تحويل العملات" data-en="💱 Currency Exchange">💱 تحويل العملات</h3>
+    <div class="modal-content">
+        <h3>💱 تحويل العملات</h3>
         <select id="currencyType">
-            <option value="SAR" data-ar="🇸🇦 ريال سعودي" data-en="🇸🇦 Saudi Riyal">🇸🇦 ريال سعودي</option>
-            <option value="USD" data-ar="🇺🇸 دولار أمريكي" data-en="🇺🇸 US Dollar">🇺🇸 دولار أمريكي</option>
+            <option value="SAR">🇸🇦 ريال سعودي</option>
+            <option value="USD">🇺🇸 دولار أمريكي</option>
         </select>
-        <input type="number" id="currencyAmount" data-ar-placeholder="أدخل المبلغ" data-en-placeholder="Enter amount" placeholder="أدخل المبلغ">
-        <div id="currencyResult" style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 15px; font-weight: bold;">
-            <span data-ar="النتيجة: " data-en="Result: ">النتيجة: </span> <span id="resultValue">0</span> IDR
-        </div>
-        <button id="closeCurrencyModal" class="cancel-btn" data-ar="إغلاق" data-en="Close">إغلاق</button>
+        <input type="number" id="currencyAmount" placeholder="أدخل المبلغ">
+        <div id="currencyResult">النتيجة: <span id="resultValue">0</span> IDR</div>
+        <button id="closeCurrencyModal" class="cancel-btn">إغلاق</button>
     </div>
 </div>
 
-<a href="https://wa.me/6281234567890?text=مرحباً، أحتاج مساعدة" target="_blank" style="position: fixed; bottom: 80px; right: 20px; background: #25D366; color: white; padding: 12px; border-radius: 50px; text-decoration: none; z-index: 99; font-weight: bold;">💬 واتساب</a>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js', { scope: './' })
-      .then(reg => console.log('PuncakGo App Ready!'))
-      .catch(err => console.log('Registration Failed', err));
-  }
-</script>
-<div style="text-align: center; padding: 15px; margin-top: 20px; border-top: 1px solid #ddd;">
-    <a href="privacy.html" style="color: #1976D2; text-decoration: none;" data-ar="🔒 سياسة الخصوصية" data-en="🔒 Privacy Policy">🔒 سياسة الخصوصية</a>
-    <span style="margin: 0 10px">|</span>
-    <span data-ar="© 2025 PuncakGO" data-en="© 2025 PuncakGO">© 2025 PuncakGO</span>
-</div>
 </body>
 </html>
