@@ -1,147 +1,34 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-}
+/* ========== الترتيب الجديد حسب طلبك ========== */
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: white;
-    color: #333;
-    padding-bottom: 80px;
-}
-
-.overlay {
-    background: white;
-    min-height: 100vh;
-}
-
-.container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 20px;
-}
-
-/* الشريط العلوي */
-.top-bar {
-    background: white;
-    border-radius: 50px;
-    padding: 12px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    margin-bottom: 0;
-    border: 1px solid #DAA520;
-}
-
-.currency-box {
-    background: linear-gradient(135deg, #DAA520, #B8860B);
-    color: white;
-    padding: 8px 15px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.currency-selector {
-    background: linear-gradient(135deg, #DAA520, #B8860B);
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 30px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.lang-switch {
-    background: linear-gradient(135deg, #DAA520, #B8860B);
-    color: white;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/* الشعار */
-.logo {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background: white;
-    line-height: 0;
-}
-
-.logo img {
-    width: 100%;
-    height: 150px;
-    display: block;
-    object-fit: cover;
-}
-
-@media (max-width: 768px) {
-    .logo img {
-        height: auto;
-        max-height: 200px;
-        object-fit: contain;
-    }
-}
-
-/* الشريط المتحرك */
-.promo-bar {
-    background: linear-gradient(135deg, #DAA520, #B8860B);
-    border-radius: 50px;
-    margin: 0 0 30px 0;
-    padding: 12px 20px;
-    overflow: hidden;
-}
-
-.promo-marquee {
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-align: center;
-    white-space: nowrap;
-    animation: marquee 15s linear infinite;
-}
-
-@keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-}
-
-/* ========== الكروت - الترتيب الجديد ========== */
-
-/* الصف الأول: عمودين متساويين */
-.two-columns {
+/* صف 1: حقلين جنب بعض (فلل + جولات) */
+.row-two-cols {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 25px;
     margin-bottom: 25px;
 }
 
-/* الكارت في النص */
-.center-card {
+/* صف 2: حقل واحد في النص (خدمات الفيزا) */
+.row-center {
     display: flex;
     justify-content: center;
     margin-bottom: 25px;
 }
 
-.center-card .service-card {
-    width: 60%;
+.row-center .service-card {
+    width: 100%;
     max-width: 500px;
     margin: 0 auto;
 }
 
-/* الكارت العرض الكامل */
-.full-width-card {
+/* صف 3: حقل واحد كبير (خدمات أخرى) */
+.row-full {
     width: 100%;
     margin-bottom: 35px;
+}
+
+.row-full .service-card {
+    width: 100%;
 }
 
 /* تصميم الكروت الموحد */
@@ -173,7 +60,7 @@ body {
     background: linear-gradient(135deg, #f0e6ff 0%, #e0d4f5 100%);
 }
 .service-card[data-service="other"] {
-    background: linear-gradient(135deg, #e6ffe8 0%, #d4f5d8 100%);
+    background: linear-gradient(135deg, #e6ffe8 0%, #d4f5d8 100%;
 }
 
 .card-icon {
@@ -184,7 +71,7 @@ body {
 }
 
 .service-card:hover .card-icon {
-    transform: scale(1.08) rotate(3deg);
+    transform: scale(1.08);
 }
 
 .card-title {
@@ -219,466 +106,41 @@ body {
     box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
 }
 
-/* ========== سلايدر ========== */
-.slider-container {
-    margin: 40px 0;
-}
-
-.slider-container h3 {
-    color: #B8860B;
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    border-right: 4px solid #DAA520;
-    padding-right: 15px;
-}
-
-.slider {
-    display: flex;
-    overflow-x: auto;
-    gap: 15px;
-    padding: 10px 0;
-}
-
-.slider-item {
-    min-width: 280px;
-    border-radius: 20px;
-    overflow: hidden;
-    cursor: pointer;
-    border: 2px solid #DAA520;
-}
-
-.slider-item img, .slider-item video {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-}
-
-/* ========== ديسكفر ========== */
-.discover-row {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-}
-
-.discover-row .big-card {
-    order: 2;
-    flex: 2;
-}
-
-.discover-row .small-cards {
-    order: 1;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.discover-row:nth-child(odd) .big-card {
-    order: 1;
-}
-
-.discover-row:nth-child(odd) .small-cards {
-    order: 2;
-}
-
-.big-card {
-    background: #f5f5f5;
-    border-radius: 25px;
-    min-height: 250px;
-    background-size: cover;
-    background-position: center;
-    border: 2px solid #DAA520;
-    cursor: pointer;
-    position: relative;
-}
-
-.small-card {
-    background: #f5f5f5;
-    border-radius: 25px;
-    min-height: 115px;
-    background-size: cover;
-    background-position: center;
-    border: 2px solid #DAA520;
-    cursor: pointer;
-    position: relative;
-}
-
-.card-label {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: linear-gradient(135deg, #DAA520, #B8860B);
-    color: white;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-}
-
-/* ========== مودالات ========== */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 30px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    border-top: 5px solid #DAA520;
-}
-
-.modal-content input,
-.modal-content textarea {
-    width: 100%;
-    margin: 10px 0;
-    padding: 12px;
-    border-radius: 25px;
-    border: 1px solid #DAA520;
-}
-
-.modal-content button {
-    background: linear-gradient(135deg, #DAA520, #B8860B);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 30px;
-    cursor: pointer;
-    margin: 5px;
-}
-
-.cancel-btn {
-    background: #8B0000 !important;
-}
-
-/* ========== الشريط السفلي ========== */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: white;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-    z-index: 99;
-    border-top: 2px solid #DAA520;
-}
-
-.nav-item {
-    text-align: center;
-    cursor: pointer;
-    padding: 8px;
-    font-weight: bold;
-}
-
-/* ========== الصفحات ========== */
-.page {
-    display: none;
-}
-
-.active-page {
-    display: block;
-}
-
-/* ========== البروفايل ========== */
-.profile-header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    background: white;
-    border-radius: 25px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    border: 1px solid #DAA520;
-}
-
-.profile-avatar {
-    position: relative;
-    display: inline-block;
-}
-
-.profile-avatar img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #DAA520;
-}
-
-.avatar-edit {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background: #DAA520;
-    color: white;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-.profile-card-collapsible {
-    background: white;
-    border-radius: 20px;
-    margin-bottom: 15px;
-    overflow: hidden;
-    border: 1px solid #eee;
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    cursor: pointer;
-}
-
-.section-title {
-    color: #B8860B;
-    font-size: 1.1rem;
-}
-
-.toggle-icon {
-    font-size: 0.8rem;
-    color: #DAA520;
-}
-
-.card-content {
-    padding: 0 20px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out;
-}
-
-.card-content.active {
-    padding: 0 20px 20px 20px;
-    max-height: 500px;
-}
-
-.profile-field {
-    margin-bottom: 15px;
-}
-
-.profile-field label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.profile-field input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 25px;
-    border: 1px solid #DAA520;
-}
-
-.profile-save-btn {
-    background: linear-gradient(135deg, #DAA520, #B8860B);
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 30px;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.profile-logo {
-    text-align: center;
-    margin-top: 30px;
-    padding: 20px;
-}
-
-.profile-logo img {
-    max-width: 120px;
-}
-
-/* ========== Dark Mode ========== */
-body.dark-mode {
-    background: #121212;
-    color: #ffffff;
-}
-
-body.dark-mode .overlay,
-body.dark-mode .container {
-    background: #121212;
-}
-
-body.dark-mode .top-bar,
-body.dark-mode .service-card,
-body.dark-mode .profile-header,
-body.dark-mode .profile-card-collapsible,
-body.dark-mode .modal-content {
-    background: #1e1e1e;
-    color: #ffffff;
-    border-color: #DAA520;
-}
-
-body.dark-mode .card-desc {
-    color: #cccccc;
-}
-
-body.dark-mode .card-title {
-    color: #DAA520;
-}
-
-body.dark-mode .bottom-nav {
-    background: #1e1e1e;
-}
-
-body.dark-mode .nav-item {
-    color: #ffffff;
-}
-
-/* ========== Toast ========== */
-.toast {
-    position: fixed;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 50px;
-    z-index: 9999;
-    animation: fadeInOut 3s ease;
-    font-weight: bold;
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0; bottom: 60px; }
-    15% { opacity: 1; bottom: 80px; }
-    85% { opacity: 1; bottom: 80px; }
-    100% { opacity: 0; bottom: 60px; }
-}
-
-/* ========== استجابة الجوال (الإصلاح) ========== */
+/* ========== استجابة الجوال ========== */
 @media (max-width: 768px) {
-    .two-columns {
+    .row-two-cols {
         grid-template-columns: 1fr !important;
         gap: 15px !important;
-        margin-bottom: 15px !important;
     }
     
-    .center-card .service-card {
+    .row-center .service-card {
         width: 100% !important;
-        margin: 0 !important;
+        max-width: 100% !important;
     }
     
-    .center-card {
+    .row-full {
         width: 100% !important;
-        margin-bottom: 15px !important;
-    }
-    
-    .full-width-card {
-        width: 100% !important;
-        margin-bottom: 20px !important;
     }
     
     .service-card {
         padding: 20px 15px !important;
-        border-radius: 20px !important;
     }
     
     .card-icon {
-        font-size: 2.5rem !important;
-        margin-bottom: 10px !important;
+        font-size: 2.8rem !important;
     }
     
     .card-title {
-        font-size: 1.1rem !important;
-        margin-bottom: 8px !important;
+        font-size: 1.2rem !important;
     }
     
     .card-desc {
-        font-size: 0.7rem !important;
-        margin-bottom: 12px !important;
-        padding: 0 5px !important;
+        font-size: 0.75rem !important;
+        padding: 0 10px !important;
     }
     
     .card-btn {
         padding: 8px 18px !important;
-        font-size: 0.7rem !important;
-    }
-    
-    .top-bar {
-        padding: 8px 12px !important;
-        flex-wrap: wrap !important;
-        gap: 10px !important;
-    }
-    
-    .currency-box, .currency-selector, .lang-switch {
-        padding: 5px 12px !important;
         font-size: 0.75rem !important;
-    }
-    
-    .promo-bar {
-        padding: 8px 12px !important;
-        margin-bottom: 20px !important;
-    }
-    
-    .promo-marquee {
-        font-size: 0.75rem !important;
-        white-space: normal !important;
-        animation: none !important;
-    }
-    
-    .slider-item {
-        min-width: 220px !important;
-    }
-    
-    .slider-item img, .slider-item video {
-        height: 140px !important;
-    }
-    
-    .discover-row {
-        flex-direction: column !important;
-    }
-    
-    .discover-row .big-card {
-        min-height: 180px !important;
-    }
-    
-    .discover-row .small-cards {
-        flex-direction: row !important;
-        gap: 12px !important;
-    }
-    
-    .small-card {
-        min-height: 100px !important;
-        flex: 1 !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .card-icon {
-        font-size: 2rem !important;
-    }
-    
-    .card-title {
-        font-size: 1rem !important;
-    }
-    
-    .slider-item {
-        min-width: 180px !important;
-    }
-    
-    .slider-item img, .slider-item video {
-        height: 120px !important;
     }
 }
