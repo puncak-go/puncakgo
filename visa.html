@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PuncakGO - خدمات الفيزا</title>
+    <title>PuncakGO - الجولات السياحية</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s ease; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #333; padding-bottom: 30px; }
@@ -18,32 +18,45 @@
         .welcome-section h1 { font-size: 2rem; margin-bottom: 15px; }
         .welcome-section p { font-size: 1.1rem; line-height: 1.6; opacity: 0.95; }
         
-        .visa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 20px; }
-        .visa-card { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 1px solid #DAA520; transition: transform 0.2s; }
-        .visa-card:hover { transform: translateY(-5px); }
+        .countdown-section { background: white; border-radius: 25px; padding: 20px; margin-bottom: 30px; text-align: center; border: 2px solid #DAA520; }
+        .countdown-title { color: #B8860B; font-size: 1.2rem; margin-bottom: 10px; }
+        .countdown { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .countdown-item { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; padding: 10px 20px; border-radius: 15px; min-width: 80px; }
+        .countdown-item span { font-size: 1.5rem; font-weight: bold; display: block; }
+        .countdown-item small { font-size: 0.7rem; }
         
-        .visa-img { width: 100%; height: 220px; object-fit: cover; }
-        .visa-info { padding: 20px; }
-        .visa-name { font-size: 1.5rem; font-weight: bold; color: #B8860B; margin-bottom: 10px; }
-        .visa-price { font-size: 1.2rem; margin-bottom: 10px; }
-        .visa-price span { color: #DAA520; font-weight: bold; font-size: 1.3rem; }
-        .visa-duration { color: #666; margin-bottom: 10px; font-size: 0.9rem; }
+        .tours-grid { display: flex; flex-direction: column; gap: 30px; margin-top: 20px; }
+        .tour-row { display: flex; gap: 25px; flex-wrap: wrap; }
+        .tour-card { flex: 1; background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 1px solid #DAA520; transition: transform 0.2s; }
+        .tour-card:hover { transform: translateY(-5px); }
         
-        .visa-requirements {
+        .slider-container { position: relative; }
+        .slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; }
+        .slider img { width: 100%; min-width: 100%; height: 220px; object-fit: cover; scroll-snap-align: start; }
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 50%; font-size: 18px; }
+        .slider-btn.prev { left: 5px; }
+        .slider-btn.next { right: 5px; }
+        
+        .tour-info { padding: 20px; }
+        .tour-name { font-size: 1.4rem; font-weight: bold; color: #B8860B; margin-bottom: 10px; }
+        .tour-price { font-size: 1.2rem; margin-bottom: 10px; }
+        .tour-price span { color: #DAA520; font-weight: bold; font-size: 1.3rem; }
+        .tour-rating { color: #FFD700; margin-bottom: 10px; font-size: 1rem; }
+        .tour-details { display: flex; flex-wrap: wrap; gap: 15px; margin: 15px 0; padding: 10px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+        .tour-detail { display: flex; align-items: center; gap: 5px; font-size: 0.85rem; color: #666; }
+        
+        .tour-features {
             display: none;
-            background: #f9f9f9;
-            padding: 12px;
-            border-radius: 15px;
+            flex-wrap: wrap;
+            gap: 8px;
             margin: 15px 0;
         }
-        .visa-requirements.show {
-            display: block;
+        .tour-features.show {
+            display: flex;
         }
-        .visa-requirements h4 { color: #B8860B; margin-bottom: 8px; font-size: 0.9rem; }
-        .visa-requirements ul { padding-right: 20px; font-size: 0.8rem; color: #555; }
-        .visa-requirements li { margin: 5px 0; }
+        .tour-feature { background: #f9f9f9; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; border: 1px solid #DAA520; }
         
-        .show-requirements-btn {
+        .show-features-btn {
             background: #DAA520;
             color: white;
             border: none;
@@ -54,82 +67,68 @@
             margin: 5px 0;
             width: 100%;
         }
-        .show-requirements-btn:hover {
+        .show-features-btn:hover {
             background: #B8860B;
         }
         
-        .book-btn { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        
-        .consult-card { background: linear-gradient(135deg, #f9f9f9, #fff); border: 2px dashed #DAA520; margin-top: 30px; }
-        .consult-card .visa-info { text-align: center; }
-        .consult-icon { font-size: 3rem; margin-bottom: 10px; }
+        .book-btn { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 10px; border-radius: 30px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
         
         .admin-buttons { display: flex; gap: 8px; margin-top: 10px; }
         .admin-btn { background: #DAA520; color: white; border: none; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; width: 48%; }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; border-top: 5px solid #DAA520; }
+        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; border-top: 5px solid #DAA520; }
         .modal-content h3 { color: #B8860B; margin-bottom: 15px; text-align: center; }
-        .modal-content input, .modal-content textarea { width: 100%; margin: 8px 0; padding: 12px; border-radius: 25px; border: 1px solid #DAA520; font-family: inherit; }
-        .requirements-section { background: #f9f9f9; padding: 15px; border-radius: 20px; margin: 15px 0; }
-        .requirements-section h4 { color: #B8860B; margin-bottom: 10px; }
+        .modal-content input, .modal-content textarea, .modal-content select { width: 100%; margin: 8px 0; padding: 12px; border-radius: 25px; border: 1px solid #DAA520; font-family: inherit; }
+        .order-summary { background: #f9f9f9; padding: 15px; border-radius: 20px; margin: 15px 0; text-align: center; }
+        .total-price { font-size: 1.3rem; font-weight: bold; color: #DAA520; }
         .modal-content button { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
         .cancel-btn { background: #8B0000 !important; }
         
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 30px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
         
-        .visa-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .image-item { position: relative; display: inline-block; margin: 5px; }
+        .image-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 2px solid #DAA520; }
+        .delete-img-btn { position: absolute; top: -8px; right: -8px; background: red; color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; }
+        
+        .tour-row {
+            display: flex;
             gap: 25px;
+            flex-wrap: wrap;
         }
-        .visa-grid .visa-card:first-child { order: 1; }
-        .visa-grid .visa-card:last-child { order: 2; }
-        .visa-grid .visa-card:nth-child(4n+3) { order: 2; }
-        .visa-grid .visa-card:nth-child(4n+4) { order: 1; }
+        .tour-row .tour-card:first-child { order: 1; flex: 1; }
+        .tour-row .tour-card:last-child { order: 2; flex: 1; }
+        .tour-row:nth-child(odd) .tour-card:first-child { order: 2; }
+        .tour-row:nth-child(odd) .tour-card:last-child { order: 1; }
         
         @media (max-width: 768px) {
-            .visa-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
-            .visa-grid .visa-card { order: 0 !important; }
-            .visa-img { height: 180px !important; }
-            .visa-name { font-size: 0.85rem !important; }
-            .visa-price { font-size: 0.75rem !important; }
-            .visa-price span { font-size: 0.85rem !important; }
-            .visa-duration { font-size: 0.7rem !important; }
-            .visa-requirements li { font-size: 0.6rem !important; }
-            .visa-info { padding: 8px !important; }
+            .tour-row {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                gap: 12px !important;
+            }
+            .tour-row .tour-card { flex: 1 !important; min-width: calc(50% - 12px) !important; order: 0 !important; }
+            .slider img { height: 180px !important; }
+            .tour-name { font-size: 0.85rem !important; }
+            .tour-price { font-size: 0.75rem !important; }
+            .tour-price span { font-size: 0.85rem !important; }
+            .tour-detail { font-size: 0.6rem !important; }
+            .tour-feature { font-size: 0.6rem !important; padding: 2px 6px !important; }
+            .tour-info { padding: 8px !important; }
+            .tour-rating { font-size: 0.7rem !important; }
             .book-btn { padding: 6px !important; font-size: 0.7rem !important; }
-            .show-requirements-btn { font-size: 0.65rem !important; padding: 4px 8px !important; }
+            .show-features-btn { font-size: 0.65rem !important; padding: 4px 8px !important; }
             .welcome-section h1 { font-size: 1.2rem !important; }
             .welcome-section p { font-size: 0.8rem !important; }
             .welcome-section { padding: 15px !important; }
-            .consult-icon { font-size: 2rem !important; }
-            .consult-card .visa-name { font-size: 0.9rem !important; }
-            .consult-card p { font-size: 0.7rem !important; }
+            .countdown-item { padding: 5px 10px !important; min-width: 60px !important; }
+            .countdown-item span { font-size: 1rem !important; }
         }
         
         @media (max-width: 480px) {
-            .visa-img { height: 150px !important; }
-            .visa-name { font-size: 0.75rem !important; }
-        }
-
-        /* Dark Mode */
-        body.dark-mode {
-            background: #121212;
-            color: #ffffff;
-        }
-        body.dark-mode .container {
-            background: #121212;
-        }
-        body.dark-mode .visa-card,
-        body.dark-mode .consult-card,
-        body.dark-mode .modal-content {
-            background: #1e1e1e;
-            color: #ffffff;
-        }
-        body.dark-mode .visa-requirements {
-            background: #2a2a2a;
-            color: #ffffff;
+            .slider img { height: 150px !important; }
+            .tour-name { font-size: 0.75rem !important; }
         }
         
         /* Toast */
@@ -158,79 +157,66 @@
 <div class="container">
     <div class="page-header">
         <button class="back-btn" id="backBtn">← رجوع</button>
-        <h2 id="pageTitle">📄 خدمات الفيزا</h2>
+        <h2 id="pageTitle">🗺️ الجولات السياحية</h2>
         <select id="currencySelector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer;">
             <option value="IDR" selected>🇮🇩 IDR - روبيه</option>
             <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
             <option value="USD">🇺🇸 USD - دولار أمريكي</option>
         </select>
-        <button id="darkModeBtn" class="lang-switch" style="background: #333;">🌙</button>
         <button class="lang-switch" id="langBtn">English</button>
     </div>
 
     <div class="welcome-section">
-        <h1 id="welcomeTitle">🛂 خدمات إصدار الفيزا</h1>
-        <p id="welcomeText">نقدم لكم أفضل خدمات إصدار الفيزا للسفر إلى إندونيسيا. نوفر جميع أنواع الفيزا بأسعار تنافسية وإجراءات سريعة ومضمونة. استشارات مجانية ودعم كامل طوال فترة الإجراءات.</p>
+        <h1 id="welcomeTitle">🌟 اكتشف جمال بونشاك</h1>
+        <p id="welcomeText">انطلق في رحلة لا تنسى مع أفضل الجولات السياحية في بونشاك. استمتع بالمناظر الطبيعية الخلابة، والشلالات الساحرة، ومزارع الشاي الخضراء، وتجربة ثقافية فريدة مع مرشدين محترفين.</p>
     </div>
 
-    <div id="visaGrid" class="visa-grid"></div>
-
-    <div id="consultCard" class="visa-card consult-card">
-        <div class="visa-info">
-            <div class="consult-icon">💬</div>
-            <div class="visa-name" id="consultName">📞 استشارات عامة</div>
-            <p id="consultText">لديك سؤال أو استفسار عن الفيزا؟ اترك لنا رسالة وسنقوم بالرد عليك في أقرب وقت.</p>
-            <button class="book-btn" id="consultBtn">📝 استشارة مجانية</button>
+    <div class="countdown-section">
+        <div class="countdown-title" id="countdownTitle">⏰ عرض خاص لفترة محدودة! احجز الآن واحصل على خصم 20%</div>
+        <div class="countdown" id="countdown">
+            <div class="countdown-item"><span id="days">00</span><small>أيام</small></div>
+            <div class="countdown-item"><span id="hours">00</span><small>ساعات</small></div>
+            <div class="countdown-item"><span id="minutes">00</span><small>دقائق</small></div>
+            <div class="countdown-item"><span id="seconds">00</span><small>ثواني</small></div>
         </div>
     </div>
+
+    <div id="toursGrid" class="tours-grid"></div>
 
     <button id="adminModeBtn" class="admin-toggle-btn">🔐 دخول الأدمن</button>
 </div>
 
 <div id="orderModal" class="modal">
     <div class="modal-content">
-        <h3 id="modalTitle">📝 طلب فيزا</h3>
+        <h3 id="modalTitle">📝 حجز جولة</h3>
         <input type="text" id="custName" placeholder="الاسم الكامل">
         <input type="tel" id="custPhone" placeholder="رقم الجوال">
-        <input type="email" id="custEmail" placeholder="البريد الإلكتروني">
-        <input type="text" id="passportNumber" placeholder="رقم جواز السفر">
-        <div class="requirements-section" id="requirementsSection">
-            <h4>📋 المستندات المطلوبة:</h4>
-            <ul id="requirementsList"></ul>
+        <input type="date" id="tourDate">
+        <input type="number" id="persons" placeholder="عدد الأشخاص" min="1" value="2">
+        <textarea id="notes" rows="2" placeholder="ملاحظات إضافية"></textarea>
+        <div class="order-summary">
+            <p>💰 السعر للشخص: <span id="pricePerPerson">0</span> ألف روبيه</p>
+            <p>👥 عدد الأشخاص: <span id="personsCount">0</span></p>
+            <p class="total-price">💎 الإجمالي: <span id="totalPrice">0</span> ألف روبيه</p>
         </div>
-        <textarea id="notes" rows="2" placeholder="ملاحظات إضافية (إن وجد)"></textarea>
         <div class="order-summary">
             <input type="text" id="couponCode" placeholder="كود الخصم" style="width: 70%; display: inline-block;">
             <button id="applyCouponBtn" style="width: 25%; display: inline-block;">تطبيق</button>
         </div>
-        <button id="confirmOrderBtn">✅ إرسال الطلب</button>
+        <button id="confirmOrderBtn">✅ تأكيد الحجز وإرسال إلى واتساب</button>
         <button id="cancelOrderBtn" class="cancel-btn">إلغاء</button>
     </div>
 </div>
 
-<div id="consultModal" class="modal">
+<div id="imageModal" class="modal">
     <div class="modal-content">
-        <h3 id="consultModalTitle">💬 استشارة عامة</h3>
-        <input type="text" id="consultName" placeholder="الاسم الكامل">
-        <input type="tel" id="consultPhone" placeholder="رقم الجوال">
-        <input type="email" id="consultEmail" placeholder="البريد الإلكتروني (اختياري)">
-        <textarea id="consultMessage" rows="4" placeholder="اكتب استفسارك أو سؤالك هنا..."></textarea>
-        <button id="sendConsultBtn">📩 إرسال الاستشارة</button>
-        <button id="closeConsultBtn" class="cancel-btn">إلغاء</button>
-    </div>
-</div>
-
-<div id="editVisaModal" class="modal">
-    <div class="modal-content">
-        <h3 id="editModalTitle">✏️ تعديل بيانات الفيزا</h3>
-        <input type="text" id="editNameAr" placeholder="الاسم بالعربية">
-        <input type="text" id="editNameEn" placeholder="الاسم بالإنجليزية">
-        <input type="text" id="editPrice" placeholder="السعر (بالألف روبيه)">
-        <input type="text" id="editDuration" placeholder="المدة (مثال: 30 يوم)">
-        <textarea id="editRequirementsAr" rows="3" placeholder="المتطلبات بالعربية (كل شرط في سطر جديد)"></textarea>
-        <textarea id="editRequirementsEn" rows="3" placeholder="المتطلبات بالإنجليزية (كل شرط في سطر جديد)"></textarea>
-        <button id="saveVisaBtn">💾 حفظ التغييرات</button>
-        <button id="closeEditModal" class="cancel-btn">إلغاء</button>
+        <h3>📷 إدارة صور الجولة</h3>
+        <div id="imagesList" style="display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0;"></div>
+        <div style="display: flex; gap: 10px;">
+            <input type="file" id="imageUpload" accept="image/*" style="flex:1;">
+            <button id="addImageBtn">➕ إضافة</button>
+        </div>
+        <button id="closeImageModal" class="cancel-btn">إغلاق</button>
     </div>
 </div>
 
@@ -252,7 +238,7 @@
     document.getElementById('currencySelector').addEventListener('change', (e) => {
         currentCurrency = e.target.value;
         localStorage.setItem('preferredCurrency', currentCurrency);
-        renderVisa();
+        renderTours();
     });
 
     // Toast function
@@ -263,25 +249,6 @@
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
     }
-
-    // Dark Mode
-    const darkModeBtn = document.getElementById('darkModeBtn');
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        document.body.classList.add('dark-mode');
-        darkModeBtn.innerHTML = '☀️';
-    }
-    darkModeBtn?.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        if (document.body.classList.contains('dark-mode')) {
-            localStorage.setItem('darkMode', 'enabled');
-            darkModeBtn.innerHTML = '☀️';
-            showToast('تم تفعيل الوضع الليلي');
-        } else {
-            localStorage.setItem('darkMode', 'disabled');
-            darkModeBtn.innerHTML = '🌙';
-            showToast('تم إلغاء الوضع الليلي');
-        }
-    });
 
     // Coupons
     const coupons = { 'SAVE10': 0.9, 'WELCOME': 0.95, 'PUNCAK20': 0.8 };
@@ -299,228 +266,321 @@
         } else { showToast('كود غير صالح'); }
     });
 
-    // بيانات الفيزا
-    let visaData = [
-        { id: 1, nameAr: "فيزا سياحة", nameEn: "Tourist Visa", price: 500, duration: "30 يوم", 
-          requirementsAr: ["جواز سفر ساري لمدة 6 أشهر", "صور شخصية 4×6", "حجز فندق مؤكد", "تذكرة طيران ذهاب وعودة", "كشف حساب بنكي لآخر 3 أشهر"],
-          requirementsEn: ["Passport valid for 6 months", "4×6 personal photos", "Confirmed hotel booking", "Round-trip flight ticket", "Bank statement last 3 months"],
-          img: "https://picsum.photos/id/104/400/200" },
-        { id: 2, nameAr: "فيزا عمل", nameEn: "Work Visa", price: 1200, duration: "12 شهر", 
-          requirementsAr: ["جواز سفر ساري", "عقد عمل موثق", "شهادة خبرة", "كشف طبي", "صورة من المؤهل العلمي", "خطاب دعوة من الشركة"],
-          requirementsEn: ["Valid passport", "Notarized employment contract", "Experience certificate", "Medical certificate", "Educational qualification copy", "Company invitation letter"],
-          img: "https://picsum.photos/id/106/400/200" },
-        { id: 3, nameAr: "فيزا زيارة عائلية", nameEn: "Family Visit Visa", price: 400, duration: "60 يوم", 
-          requirementsAr: ["جواز سفر ساري", "دعوة من أحد الأقارب", "إثبات صلة القرابة", "كشف حساب بنكي", "تذكرة طيران"],
-          requirementsEn: ["Valid passport", "Relative invitation letter", "Proof of relationship", "Bank statement", "Flight ticket"],
-          img: "https://picsum.photos/id/107/400/200" },
-        { id: 4, nameAr: "فيزا شهرين", nameEn: "2 Months Visa", price: 600, duration: "60 يوم", 
-          requirementsAr: ["جواز سفر ساري", "صور شخصية", "حجز فندق", "تذكرة طيران", "تأمين سفر", "كشف حساب"],
-          requirementsEn: ["Valid passport", "Personal photos", "Hotel booking", "Flight ticket", "Travel insurance", "Bank statement"],
-          img: "https://picsum.photos/id/108/400/200" },
-        { id: 5, nameAr: "فيزا سنوية", nameEn: "Annual Visa", price: 2000, duration: "12 شهر", 
-          requirementsAr: ["جواز سفر ساري", "صور شخصية 4×6", "كشف حساب قوي", "خطاب تعريف من جهة العمل", "تأمين صحي شامل", "حجز فندق أو عقد إيجار"],
-          requirementsEn: ["Valid passport", "4×6 personal photos", "Strong bank statement", "Employment letter", "Comprehensive health insurance", "Hotel booking or rental contract"],
-          img: "https://picsum.photos/id/116/400/200" }
+    // بيانات الجولات
+    let toursData = [
+        { id: 1, nameAr: "جولة شلالات سيتو", nameEn: "Sitou Waterfalls Tour", price: 250, duration: "4 ساعات", maxPersons: 10, languages: "عربي/إنجليزي", 
+          images: ["https://picsum.photos/id/104/400/250", "https://picsum.photos/id/15/400/250"], 
+          featuresAr: ["🚌 نقل مجاني", "🍱 وجبة خفيفة", "📸 كاميرة احترافية", "🪪 مرشد سياحي"], 
+          featuresEn: ["🚌 Free Transfer", "🍱 Light Meal", "📸 Professional Camera", "🪪 Tour Guide"],
+          rating: 4.8, location: "شلالات سيتو" },
+        { id: 2, nameAr: "جولة مزارع الشاي", nameEn: "Tea Plantations Tour", price: 200, duration: "3 ساعات", maxPersons: 15, languages: "عربي/إنجليزي/إندونيسي",
+          images: ["https://picsum.photos/id/96/400/250", "https://picsum.photos/id/29/400/250"],
+          featuresAr: ["🚌 نقل مجاني", "🍵 تذوق شاي", "🌿 جولة ميدانية", "📸 تصوير"], 
+          featuresEn: ["🚌 Free Transfer", "🍵 Tea Tasting", "🌿 Field Tour", "📸 Photography"],
+          rating: 4.7, location: "مزارع الشاي" },
+        { id: 3, nameAr: "جولة مدينة الألعاب", nameEn: "Amusement Park Tour", price: 350, duration: "6 ساعات", maxPersons: 20, languages: "عربي/إنجليزي",
+          images: ["https://picsum.photos/id/106/400/250", "https://picsum.photos/id/107/400/250"],
+          featuresAr: ["🎫 تذاكر دخول", "🍽️ غداء", "🎢 ألعاب مجانية", "🚌 نقل"], 
+          featuresEn: ["🎫 Entry Tickets", "🍽️ Lunch", "🎢 Free Rides", "🚌 Transfer"],
+          rating: 4.9, location: "مدينة الألعاب" },
+        { id: 4, nameAr: "جولة سفاري الليل", nameEn: "Night Safari Tour", price: 400, duration: "5 ساعات", maxPersons: 12, languages: "عربي/إنجليزي",
+          images: ["https://picsum.photos/id/108/400/250", "https://picsum.photos/id/116/400/250"],
+          featuresAr: ["🦁 مشاهدة حيوانات", "🔦 كشافات ليلية", "🚌 نقل", "📸 تصوير ليلي"], 
+          featuresEn: ["🦁 Animal Watching", "🔦 Night Lights", "🚌 Transfer", "📸 Night Photography"],
+          rating: 4.6, location: "سفاري بونشاك" },
+        { id: 5, nameAr: "جولة ينابيع الماء الساخن", nameEn: "Hot Springs Tour", price: 280, duration: "4 ساعات", maxPersons: 15, languages: "عربي/إنجليزي",
+          images: ["https://picsum.photos/id/119/400/250", "https://picsum.photos/id/20/400/250"],
+          featuresAr: ["🛁 ينابيع ساخنة", "🍵 مشروبات ساخنة", "🚌 نقل", "🪪 مرشد"], 
+          featuresEn: ["🛁 Hot Springs", "🍵 Hot Drinks", "🚌 Transfer", "🪪 Guide"],
+          rating: 4.5, location: "ينابيع بونشاك" },
+        { id: 6, nameAr: "جولة المغامرات والتسلق", nameEn: "Adventure & Climbing Tour", price: 450, duration: "7 ساعات", maxPersons: 8, languages: "عربي/إنجليزي",
+          images: ["https://picsum.photos/id/29/400/250", "https://picsum.photos/id/96/400/250"],
+          featuresAr: ["🧗 معدات تسلق", "🪂 رياضة هوائية", "🚌 نقل", "📸 تصوير جوي"], 
+          featuresEn: ["🧗 Climbing Gear", "🪂 Air Sports", "🚌 Transfer", "📸 Aerial Photography"],
+          rating: 4.9, location: "جبال بونشاك" },
+        { id: 7, nameAr: "جولة الثقافة والتاريخ", nameEn: "Culture & History Tour", price: 180, duration: "3 ساعات", maxPersons: 20, languages: "عربي/إنجليزي/إندونيسي",
+          images: ["https://picsum.photos/id/104/400/250", "https://picsum.photos/id/106/400/250"],
+          featuresAr: ["🏛️ متاحف", "📜 قصص تاريخية", "🚌 نقل", "🍱 وجبة"], 
+          featuresEn: ["🏛️ Museums", "📜 History Stories", "🚌 Transfer", "🍱 Meal"],
+          rating: 4.4, location: "متاحف بونشاك" },
+        { id: 8, nameAr: "جولة الطهي التقليدي", nameEn: "Traditional Cooking Tour", price: 220, duration: "4 ساعات", maxPersons: 10, languages: "عربي/إنجليزي",
+          images: ["https://picsum.photos/id/107/400/250", "https://picsum.photos/id/116/400/250"],
+          featuresAr: ["🍳 طبخ عملي", "🍽️ تذوق أطباق", "📖 وصفات", "🚌 نقل"], 
+          featuresEn: ["🍳 Hands-on Cooking", "🍽️ Food Tasting", "📖 Recipes", "🚌 Transfer"],
+          rating: 4.8, location: "مطبخ بونشاك" },
+        { id: 9, nameAr: "جولة ركوب الخيل", nameEn: "Horse Riding Tour", price: 300, duration: "3 ساعات", maxPersons: 8, languages: "عربي/إنجليزي",
+          images: ["https://picsum.photos/id/15/400/250", "https://picsum.photos/id/20/400/250"],
+          featuresAr: ["🐎 خيول مدربة", "🪪 مرشد", "🌲 مسارات طبيعية", "📸 تصوير"], 
+          featuresEn: ["🐎 Trained Horses", "🪪 Guide", "🌲 Nature Trails", "📸 Photography"],
+          rating: 4.7, location: "مزارع الخيول" },
+        { id: 10, nameAr: "جولة الشلالات والبحيرات", nameEn: "Waterfalls & Lakes Tour", price: 320, duration: "6 ساعات", maxPersons: 15, languages: "عربي/إنجليزي",
+          images: ["https://picsum.photos/id/96/400/250", "https://picsum.photos/id/29/400/250"],
+          featuresAr: ["💦 3 شلالات", "🏞️ بحيرة", "🍱 غداء", "🚌 نقل"], 
+          featuresEn: ["💦 3 Waterfalls", "🏞️ Lake", "🍱 Lunch", "🚌 Transfer"],
+          rating: 4.9, location: "شلالات بونشاك" }
     ];
 
-    let currentVisa = null;
+    let currentTour = null;
     let isArabic = true;
     let isAdmin = false;
     const ADMIN_PASSWORD = "admin123";
+    let currentEditTourId = null;
 
     const supabaseClient = window.supabase.createClient(
         'https://nynusiouhgjmjpunfpod.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik'
     );
 
-    async function saveVisaToSupabase(visa) {
+    async function saveTourToSupabase(tour) {
         try {
-            const { error } = await supabaseClient.from('visas').upsert({
-                id: visa.id,
-                name_ar: visa.nameAr,
-                name_en: visa.nameEn,
-                price: visa.price,
-                duration: visa.duration,
-                requirements_ar: visa.requirementsAr,
-                requirements_en: visa.requirementsEn,
-                img: visa.img
+            const { error } = await supabaseClient.from('tours').upsert({
+                id: tour.id,
+                name_ar: tour.nameAr,
+                name_en: tour.nameEn,
+                price: tour.price,
+                duration: tour.duration,
+                max_persons: tour.maxPersons,
+                languages: tour.languages,
+                location: tour.location,
+                rating: tour.rating,
+                images: tour.images,
+                features_ar: tour.featuresAr,
+                features_en: tour.featuresEn
             });
             if (error) console.error('Supabase error:', error);
-            else console.log('✅ Saved visa', visa.id);
+            else console.log('✅ Saved tour', tour.id);
         } catch(e) { console.error(e); }
     }
 
-    function loadVisaData() { let saved = localStorage.getItem('visaData'); if(saved) visaData = JSON.parse(saved); }
-    function saveVisaData() { localStorage.setItem('visaData', JSON.stringify(visaData)); }
+    function loadToursData() { let saved = localStorage.getItem('toursData'); if(saved) toursData = JSON.parse(saved); }
+    function saveToursData() { localStorage.setItem('toursData', JSON.stringify(toursData)); }
+    function fileToBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); }); }
 
-    function renderVisa() {
-        let container = document.getElementById('visaGrid');
+    function getStars(rating) { let full = Math.floor(rating); let half = rating % 1 >= 0.5; let stars = '⭐'.repeat(full); if(half) stars += '½'; stars += '☆'.repeat(5 - full - (half ? 1 : 0)); return stars; }
+
+    function renderTours() {
+        let container = document.getElementById('toursGrid');
         container.innerHTML = '';
         
-        visaData.forEach(visa => {
-            let card = document.createElement('div');
-            card.className = 'visa-card';
-            card.setAttribute('data-id', visa.id);
-            
-            let requirements = isArabic ? visa.requirementsAr : visa.requirementsEn;
-            let reqHtml = '<ul>';
-            requirements.forEach(req => { reqHtml += `<li>✓ ${req}</li>`; });
-            reqHtml += '</ul>';
-            
-            card.innerHTML = `
-                <img src="${visa.img}" class="visa-img" onerror="this.src='https://picsum.photos/id/104/400/200'">
-                <div class="visa-info">
-                    <div class="visa-name">${isArabic ? visa.nameAr : visa.nameEn}</div>
-                    <div class="visa-price">💰 <span data-original-price="${visa.price}">${convertPrice(visa.price)}</span></div>
-                    <div class="visa-duration">⏱️ ${isArabic ? 'مدة الإقامة:' : 'Duration:'} ${visa.duration}</div>
-                    <button class="show-requirements-btn" data-id="${visa.id}">📋 ${isArabic ? 'عرض المستندات المطلوبة' : 'Show Required Documents'}</button>
-                    <div class="visa-requirements" id="requirements-${visa.id}">
-                        <h4>📋 ${isArabic ? 'المستندات المطلوبة:' : 'Required Documents:'}</h4>
-                        ${reqHtml}
-                    </div>
-                    <button class="book-btn" data-id="${visa.id}">📝 ${isArabic ? 'طلب الفيزا' : 'Apply for Visa'}</button>
-                    ${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="edit" data-id="${visa.id}">✏️ تعديل</button></div>` : ''}
-                </div>
-            `;
-            container.appendChild(card);
-        });
-        
-        document.querySelectorAll('.show-requirements-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                let id = btn.getAttribute('data-id');
-                let reqDiv = document.getElementById(`requirements-${id}`);
-                if (reqDiv) {
-                    reqDiv.classList.toggle('show');
-                    btn.innerHTML = reqDiv.classList.contains('show') ? '📋 ' + (isArabic ? 'إخفاء المستندات' : 'Hide Documents') : '📋 ' + (isArabic ? 'عرض المستندات المطلوبة' : 'Show Required Documents');
-                }
-            });
-        });
+        for (let i = 0; i < toursData.length; i += 2) {
+            let row = document.createElement('div');
+            row.className = 'tour-row';
+            let card1 = createTourCard(toursData[i]);
+            row.appendChild(card1);
+            if (i + 1 < toursData.length) {
+                let card2 = createTourCard(toursData[i + 1]);
+                row.appendChild(card2);
+            }
+            container.appendChild(row);
+        }
         
         document.querySelectorAll('.book-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); currentVisa = visaData.find(v => v.id === id); openOrderModal(); });
+            btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); currentTour = toursData.find(t => t.id === id); openOrderModal(); });
         });
         
         if(isAdmin) {
             document.querySelectorAll('.admin-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); currentVisa = visaData.find(v => v.id === id); openEditModal(); });
+                btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); let action = btn.getAttribute('data-action'); currentEditTourId = id; if(action === 'images') openImageManager(id); if(action === 'edit') editTourInfo(id); });
             });
         }
     }
 
-    function openOrderModal() {
-        document.getElementById('modalTitle').innerText = isArabic ? `📝 طلب ${currentVisa.nameAr}` : `📝 ${currentVisa.nameEn} Application`;
-        let requirements = isArabic ? currentVisa.requirementsAr : currentVisa.requirementsEn;
-        let reqHtml = '';
-        requirements.forEach(req => { reqHtml += `<li>✓ ${req}</li>`; });
-        document.getElementById('requirementsList').innerHTML = reqHtml;
-        document.getElementById('orderModal').style.display = 'flex';
-    }
-
-    function openEditModal() {
-        document.getElementById('editModalTitle').innerText = isArabic ? `✏️ تعديل ${currentVisa.nameAr}` : `✏️ Edit ${currentVisa.nameEn}`;
-        document.getElementById('editNameAr').value = currentVisa.nameAr;
-        document.getElementById('editNameEn').value = currentVisa.nameEn;
-        document.getElementById('editPrice').value = currentVisa.price;
-        document.getElementById('editDuration').value = currentVisa.duration;
-        document.getElementById('editRequirementsAr').value = currentVisa.requirementsAr.join('\n');
-        document.getElementById('editRequirementsEn').value = currentVisa.requirementsEn.join('\n');
-        document.getElementById('editVisaModal').style.display = 'flex';
-    }
-
-    document.getElementById('saveVisaBtn').addEventListener('click', async () => {
-        currentVisa.nameAr = document.getElementById('editNameAr').value;
-        currentVisa.nameEn = document.getElementById('editNameEn').value;
-        currentVisa.price = parseInt(document.getElementById('editPrice').value);
-        currentVisa.duration = document.getElementById('editDuration').value;
-        currentVisa.requirementsAr = document.getElementById('editRequirementsAr').value.split('\n').filter(s => s.trim());
-        currentVisa.requirementsEn = document.getElementById('editRequirementsEn').value.split('\n').filter(s => s.trim());
+    function createTourCard(tour) {
+        let card = document.createElement('div');
+        card.className = 'tour-card';
+        card.setAttribute('data-id', tour.id);
         
-        saveVisaData();
-        await saveVisaToSupabase(currentVisa);
-        renderVisa();
-        document.getElementById('editVisaModal').style.display = 'none';
-        showToast(isArabic ? 'تم حفظ التغييرات بنجاح' : 'Changes saved successfully');
-    });
+        let slidesHtml = ''; tour.images.forEach(img => { slidesHtml += `<img src="${img}" alt="Tour">`; }); if(tour.images.length === 0) slidesHtml = '<img src="https://picsum.photos/id/104/400/250" alt="Tour">';
+        
+        let features = isArabic ? tour.featuresAr : tour.featuresEn;
+        let featuresHtml = '<div class="tour-features" id="features-' + tour.id + '">'; features.forEach(f => { featuresHtml += `<span class="tour-feature">${f}</span>`; }); featuresHtml += '</div>';
+        
+        card.innerHTML = `
+            <div class="slider-container">
+                <div class="slider" id="slider-${tour.id}">${slidesHtml}</div>
+                <button class="slider-btn prev" data-id="${tour.id}">❮</button>
+                <button class="slider-btn next" data-id="${tour.id}">❯</button>
+            </div>
+            <div class="tour-info">
+                <div class="tour-name">${isArabic ? tour.nameAr : tour.nameEn}</div>
+                <div class="tour-rating">${getStars(tour.rating)} (${tour.rating}/5)</div>
+                <div class="tour-price">💰 <span data-original-price="${tour.price}">${convertPrice(tour.price)}</span> ${isArabic ? 'للشخص' : 'per person'}</div>
+                <div class="tour-details">
+                    <span class="tour-detail">⏱️ ${tour.duration}</span>
+                    <span class="tour-detail">👥 ${isArabic ? 'حتى' : 'Up to'} ${tour.maxPersons} ${isArabic ? 'أشخاص' : 'persons'}</span>
+                    <span class="tour-detail">🗣️ ${tour.languages}</span>
+                    <span class="tour-detail">📍 ${tour.location}</span>
+                </div>
+                <button class="show-features-btn" data-id="${tour.id}">📋 ${isArabic ? 'عرض المميزات' : 'Show Features'}</button>
+                ${featuresHtml}
+                <button class="book-btn" data-id="${tour.id}">📝 ${isArabic ? 'احجز الآن' : 'Book Now'}</button>
+                ${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="images" data-id="${tour.id}">📷 إدارة الصور</button><button class="admin-btn" data-action="edit" data-id="${tour.id}">✏️ تعديل</button></div>` : ''}
+            </div>
+        `;
+        
+        setTimeout(() => {
+            let prevBtn = card.querySelector('.slider-btn.prev');
+            let nextBtn = card.querySelector('.slider-btn.next');
+            let slider = card.querySelector('.slider');
+            if(prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); slider.scrollBy({ left: -slider.clientWidth, behavior: 'smooth' }); });
+            if(nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' }); });
+        }, 100);
+        
+        let showBtn = card.querySelector('.show-features-btn');
+        let featuresDiv = card.querySelector('.tour-features');
+        if(showBtn && featuresDiv) {
+            showBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                featuresDiv.classList.toggle('show');
+                showBtn.innerHTML = featuresDiv.classList.contains('show') ? '📋 ' + (isArabic ? 'إخفاء المميزات' : 'Hide Features') : '📋 ' + (isArabic ? 'عرض المميزات' : 'Show Features');
+            });
+        }
+        
+        return card;
+    }
+
+    async function openImageManager(tourId) {
+        let tour = toursData.find(t => t.id === tourId);
+        let modal = document.getElementById('imageModal');
+        let imagesList = document.getElementById('imagesList');
+        imagesList.innerHTML = '';
+        tour.images.forEach((img, idx) => { imagesList.innerHTML += `<div class="image-item"><img src="${img}"><button class="delete-img-btn" data-idx="${idx}">✕</button></div>`; });
+        modal.style.display = 'flex';
+        
+        document.querySelectorAll('.delete-img-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                let idx = parseInt(btn.getAttribute('data-idx'));
+                tour.images.splice(idx, 1);
+                saveToursData();
+                await saveTourToSupabase(tour);
+                renderTours();
+                openImageManager(tourId);
+            });
+        });
+        
+        document.getElementById('addImageBtn').onclick = async () => {
+            let fileInput = document.getElementById('imageUpload');
+            if(fileInput.files && fileInput.files[0]) {
+                let url = await fileToBase64(fileInput.files[0]);
+                tour.images.push(url);
+                saveToursData();
+                await saveTourToSupabase(tour);
+                renderTours();
+                fileInput.value = '';
+                openImageManager(tourId);
+            } else {
+                alert('الرجاء اختيار صورة أولاً');
+            }
+        };
+    }
+
+    async function editTourInfo(tourId) {
+        let tour = toursData.find(t => t.id === tourId);
+        let newNameAr = prompt('أدخل اسم الجولة بالعربية:', tour.nameAr);
+        let newNameEn = prompt('أدخل اسم الجولة بالإنجليزية:', tour.nameEn);
+        let newPrice = prompt('أدخل السعر الجديد (ألف روبيه):', tour.price);
+        let newDuration = prompt('أدخل المدة (مثلاً: 4 ساعات):', tour.duration);
+        let newLocation = prompt('أدخل الموقع:', tour.location);
+        
+        if(newNameAr) tour.nameAr = newNameAr;
+        if(newNameEn) tour.nameEn = newNameEn;
+        if(newPrice && !isNaN(newPrice)) tour.price = parseInt(newPrice);
+        if(newDuration) tour.duration = newDuration;
+        if(newLocation) tour.location = newLocation;
+        
+        saveToursData();
+        await saveTourToSupabase(tour);
+        renderTours();
+        alert('تم تحديث بيانات الجولة بنجاح');
+    }
+
+    function startCountdown() {
+        let targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + 7);
+        targetDate.setHours(23, 59, 59, 999);
+        
+        function updateCountdown() {
+            let now = new Date();
+            let diff = targetDate - now;
+            if (diff <= 0) {
+                document.getElementById('days').innerText = '00';
+                document.getElementById('hours').innerText = '00';
+                document.getElementById('minutes').innerText = '00';
+                document.getElementById('seconds').innerText = '00';
+                return;
+            }
+            let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            let hours = Math.floor((diff % (86400000)) / (3600000));
+            let minutes = Math.floor((diff % 3600000) / 60000);
+            let seconds = Math.floor((diff % 60000) / 1000);
+            document.getElementById('days').innerText = days.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    }
+
+    function openOrderModal() {
+        document.getElementById('modalTitle').innerText = isArabic ? `📝 حجز ${currentTour.nameAr}` : `📝 Booking ${currentTour.nameEn}`;
+        document.getElementById('pricePerPerson').innerText = currentTour.price.toLocaleString();
+        document.getElementById('orderModal').style.display = 'flex';
+        calculateOrder();
+    }
+    
+    function calculateOrder() { let persons = document.getElementById('persons').value || 0; document.getElementById('personsCount').innerText = persons; let total = persons * currentTour.price; document.getElementById('totalPrice').innerText = total.toLocaleString(); }
 
     function changeLanguage() {
         isArabic = !isArabic;
         document.body.style.direction = isArabic ? 'rtl' : 'ltr';
-        document.getElementById('pageTitle').innerText = isArabic ? '📄 خدمات الفيزا' : '📄 Visa Services';
+        document.getElementById('pageTitle').innerText = isArabic ? '🗺️ الجولات السياحية' : '🗺️ Tours';
         document.getElementById('langBtn').innerText = isArabic ? 'English' : 'العربية';
-        document.getElementById('welcomeTitle').innerHTML = isArabic ? '🛂 خدمات إصدار الفيزا' : '🛂 Visa Issuance Services';
-        document.getElementById('welcomeText').innerHTML = isArabic ? 'نقدم لكم أفضل خدمات إصدار الفيزا للسفر إلى إندونيسيا. نوفر جميع أنواع الفيزا بأسعار تنافسية وإجراءات سريعة ومضمونة. استشارات مجانية ودعم كامل طوال فترة الإجراءات.' : 'We provide the best visa issuance services for travel to Indonesia. We offer all types of visas at competitive prices with fast and guaranteed procedures. Free consultation and full support throughout the process.';
-        document.getElementById('consultName').innerHTML = isArabic ? '📞 استشارات عامة' : '📞 General Consultation';
-        document.getElementById('consultText').innerHTML = isArabic ? 'لديك سؤال أو استفسار عن الفيزا؟ اترك لنا رسالة وسنقوم بالرد عليك في أقرب وقت.' : 'Have a question or inquiry about visas? Leave us a message and we will get back to you as soon as possible.';
-        document.getElementById('consultBtn').innerHTML = isArabic ? '📝 استشارة مجانية' : '📝 Free Consultation';
-        renderVisa();
+        document.getElementById('welcomeTitle').innerHTML = isArabic ? '🌟 اكتشف جمال بونشاك' : '🌟 Discover the Beauty of Puncak';
+        document.getElementById('welcomeText').innerHTML = isArabic ? 'انطلق في رحلة لا تنسى مع أفضل الجولات السياحية في بونشاك. استمتع بالمناظر الطبيعية الخلابة، والشلالات الساحرة، ومزارع الشاي الخضراء، وتجربة ثقافية فريدة مع مرشدين محترفين.' : 'Embark on an unforgettable journey with the best tours in Puncak. Enjoy stunning landscapes, enchanting waterfalls, green tea plantations, and a unique cultural experience with professional guides.';
+        document.getElementById('countdownTitle').innerHTML = isArabic ? '⏰ عرض خاص لفترة محدودة! احجز الآن واحصل على خصم 20%' : '⏰ Limited time offer! Book now and get 20% off';
+        
+        document.querySelectorAll('.show-features-btn').forEach(btn => {
+            let featuresDiv = btn.parentElement.querySelector('.tour-features');
+            if(featuresDiv) {
+                btn.innerHTML = featuresDiv.classList.contains('show') ? '📋 ' + (isArabic ? 'إخفاء المميزات' : 'Hide Features') : '📋 ' + (isArabic ? 'عرض المميزات' : 'Show Features');
+            }
+        });
+        
+        renderTours();
     }
 
     const adminBtn = document.getElementById('adminModeBtn');
-    function enterAdminMode() { let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); if(pwd === ADMIN_PASSWORD) { isAdmin = true; adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; adminBtn.style.background = '#DAA520'; renderVisa(); showToast('✅ تم تفعيل وضع الأدمن'); } else if(pwd !== null) showToast('❌ كلمة السر خطأ'); }
-    function exitAdminMode() { isAdmin = false; adminBtn.innerHTML = '🔐 دخول الأدمن'; adminBtn.style.background = '#8B0000'; renderVisa(); showToast('✅ تم الخروج من وضع الأدمن'); }
+    function enterAdminMode() { let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); if(pwd === ADMIN_PASSWORD) { isAdmin = true; adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; adminBtn.style.background = '#DAA520'; renderTours(); showToast('✅ تم تفعيل وضع الأدمن'); } else if(pwd !== null) showToast('❌ كلمة السر خطأ'); }
+    function exitAdminMode() { isAdmin = false; adminBtn.innerHTML = '🔐 دخول الأدمن'; adminBtn.style.background = '#8B0000'; renderTours(); showToast('✅ تم الخروج من وضع الأدمن'); }
     adminBtn.addEventListener('click', () => { if(isAdmin) exitAdminMode(); else enterAdminMode(); });
-
-    document.getElementById('confirmOrderBtn').addEventListener('click', () => {
-        let name = document.getElementById('custName').value;
-        let phone = document.getElementById('custPhone').value;
-        let email = document.getElementById('custEmail').value;
-        let passport = document.getElementById('passportNumber').value;
-        let notes = document.getElementById('notes').value;
-        
-        if (!name || !phone || !passport) { showToast(isArabic ? 'الرجاء ملء جميع البيانات المطلوبة' : 'Please fill all required fields'); return; }
-        
-        let message = `*${isArabic ? 'طلب فيزا جديد من تطبيق PuncakGO' : 'New Visa Application from PuncakGO App'}*%0A`;
-        message += `%0A*${isArabic ? 'نوع الفيزا:' : 'Visa Type:'}* ${isArabic ? currentVisa.nameAr : currentVisa.nameEn}%0A`;
-        message += `*${isArabic ? 'الاسم:' : 'Name:'}* ${name}%0A`;
-        message += `*${isArabic ? 'الجوال:' : 'Phone:'}* ${phone}%0A`;
-        if(email) message += `*${isArabic ? 'البريد الإلكتروني:' : 'Email:'}* ${email}%0A`;
-        message += `*${isArabic ? 'رقم جواز السفر:' : 'Passport Number:'}* ${passport}%0A`;
-        if(notes) message += `*${isArabic ? 'ملاحظات:' : 'Notes:'}* ${notes}%0A`;
-        
-        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
-        document.getElementById('orderModal').style.display = 'none';
-        document.getElementById('custName').value = '';
-        document.getElementById('custPhone').value = '';
-        document.getElementById('custEmail').value = '';
-        document.getElementById('passportNumber').value = '';
-        document.getElementById('notes').value = '';
-        document.getElementById('couponCode').value = '';
-        showToast(isArabic ? 'تم إرسال طلب الفيزا بنجاح' : 'Visa application sent successfully');
-    });
-
-    document.getElementById('consultBtn').addEventListener('click', () => { document.getElementById('consultModal').style.display = 'flex'; });
-    document.getElementById('sendConsultBtn').addEventListener('click', () => {
-        let name = document.getElementById('consultName').value;
-        let phone = document.getElementById('consultPhone').value;
-        let email = document.getElementById('consultEmail').value;
-        let message = document.getElementById('consultMessage').value;
-        
-        if (!name || !phone || !message) { showToast(isArabic ? 'الرجاء ملء الاسم ورقم الجوال والرسالة' : 'Please fill name, phone and message'); return; }
-        
-        let whatsappMsg = `*${isArabic ? 'استشارة جديدة من تطبيق PuncakGO' : 'New Consultation from PuncakGO App'}*%0A`;
-        whatsappMsg += `%0A*${isArabic ? 'الاسم:' : 'Name:'}* ${name}%0A`;
-        whatsappMsg += `*${isArabic ? 'الجوال:' : 'Phone:'}* ${phone}%0A`;
-        if(email) whatsappMsg += `*${isArabic ? 'البريد الإلكتروني:' : 'Email:'}* ${email}%0A`;
-        whatsappMsg += `*${isArabic ? 'الاستفسار:' : 'Inquiry:'}* ${message}%0A`;
-        
-        window.open(`https://wa.me/6281234567890?text=${whatsappMsg}`, '_blank');
-        document.getElementById('consultModal').style.display = 'none';
-        document.getElementById('consultName').value = '';
-        document.getElementById('consultPhone').value = '';
-        document.getElementById('consultEmail').value = '';
-        document.getElementById('consultMessage').value = '';
-        showToast(isArabic ? 'تم إرسال استشارتك بنجاح' : 'Your consultation has been sent successfully');
-    });
 
     document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
     document.getElementById('langBtn').addEventListener('click', changeLanguage);
+    document.getElementById('persons').addEventListener('input', calculateOrder);
+    document.getElementById('confirmOrderBtn').addEventListener('click', () => {
+        let name = document.getElementById('custName').value, phone = document.getElementById('custPhone').value, tourDate = document.getElementById('tourDate').value, persons = document.getElementById('persons').value, notes = document.getElementById('notes').value, total = document.getElementById('totalPrice').innerText;
+        if (!name || !phone || !tourDate) { showToast(isArabic ? 'الرجاء ملء جميع البيانات المطلوبة' : 'Please fill all required fields'); return; }
+        let message = `*${isArabic ? 'حجز جديد من تطبيق PuncakGO - جولات سياحية' : 'New Booking from PuncakGO App - Tours'}*%0A`;
+        message += `%0A*${isArabic ? 'الجولة:' : 'Tour:'}* ${isArabic ? currentTour.nameAr : currentTour.nameEn}%0A`;
+        message += `*${isArabic ? 'الاسم:' : 'Name:'}* ${name}%0A`;
+        message += `*${isArabic ? 'الجوال:' : 'Phone:'}* ${phone}%0A`;
+        message += `*${isArabic ? 'تاريخ الجولة:' : 'Tour Date:'}* ${tourDate}%0A`;
+        message += `*${isArabic ? 'عدد الأشخاص:' : 'Persons:'}* ${persons}%0A`;
+        message += `*${isArabic ? 'السعر الإجمالي:' : 'Total Price:'}* ${total} ${isArabic ? 'ألف روبيه' : 'K IDR'}%0A`;
+        if (notes) message += `*${isArabic ? 'ملاحظات:' : 'Notes:'}* ${notes}%0A`;
+        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+        document.getElementById('orderModal').style.display = 'none';
+        document.getElementById('custName').value = ''; document.getElementById('custPhone').value = ''; document.getElementById('tourDate').value = ''; document.getElementById('notes').value = '';
+        document.getElementById('couponCode').value = '';
+        showToast(isArabic ? 'تم إرسال طلب الحجز بنجاح' : 'Booking request sent successfully');
+    });
     document.getElementById('cancelOrderBtn').addEventListener('click', () => { document.getElementById('orderModal').style.display = 'none'; });
-    document.getElementById('closeConsultBtn').addEventListener('click', () => { document.getElementById('consultModal').style.display = 'none'; });
-    document.getElementById('closeEditModal').addEventListener('click', () => { document.getElementById('editVisaModal').style.display = 'none'; });
+    document.getElementById('closeImageModal').addEventListener('click', () => { document.getElementById('imageModal').style.display = 'none'; });
 
-    loadVisaData();
-    renderVisa();
+    loadToursData();
+    renderTours();
+    startCountdown();
 </script>
 </body>
 </html>
