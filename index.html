@@ -16,23 +16,12 @@
                 <div class="currency-box" id="currencyBtn">
                     <span data-ar="💰 صرف العملات" data-en="💰 Currency Exchange">💰 صرف العملات</span>
                 </div>
-                
+                <select id="currencySelector" class="currency-selector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer;">
+                    <option value="IDR" selected>🇮🇩 IDR</option>
+                    <option value="SAR">🇸🇦 SAR</option>
+                    <option value="USD">🇺🇸 USD</option>
+                </select>
                 <button class="lang-switch" id="langBtn">English</button>
-            </div>
-
-            <div id="currencyModal" class="modal">
-                <div class="modal-content" style="max-width: 350px;">
-                    <h3 data-ar="💱 تحويل العملات" data-en="💱 Currency Exchange">💱 تحويل العملات</h3>
-                    <select id="currencyType">
-                        <option value="SAR" data-ar="🇸🇦 ريال سعودي" data-en="🇸🇦 Saudi Riyal">🇸🇦 ريال سعودي</option>
-                        <option value="USD" data-ar="🇺🇸 دولار أمريكي" data-en="🇺🇸 US Dollar">🇺🇸 دولار أمريكي</option>
-                    </select>
-                    <input type="number" id="currencyAmount" placeholder="أدخل المبلغ" data-ar-placeholder="أدخل المبلغ" data-en-placeholder="Enter amount">
-                    <div id="currencyResult" style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 15px; font-weight: bold;">
-                        <span data-ar="النتيجة: " data-en="Result: ">النتيجة: </span> <span id="resultValue">0</span> IDR
-                    </div>
-                    <button id="closeCurrencyModal" class="cancel-btn" data-ar="إغلاق" data-en="Close">إغلاق</button>
-                </div>
             </div>
 
             <div class="logo">
@@ -48,20 +37,39 @@
                 </div>
             </div>
 
-            <div class="three-fields">
-                <div class="field-card" onclick="window.location.href='villas.html'">
-                    <div class="field-text" data-ar="🏡 فلل" data-en="🏡 Villas">🏡 فلل</div>
+            <!-- الكروت الحديثة - 4 أقسام رئيسية -->
+            <div class="services-cards-grid">
+                <!-- 1. فلل -->
+                <div class="service-card-modern" data-service="villas" onclick="window.location.href='villas.html'">
+                    <div class="card-icon">🏡</div>
+                    <div class="card-title" data-ar="فلل فاخرة" data-en="Luxury Villas">فلل فاخرة</div>
+                    <div class="card-desc" data-ar="أفضل الفلل في بونشاك مع إطلالات خلابة وخدمات راقية" data-en="The best villas in Puncak with stunning views and premium services">أفضل الفلل في بونشاك مع إطلالات خلابة وخدمات راقية</div>
+                    <button class="card-btn">استكشف الفلل ←</button>
                 </div>
-                <div class="field-card" onclick="window.location.href='tours.html'">
-                    <div class="field-text" data-ar="🗺️ جولات سياحية" data-en="🗺️ Tours">🗺️ جولات سياحية</div>
-                </div>
-                <div class="field-card" onclick="window.location.href='visa.html'">
-                    <div class="field-text" data-ar="📄 خدمات الفيزا" data-en="📄 Visa Services">📄 خدمات الفيزا</div>
-                </div>
-            </div>
 
-            <div class="wide-field" onclick="window.location.href='other-services.html'">
-                <div class="field-text" data-ar="✨ خدمات أخرى" data-en="✨ Other Services">✨ خدمات أخرى</div>
+                <!-- 2. جولات سياحية -->
+                <div class="service-card-modern" data-service="tours" onclick="window.location.href='tours.html'">
+                    <div class="card-icon">🗺️</div>
+                    <div class="card-title" data-ar="جولات سياحية" data-en="Tours">جولات سياحية</div>
+                    <div class="card-desc" data-ar="اكتشف أجمل الأماكن في بونشاك مع مرشدين محترفين" data-en="Discover the best places in Puncak with professional guides">اكتشف أجمل الأماكن في بونشاك مع مرشدين محترفين</div>
+                    <button class="card-btn">استكشف الجولات ←</button>
+                </div>
+
+                <!-- 3. خدمات الفيزا -->
+                <div class="service-card-modern" data-service="visa" onclick="window.location.href='visa.html'">
+                    <div class="card-icon">📄</div>
+                    <div class="card-title" data-ar="خدمات الفيزا" data-en="Visa Services">خدمات الفيزا</div>
+                    <div class="card-desc" data-ar="تأشيرات دخول سريعة وسهلة للسفر إلى إندونيسيا" data-en="Fast and easy entry visas for travel to Indonesia">تأشيرات دخول سريعة وسهلة للسفر إلى إندونيسيا</div>
+                    <button class="card-btn">استكشف الخدمات ←</button>
+                </div>
+
+                <!-- 4. خدمات أخرى -->
+                <div class="service-card-modern" data-service="other" onclick="window.location.href='other-services.html'">
+                    <div class="card-icon">✨</div>
+                    <div class="card-title" data-ar="خدمات أخرى" data-en="Other Services">خدمات أخرى</div>
+                    <div class="card-desc" data-ar="مطاعم عربية، بقالة، عطور، تأجير سيارات والمزيد" data-en="Arabic restaurants, grocery, perfumes, car rental and more">مطاعم عربية، بقالة، عطور، تأجير سيارات والمزيد</div>
+                    <button class="card-btn">استكشف الخدمات ←</button>
+                </div>
             </div>
 
             <div class="slider-container">
@@ -251,7 +259,7 @@
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item" data-nav="home" data-ar="🏠 الرئيسية" data-en="🏠 Home">🏠 الرئيسية</div>
+        <div class="nav-item active" data-nav="home" data-ar="🏠 الرئيسية" data-en="🏠 Home">🏠 الرئيسية</div>
         <div class="nav-item" data-nav="bookings" data-ar="📅 رحلاتي" data-en="📅 My Bookings">📅 رحلاتي</div>
         <div class="nav-item" data-nav="profile" data-ar="👤 البروفايل" data-en="👤 Profile">👤 البروفايل</div>
     </div>
@@ -269,6 +277,21 @@
         </div>
         <button id="submitOrder" data-ar="إرسال الطلب" data-en="Submit Order">إرسال الطلب</button>
         <button id="closeModal" class="cancel-btn" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
+    </div>
+</div>
+
+<div id="currencyModal" class="modal">
+    <div class="modal-content" style="max-width: 350px;">
+        <h3 data-ar="💱 تحويل العملات" data-en="💱 Currency Exchange">💱 تحويل العملات</h3>
+        <select id="currencyType">
+            <option value="SAR" data-ar="🇸🇦 ريال سعودي" data-en="🇸🇦 Saudi Riyal">🇸🇦 ريال سعودي</option>
+            <option value="USD" data-ar="🇺🇸 دولار أمريكي" data-en="🇺🇸 US Dollar">🇺🇸 دولار أمريكي</option>
+        </select>
+        <input type="number" id="currencyAmount" data-ar-placeholder="أدخل المبلغ" data-en-placeholder="Enter amount" placeholder="أدخل المبلغ">
+        <div id="currencyResult" style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 15px; font-weight: bold;">
+            <span data-ar="النتيجة: " data-en="Result: ">النتيجة: </span> <span id="resultValue">0</span> IDR
+        </div>
+        <button id="closeCurrencyModal" class="cancel-btn" data-ar="إغلاق" data-en="Close">إغلاق</button>
     </div>
 </div>
 
