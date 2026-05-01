@@ -77,7 +77,7 @@
         .admin-btn { background: #DAA520; color: white; border: none; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; width: 48%; }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; border-top: 5px solid #DAA520; }
+        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; border-top: 5px solid #DAA520; }
         .modal-content h3 { color: #B8860B; margin-bottom: 15px; text-align: center; }
         .modal-content input, .modal-content textarea, .modal-content select { width: 100%; margin: 8px 0; padding: 12px; border-radius: 25px; border: 1px solid #DAA520; font-family: inherit; }
         .order-summary { background: #f9f9f9; padding: 15px; border-radius: 20px; margin: 15px 0; text-align: center; }
@@ -86,6 +86,9 @@
         .cancel-btn { background: #8B0000 !important; }
         
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 30px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
+        
+        #addTourBtnContainer { text-align: center; margin: 20px 0; }
+        #addNewTourBtn { background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: bold; font-size: 1rem; }
         
         .image-item { position: relative; display: inline-block; margin: 5px; }
         .image-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 2px solid #DAA520; }
@@ -171,7 +174,19 @@
         <p id="welcomeText">انطلق في رحلة لا تنسى مع أفضل الجولات السياحية في بونشاك. استمتع بالمناظر الطبيعية الخلابة، والشلالات الساحرة، ومزارع الشاي الخضراء، وتجربة ثقافية فريدة مع مرشدين محترفين.</p>
     </div>
 
-    
+    <div class="countdown-section">
+        <div class="countdown-title" id="countdownTitle">⏰ عرض خاص لفترة محدودة! احجز الآن واحصل على خصم 20%</div>
+        <div class="countdown" id="countdown">
+            <div class="countdown-item"><span id="days">00</span><small>يوم</small></div>
+            <div class="countdown-item"><span id="hours">00</span><small>ساعة</small></div>
+            <div class="countdown-item"><span id="minutes">00</span><small>دقيقة</small></div>
+            <div class="countdown-item"><span id="seconds">00</span><small>ثانية</small></div>
+        </div>
+    </div>
+
+    <!-- زر إضافة جولة جديدة (يظهر فقط في وضع الأدمن) -->
+    <div id="addTourBtnContainer" style="display: none;">
+        <button id="addNewTourBtn">➕ إضافة جولة جديدة</button>
     </div>
 
     <div id="toursGrid" class="tours-grid"></div>
@@ -210,6 +225,45 @@
             <button id="addImageBtn">➕ إضافة</button>
         </div>
         <button id="closeImageModal" class="cancel-btn">إغلاق</button>
+    </div>
+</div>
+
+<!-- نافذة إضافة جولة جديدة -->
+<div id="addTourModal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3>➕ إضافة جولة جديدة</h3>
+        
+        <input type="text" id="newTourNameAr" placeholder="اسم الجولة بالعربية">
+        <input type="text" id="newTourNameEn" placeholder="اسم الجولة بالإنجليزية">
+        <input type="number" id="newTourPrice" placeholder="السعر (ألف روبيه)" value="250">
+        <input type="text" id="newTourDuration" placeholder="المدة (مثال: 4 ساعات)" value="4 ساعات">
+        <input type="number" id="newTourMaxPersons" placeholder="الحد الأقصى للأشخاص" value="10">
+        <input type="text" id="newTourLanguages" placeholder="اللغات المتاحة (مثال: عربي/إنجليزي)" value="عربي/إنجليزي">
+        <input type="text" id="newTourLocation" placeholder="الموقع" value="بونشاك">
+        <input type="number" id="newTourRating" placeholder="التقييم (1-5)" step="0.1" min="0" max="5" value="4.5">
+        
+        <div style="margin: 15px 0;">
+            <label style="display: block; margin-bottom: 5px;">🖼️ صور الجولة (يمكنك إضافة عدة صور)</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="file" id="newTourImages" accept="image/*" multiple style="flex:1">
+            </div>
+            <div id="newTourImagesPreview" style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;"></div>
+        </div>
+        
+        <div style="margin: 15px 0;">
+            <label style="display: block; margin-bottom: 5px;">📋 المميزات (اختياري)</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="newFeatureArTemp" placeholder="ميزة بالعربية" style="flex:1">
+                <input type="text" id="newFeatureEnTemp" placeholder="ميزة بالإنجليزية" style="flex:1">
+                <button type="button" id="addFeatureTempBtn" style="width: auto; padding: 8px 15px;">➕</button>
+            </div>
+            <div id="newFeaturesList" style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;"></div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button id="confirmAddTourBtn">✅ إضافة الجولة</button>
+            <button id="cancelAddTourBtn" class="cancel-btn">إلغاء</button>
+        </div>
     </div>
 </div>
 
@@ -318,6 +372,9 @@
     let isAdmin = false;
     const ADMIN_PASSWORD = "admin123";
     let currentEditTourId = null;
+    let newTourImagesFiles = [];
+    let newTourFeaturesAr = [];
+    let newTourFeaturesEn = [];
 
     const supabaseClient = window.supabase.createClient(
         'https://nynusiouhgjmjpunfpod.supabase.co',
@@ -543,10 +600,163 @@
         renderTours();
     }
 
+    function updateAddTourButton() {
+        const container = document.getElementById('addTourBtnContainer');
+        if (container) {
+            container.style.display = isAdmin ? 'block' : 'none';
+        }
+    }
+
     const adminBtn = document.getElementById('adminModeBtn');
-    function enterAdminMode() { let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); if(pwd === ADMIN_PASSWORD) { isAdmin = true; adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; adminBtn.style.background = '#DAA520'; renderTours(); showToast('✅ تم تفعيل وضع الأدمن'); } else if(pwd !== null) showToast('❌ كلمة السر خطأ'); }
-    function exitAdminMode() { isAdmin = false; adminBtn.innerHTML = '🔐 دخول الأدمن'; adminBtn.style.background = '#8B0000'; renderTours(); showToast('✅ تم الخروج من وضع الأدمن'); }
-    adminBtn.addEventListener('click', () => { if(isAdmin) exitAdminMode(); else enterAdminMode(); });
+    function enterAdminMode() { 
+        let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); 
+        if(pwd === ADMIN_PASSWORD) { 
+            isAdmin = true; 
+            adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; 
+            adminBtn.style.background = '#DAA520'; 
+            renderTours();
+            updateAddTourButton();
+            showToast('✅ تم تفعيل وضع الأدمن'); 
+        } else if(pwd !== null) { 
+            showToast('❌ كلمة السر خطأ'); 
+        } 
+    }
+    function exitAdminMode() { 
+        isAdmin = false; 
+        adminBtn.innerHTML = '🔐 دخول الأدمن'; 
+        adminBtn.style.background = '#8B0000'; 
+        renderTours();
+        updateAddTourButton();
+        showToast('✅ تم الخروج من وضع الأدمن'); 
+    }
+    adminBtn.addEventListener('click', () => { 
+        if(isAdmin) exitAdminMode(); 
+        else enterAdminMode(); 
+    });
+
+    // ========== إضافة جولة جديدة ==========
+    document.getElementById('addNewTourBtn')?.addEventListener('click', () => {
+        document.getElementById('newTourNameAr').value = '';
+        document.getElementById('newTourNameEn').value = '';
+        document.getElementById('newTourPrice').value = '250';
+        document.getElementById('newTourDuration').value = '4 ساعات';
+        document.getElementById('newTourMaxPersons').value = '10';
+        document.getElementById('newTourLanguages').value = 'عربي/إنجليزي';
+        document.getElementById('newTourLocation').value = 'بونشاك';
+        document.getElementById('newTourRating').value = '4.5';
+        newTourImagesFiles = [];
+        newTourFeaturesAr = [];
+        newTourFeaturesEn = [];
+        document.getElementById('newTourImagesPreview').innerHTML = '';
+        document.getElementById('newFeaturesList').innerHTML = '';
+        document.getElementById('newTourImages').value = '';
+        document.getElementById('addTourModal').style.display = 'flex';
+    });
+
+    document.getElementById('newTourImages')?.addEventListener('change', (e) => {
+        newTourImagesFiles = Array.from(e.target.files);
+        const preview = document.getElementById('newTourImagesPreview');
+        preview.innerHTML = '';
+        newTourImagesFiles.forEach((file, idx) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                preview.innerHTML += `<div style="position: relative; display: inline-block; margin: 3px;">
+                    <img src="${event.target.result}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px; border: 2px solid #DAA520;">
+                    <button type="button" class="remove-new-img" data-idx="${idx}" style="position: absolute; top: -5px; right: -5px; background: red; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 10px;">✕</button>
+                </div>`;
+            };
+            reader.readAsDataURL(file);
+        });
+        setTimeout(() => {
+            document.querySelectorAll('.remove-new-img').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = parseInt(btn.getAttribute('data-idx'));
+                    newTourImagesFiles.splice(idx, 1);
+                    document.getElementById('newTourImages').value = '';
+                    btn.parentElement.remove();
+                });
+            });
+        }, 100);
+    });
+
+    document.getElementById('addFeatureTempBtn')?.addEventListener('click', () => {
+        const ar = document.getElementById('newFeatureArTemp').value.trim();
+        const en = document.getElementById('newFeatureEnTemp').value.trim();
+        if (ar || en) {
+            if (ar) newTourFeaturesAr.push(ar);
+            if (en) newTourFeaturesEn.push(en);
+            const container = document.getElementById('newFeaturesList');
+            const displayText = ar ? (en ? `${ar} / ${en}` : ar) : en;
+            container.innerHTML += `<span class="feature-item" data-ar="${ar}" data-en="${en}" style="background: #e8f5e9; padding: 5px 12px; border-radius: 20px; margin: 3px; display: inline-block;">${displayText} <button class="remove-temp-feature" style="background: red; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; margin-left: 5px;">✕</button></span>`;
+            document.getElementById('newFeatureArTemp').value = '';
+            document.getElementById('newFeatureEnTemp').value = '';
+            
+            document.querySelectorAll('.remove-temp-feature').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const span = btn.parentElement;
+                    const arText = span.getAttribute('data-ar');
+                    const enText = span.getAttribute('data-en');
+                    if (arText) newTourFeaturesAr = newTourFeaturesAr.filter(f => f !== arText);
+                    if (enText) newTourFeaturesEn = newTourFeaturesEn.filter(f => f !== enText);
+                    span.remove();
+                });
+            });
+        }
+    });
+
+    document.getElementById('confirmAddTourBtn')?.addEventListener('click', async () => {
+        const nameAr = document.getElementById('newTourNameAr').value.trim();
+        const nameEn = document.getElementById('newTourNameEn').value.trim();
+        const price = parseInt(document.getElementById('newTourPrice').value);
+        const duration = document.getElementById('newTourDuration').value.trim();
+        const maxPersons = parseInt(document.getElementById('newTourMaxPersons').value);
+        const languages = document.getElementById('newTourLanguages').value.trim();
+        const location = document.getElementById('newTourLocation').value.trim();
+        const rating = parseFloat(document.getElementById('newTourRating').value);
+        
+        if (!nameAr || !nameEn || !price) {
+            showToast(isArabic ? 'الرجاء ملء الاسم والسعر' : 'Please fill name and price');
+            return;
+        }
+        
+        const newId = Math.max(...toursData.map(t => t.id), 0) + 1;
+        
+        let images = [];
+        for (const file of newTourImagesFiles) {
+            const url = await fileToBase64(file);
+            images.push(url);
+        }
+        if (images.length === 0) {
+            images = ['https://picsum.photos/id/104/400/250', 'https://picsum.photos/id/106/400/250'];
+        }
+        
+        const newTour = {
+            id: newId,
+            nameAr: nameAr,
+            nameEn: nameEn,
+            price: price,
+            duration: duration || '4 ساعات',
+            maxPersons: maxPersons || 10,
+            languages: languages || 'عربي/إنجليزي',
+            location: location || 'بونشاك',
+            rating: rating || 4.5,
+            images: images,
+            featuresAr: newTourFeaturesAr.length ? newTourFeaturesAr : ['🚌 نقل مجاني', '📸 تصوير', '🪪 مرشد سياحي'],
+            featuresEn: newTourFeaturesEn.length ? newTourFeaturesEn : ['🚌 Free Transfer', '📸 Photography', '🪪 Tour Guide']
+        };
+        
+        toursData.push(newTour);
+        saveToursData();
+        await saveTourToSupabase(newTour);
+        
+        document.getElementById('addTourModal').style.display = 'none';
+        renderTours();
+        showToast(isArabic ? '✅ تم إضافة الجولة بنجاح' : '✅ Tour added successfully');
+    });
+
+    document.getElementById('cancelAddTourBtn')?.addEventListener('click', () => {
+        document.getElementById('addTourModal').style.display = 'none';
+    });
 
     document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
     document.getElementById('langBtn').addEventListener('click', changeLanguage);
