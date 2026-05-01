@@ -70,13 +70,16 @@
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; padding: 25px; border-radius: 30px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; border-top: 5px solid #DAA520; }
         .modal-content h3 { color: #B8860B; margin-bottom: 15px; text-align: center; }
-        .modal-content input, .modal-content textarea { width: 100%; margin: 8px 0; padding: 12px; border-radius: 25px; border: 1px solid #DAA520; font-family: inherit; }
+        .modal-content input, .modal-content textarea, .modal-content select { width: 100%; margin: 8px 0; padding: 12px; border-radius: 25px; border: 1px solid #DAA520; font-family: inherit; }
         .requirements-section { background: #f9f9f9; padding: 15px; border-radius: 20px; margin: 15px 0; }
         .requirements-section h4 { color: #B8860B; margin-bottom: 10px; }
         .modal-content button { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
         .cancel-btn { background: #8B0000 !important; }
         
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 30px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
+        
+        #addVisaBtnContainer { text-align: center; margin: 20px 0; }
+        #addNewVisaBtn { background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: bold; font-size: 1rem; }
         
         .visa-grid {
             display: grid;
@@ -119,19 +122,22 @@
     <div class="page-header">
         <button class="back-btn" id="backBtn">← رجوع</button>
         <h2 id="pageTitle">📄 خدمات الفيزا</h2>
-        <!-- ========== إضافة جديدة: قائمة العملات ========== -->
         <select id="currencySelector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer;">
             <option value="IDR" selected>🇮🇩 IDR - روبيه</option>
             <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
             <option value="USD">🇺🇸 USD - دولار أمريكي</option>
         </select>
-        <!-- ========== انتهت الإضافة ========== -->
         <button class="lang-switch" id="langBtn">English</button>
     </div>
 
     <div class="welcome-section">
         <h1 id="welcomeTitle">🛂 خدمات إصدار الفيزا</h1>
         <p id="welcomeText">نقدم لكم أفضل خدمات إصدار الفيزا للسفر إلى إندونيسيا. نوفر جميع أنواع الفيزا بأسعار تنافسية وإجراءات سريعة ومضمونة. استشارات مجانية ودعم كامل طوال فترة الإجراءات.</p>
+    </div>
+
+    <!-- زر إضافة فيزا جديدة (يظهر فقط في وضع الأدمن) -->
+    <div id="addVisaBtnContainer" style="display: none;">
+        <button id="addNewVisaBtn">➕ إضافة فيزا جديدة</button>
     </div>
 
     <div id="visaGrid" class="visa-grid"></div>
@@ -184,6 +190,7 @@
         <input type="text" id="editNameEn" placeholder="الاسم بالإنجليزية">
         <input type="text" id="editPrice" placeholder="السعر (بالألف روبيه)">
         <input type="text" id="editDuration" placeholder="المدة (مثال: 30 يوم)">
+        <input type="text" id="editImageUrl" placeholder="رابط الصورة">
         <textarea id="editRequirementsAr" rows="3" placeholder="المتطلبات بالعربية (كل شرط في سطر جديد)"></textarea>
         <textarea id="editRequirementsEn" rows="3" placeholder="المتطلبات بالإنجليزية (كل شرط في سطر جديد)"></textarea>
         <button id="saveVisaBtn">💾 حفظ التغييرات</button>
@@ -191,10 +198,34 @@
     </div>
 </div>
 
+<!-- نافذة إضافة فيزا جديدة -->
+<div id="addVisaModal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3>➕ إضافة فيزا جديدة</h3>
+        
+        <input type="text" id="newVisaNameAr" placeholder="اسم الفيزا بالعربية">
+        <input type="text" id="newVisaNameEn" placeholder="اسم الفيزا بالإنجليزية">
+        <input type="number" id="newVisaPrice" placeholder="السعر (ألف روبيه)" value="500">
+        <input type="text" id="newVisaDuration" placeholder="المدة (مثال: 30 يوم)" value="30 يوم">
+        <input type="text" id="newVisaImage" placeholder="رابط الصورة" value="https://picsum.photos/id/104/400/200">
+        
+        <div style="margin: 15px 0;">
+            <label style="display: block; margin-bottom: 5px;">📋 المستندات المطلوبة (كل شرط في سطر جديد)</label>
+            <textarea id="newVisaRequirementsAr" rows="3" placeholder="المتطلبات بالعربية (كل شرط في سطر جديد)"></textarea>
+            <textarea id="newVisaRequirementsEn" rows="3" placeholder="المتطلبات بالإنجليزية (كل شرط في سطر جديد)" style="margin-top: 10px;"></textarea>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button id="confirmAddVisaBtn">✅ إضافة الفيزا</button>
+            <button id="cancelAddVisaBtn" class="cancel-btn">إلغاء</button>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    // ========== إضافة جديدة: العملات ==========
+    // ========== العملات ==========
     let currentCurrency = localStorage.getItem('preferredCurrency') || 'IDR';
     function convertPrice(priceInKIDR) {
         let priceInIDR = priceInKIDR * 1000;
@@ -209,9 +240,17 @@
         localStorage.setItem('preferredCurrency', currentCurrency);
         renderVisa();
     });
-    // ========== نهاية الإضافة ==========
 
-    // بيانات الفيزا (5 أنواع)
+    // Toast function
+    function showToast(message) {
+        let toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerText = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    // بيانات الفيزا (5 أنواع أساسية)
     let visaData = [
         { id: 1, nameAr: "فيزا سياحة", nameEn: "Tourist Visa", price: 500, duration: "30 يوم", 
           requirementsAr: ["جواز سفر ساري لمدة 6 أشهر", "صور شخصية 4×6", "حجز فندق مؤكد", "تذكرة طيران ذهاب وعودة", "كشف حساب بنكي لآخر 3 أشهر"],
@@ -240,15 +279,11 @@
     let isAdmin = false;
     const ADMIN_PASSWORD = "admin123";
 
-    // Supabase Client
     const supabaseClient = window.supabase.createClient(
         'https://nynusiouhgjmjpunfpod.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik'
     );
-    
-    console.log('✅ Supabase client ready for Visa page');
 
-    // حفظ فيزا في Supabase
     async function saveVisaToSupabase(visa) {
         try {
             const { error } = await supabaseClient.from('visas').upsert({
@@ -262,7 +297,7 @@
                 img: visa.img
             });
             if (error) console.error('Supabase error:', error);
-            else console.log('✅ Saved visa', visa.id, 'to Supabase');
+            else console.log('✅ Saved visa', visa.id);
         } catch(e) { console.error(e); }
     }
 
@@ -283,7 +318,6 @@
             requirements.forEach(req => { reqHtml += `<li>✓ ${req}</li>`; });
             reqHtml += '</ul>';
             
-            // ========== تعديل عرض السعر لاستخدام convertPrice ==========
             card.innerHTML = `
                 <img src="${visa.img}" class="visa-img" onerror="this.src='https://picsum.photos/id/104/400/200'">
                 <div class="visa-info">
@@ -299,7 +333,6 @@
                     ${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="edit" data-id="${visa.id}">✏️ تعديل</button></div>` : ''}
                 </div>
             `;
-            // ========== انتهى تعديل السعر ==========
             container.appendChild(card);
         });
         
@@ -341,6 +374,7 @@
         document.getElementById('editNameEn').value = currentVisa.nameEn;
         document.getElementById('editPrice').value = currentVisa.price;
         document.getElementById('editDuration').value = currentVisa.duration;
+        document.getElementById('editImageUrl').value = currentVisa.img;
         document.getElementById('editRequirementsAr').value = currentVisa.requirementsAr.join('\n');
         document.getElementById('editRequirementsEn').value = currentVisa.requirementsEn.join('\n');
         document.getElementById('editVisaModal').style.display = 'flex';
@@ -351,6 +385,7 @@
         currentVisa.nameEn = document.getElementById('editNameEn').value;
         currentVisa.price = parseInt(document.getElementById('editPrice').value);
         currentVisa.duration = document.getElementById('editDuration').value;
+        if(document.getElementById('editImageUrl').value) currentVisa.img = document.getElementById('editImageUrl').value;
         currentVisa.requirementsAr = document.getElementById('editRequirementsAr').value.split('\n').filter(s => s.trim());
         currentVisa.requirementsEn = document.getElementById('editRequirementsEn').value.split('\n').filter(s => s.trim());
         
@@ -358,7 +393,7 @@
         await saveVisaToSupabase(currentVisa);
         renderVisa();
         document.getElementById('editVisaModal').style.display = 'none';
-        alert(isArabic ? 'تم حفظ التغييرات بنجاح' : 'Changes saved successfully');
+        showToast(isArabic ? 'تم حفظ التغييرات بنجاح' : 'Changes saved successfully');
     });
 
     function changeLanguage() {
@@ -374,11 +409,94 @@
         renderVisa();
     }
 
-    const adminBtn = document.getElementById('adminModeBtn');
-    function enterAdminMode() { let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); if(pwd === ADMIN_PASSWORD) { isAdmin = true; adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; adminBtn.style.background = '#DAA520'; renderVisa(); alert('✅ تم تفعيل وضع الأدمن. أزرار التعديل ظاهرة الآن.'); } else if(pwd !== null) alert('❌ كلمة السر خطأ'); }
-    function exitAdminMode() { isAdmin = false; adminBtn.innerHTML = '🔐 دخول الأدمن'; adminBtn.style.background = '#8B0000'; renderVisa(); alert('✅ تم الخروج من وضع الأدمن.'); }
-    adminBtn.addEventListener('click', () => { if(isAdmin) exitAdminMode(); else enterAdminMode(); });
+    function updateAddVisaButton() {
+        const container = document.getElementById('addVisaBtnContainer');
+        if (container) {
+            container.style.display = isAdmin ? 'block' : 'none';
+        }
+    }
 
+    const adminBtn = document.getElementById('adminModeBtn');
+    function enterAdminMode() { 
+        let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); 
+        if(pwd === ADMIN_PASSWORD) { 
+            isAdmin = true; 
+            adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; 
+            adminBtn.style.background = '#DAA520'; 
+            renderVisa();
+            updateAddVisaButton();
+            showToast('✅ تم تفعيل وضع الأدمن'); 
+        } else if(pwd !== null) { 
+            showToast('❌ كلمة السر خطأ'); 
+        } 
+    }
+    function exitAdminMode() { 
+        isAdmin = false; 
+        adminBtn.innerHTML = '🔐 دخول الأدمن'; 
+        adminBtn.style.background = '#8B0000'; 
+        renderVisa();
+        updateAddVisaButton();
+        showToast('✅ تم الخروج من وضع الأدمن'); 
+    }
+    adminBtn.addEventListener('click', () => { 
+        if(isAdmin) exitAdminMode(); 
+        else enterAdminMode(); 
+    });
+
+    // ========== إضافة فيزا جديدة ==========
+    document.getElementById('addNewVisaBtn')?.addEventListener('click', () => {
+        document.getElementById('newVisaNameAr').value = '';
+        document.getElementById('newVisaNameEn').value = '';
+        document.getElementById('newVisaPrice').value = '500';
+        document.getElementById('newVisaDuration').value = '30 يوم';
+        document.getElementById('newVisaImage').value = 'https://picsum.photos/id/104/400/200';
+        document.getElementById('newVisaRequirementsAr').value = '';
+        document.getElementById('newVisaRequirementsEn').value = '';
+        document.getElementById('addVisaModal').style.display = 'flex';
+    });
+
+    document.getElementById('confirmAddVisaBtn')?.addEventListener('click', async () => {
+        const nameAr = document.getElementById('newVisaNameAr').value.trim();
+        const nameEn = document.getElementById('newVisaNameEn').value.trim();
+        const price = parseInt(document.getElementById('newVisaPrice').value);
+        const duration = document.getElementById('newVisaDuration').value.trim();
+        const img = document.getElementById('newVisaImage').value.trim();
+        const requirementsAr = document.getElementById('newVisaRequirementsAr').value.split('\n').filter(s => s.trim());
+        const requirementsEn = document.getElementById('newVisaRequirementsEn').value.split('\n').filter(s => s.trim());
+        
+        if (!nameAr || !nameEn || !price) {
+            showToast(isArabic ? 'الرجاء ملء الاسم والسعر' : 'Please fill name and price');
+            return;
+        }
+        
+        const newId = Math.max(...visaData.map(v => v.id), 0) + 1;
+        
+        const newVisa = {
+            id: newId,
+            nameAr: nameAr,
+            nameEn: nameEn,
+            price: price,
+            duration: duration || '30 يوم',
+            requirementsAr: requirementsAr.length ? requirementsAr : ['جواز سفر ساري', 'صور شخصية', 'تذكرة طيران'],
+            requirementsEn: requirementsEn.length ? requirementsEn : ['Valid passport', 'Personal photos', 'Flight ticket'],
+            img: img || 'https://picsum.photos/id/104/400/200'
+        };
+        
+        visaData.push(newVisa);
+        saveVisaData();
+        await saveVisaToSupabase(newVisa);
+        
+        document.getElementById('addVisaModal').style.display = 'none';
+        renderVisa();
+        showToast(isArabic ? '✅ تم إضافة الفيزا بنجاح' : '✅ Visa added successfully');
+    });
+
+    document.getElementById('cancelAddVisaBtn')?.addEventListener('click', () => {
+        document.getElementById('addVisaModal').style.display = 'none';
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
+    document.getElementById('langBtn').addEventListener('click', changeLanguage);
     document.getElementById('confirmOrderBtn').addEventListener('click', () => {
         let name = document.getElementById('custName').value;
         let phone = document.getElementById('custPhone').value;
@@ -386,7 +504,7 @@
         let passport = document.getElementById('passportNumber').value;
         let notes = document.getElementById('notes').value;
         
-        if (!name || !phone || !passport) { alert(isArabic ? 'الرجاء ملء جميع البيانات المطلوبة' : 'Please fill all required fields'); return; }
+        if (!name || !phone || !passport) { showToast(isArabic ? 'الرجاء ملء جميع البيانات المطلوبة' : 'Please fill all required fields'); return; }
         
         let message = `*${isArabic ? 'طلب فيزا جديد من تطبيق PuncakGO' : 'New Visa Application from PuncakGO App'}*%0A`;
         message += `%0A*${isArabic ? 'نوع الفيزا:' : 'Visa Type:'}* ${isArabic ? currentVisa.nameAr : currentVisa.nameEn}%0A`;
@@ -403,7 +521,7 @@
         document.getElementById('custEmail').value = '';
         document.getElementById('passportNumber').value = '';
         document.getElementById('notes').value = '';
-        alert(isArabic ? 'تم إرسال طلب الفيزا بنجاح' : 'Visa application sent successfully');
+        showToast(isArabic ? 'تم إرسال طلب الفيزا بنجاح' : 'Visa application sent successfully');
     });
 
     document.getElementById('consultBtn').addEventListener('click', () => { document.getElementById('consultModal').style.display = 'flex'; });
@@ -413,7 +531,7 @@
         let email = document.getElementById('consultEmail').value;
         let message = document.getElementById('consultMessage').value;
         
-        if (!name || !phone || !message) { alert(isArabic ? 'الرجاء ملء الاسم ورقم الجوال والرسالة' : 'Please fill name, phone and message'); return; }
+        if (!name || !phone || !message) { showToast(isArabic ? 'الرجاء ملء الاسم ورقم الجوال والرسالة' : 'Please fill name, phone and message'); return; }
         
         let whatsappMsg = `*${isArabic ? 'استشارة جديدة من تطبيق PuncakGO' : 'New Consultation from PuncakGO App'}*%0A`;
         whatsappMsg += `%0A*${isArabic ? 'الاسم:' : 'Name:'}* ${name}%0A`;
@@ -427,11 +545,9 @@
         document.getElementById('consultPhone').value = '';
         document.getElementById('consultEmail').value = '';
         document.getElementById('consultMessage').value = '';
-        alert(isArabic ? 'تم إرسال استشارتك بنجاح' : 'Your consultation has been sent successfully');
+        showToast(isArabic ? 'تم إرسال استشارتك بنجاح' : 'Your consultation has been sent successfully');
     });
 
-    document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
-    document.getElementById('langBtn').addEventListener('click', changeLanguage);
     document.getElementById('cancelOrderBtn').addEventListener('click', () => { document.getElementById('orderModal').style.display = 'none'; });
     document.getElementById('closeConsultBtn').addEventListener('click', () => { document.getElementById('consultModal').style.display = 'none'; });
     document.getElementById('closeEditModal').addEventListener('click', () => { document.getElementById('editVisaModal').style.display = 'none'; });
