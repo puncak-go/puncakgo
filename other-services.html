@@ -43,6 +43,9 @@
         
         .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 30px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
         
+        #addServiceBtnContainer { text-align: center; margin: 20px 0; }
+        #addNewServiceBtn { background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        
         .services-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -115,6 +118,11 @@
         <p id="welcomeText">نقدم لكم مجموعة من الخدمات الإضافية لتجعل رحلتكم أكثر راحة ومتعة. مطعم عربي، بقالة عربية، متجر عود، وتأجير سيارات مع سائق خاص.</p>
     </div>
 
+    <!-- زر إضافة خدمة جديدة (يظهر فقط في وضع الأدمن) -->
+    <div id="addServiceBtnContainer" style="display: none;">
+        <button id="addNewServiceBtn">➕ إضافة خدمة جديدة</button>
+    </div>
+
     <div id="servicesGrid" class="services-grid"></div>
 
     <button id="adminModeBtn" class="admin-toggle-btn">🔐 دخول الأدمن</button>
@@ -181,6 +189,44 @@
         <input type="text" id="editPricePerDay" placeholder="سعر اليوم للسيارة (ألف روبيه)">
         <button id="saveServiceBtn">💾 حفظ التغييرات</button>
         <button id="closeEditModal" class="cancel-btn">إلغاء</button>
+    </div>
+</div>
+
+<!-- نافذة إضافة خدمة جديدة -->
+<div id="addServiceModal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3>➕ إضافة خدمة جديدة</h3>
+        
+        <select id="newServiceType">
+            <option value="restaurant">🍽️ مطعم عربي</option>
+            <option value="grocery">🛒 بقالة عربية</option>
+            <option value="oud">🪵 متجر عود</option>
+            <option value="car">🚗 تأجير سيارات مع سائق</option>
+            <option value="other">✨ خدمة أخرى</option>
+        </select>
+        
+        <input type="text" id="newServiceNameAr" placeholder="اسم الخدمة بالعربية">
+        <input type="text" id="newServiceNameEn" placeholder="اسم الخدمة بالإنجليزية">
+        <textarea id="newServiceDescAr" rows="2" placeholder="وصف الخدمة بالعربية"></textarea>
+        <textarea id="newServiceDescEn" rows="2" placeholder="وصف الخدمة بالإنجليزية"></textarea>
+        <input type="text" id="newServiceImage" placeholder="رابط الصورة الرئيسية (URL)" value="https://picsum.photos/id/104/400/200">
+        <input type="text" id="newServiceMenuImage" placeholder="رابط صورة المنيو (URL)" value="https://picsum.photos/id/106/500/400">
+        
+        <div id="carSpecificFields" style="display: none;">
+            <input type="number" id="newServicePricePerDay" placeholder="سعر اليوم للسيارة (ألف روبيه)">
+            <div style="margin: 10px 0;">
+                <label>أسعار حسب الوجهة (ألف روبيه):</label>
+                <input type="number" id="newServicePricePuncak" placeholder="بونشاك فقط">
+                <input type="number" id="newServicePriceBogor" placeholder="بونشاك وبقور">
+                <input type="number" id="newServicePriceJakarta" placeholder="بونشاك وجاكرتا">
+                <input type="number" id="newServicePriceBandung" placeholder="بونشاك وباندونق">
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button id="confirmAddServiceBtn">✅ إضافة الخدمة</button>
+            <button id="cancelAddServiceBtn" class="cancel-btn">إلغاء</button>
+        </div>
     </div>
 </div>
 
@@ -414,87 +460,122 @@
         renderServices();
     }
 
-    const adminBtn = document.getElementById('adminModeBtn');
-    function enterAdminMode() { let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); if(pwd === ADMIN_PASSWORD) { isAdmin = true; adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; adminBtn.style.background = '#DAA520'; renderServices(); showToast('✅ تم تفعيل وضع الأدمن'); } else if(pwd !== null) showToast('❌ كلمة السر خطأ'); }
-    function exitAdminMode() { isAdmin = false; adminBtn.innerHTML = '🔐 دخول الأدمن'; adminBtn.style.background = '#8B0000'; renderServices(); showToast('✅ تم الخروج من وضع الأدمن'); }
-    adminBtn.addEventListener('click', () => { if(isAdmin) exitAdminMode(); else enterAdminMode(); });
+    function updateAddServiceButton() {
+        const container = document.getElementById('addServiceBtnContainer');
+        if (container) {
+            container.style.display = isAdmin ? 'block' : 'none';
+        }
+    }
 
-    document.getElementById('confirmOrderBtn').addEventListener('click', () => {
-        let name = document.getElementById('custName').value;
-        let phone = document.getElementById('custPhone').value;
-        let date = document.getElementById('orderDate').value;
-        let time = document.getElementById('orderTime').value;
-        let orderDetails = document.getElementById('orderDetails').value;
-        let notes = document.getElementById('notes').value;
-        
-        if (!name || !phone || !date || !orderDetails) { showToast(isArabic ? 'الرجاء ملء جميع البيانات المطلوبة' : 'Please fill all required fields'); return; }
-        
-        let message = `*${isArabic ? 'طلب جديد من تطبيق PuncakGO' : 'New Order from PuncakGO App'}*%0A`;
-        message += `%0A*${isArabic ? 'الخدمة:' : 'Service:'}* ${isArabic ? currentService.nameAr : currentService.nameEn}%0A`;
-        message += `*${isArabic ? 'الاسم:' : 'Name:'}* ${name}%0A`;
-        message += `*${isArabic ? 'الجوال:' : 'Phone:'}* ${phone}%0A`;
-        message += `*${isArabic ? 'التاريخ:' : 'Date:'}* ${date}%0A`;
-        if(time) message += `*${isArabic ? 'الوقت:' : 'Time:'}* ${time}%0A`;
-        message += `*${isArabic ? 'تفاصيل الطلب:' : 'Order Details:'}* ${orderDetails}%0A`;
-        if(notes) message += `*${isArabic ? 'ملاحظات:' : 'Notes:'}* ${notes}%0A`;
-        
-        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
-        document.getElementById('orderModal').style.display = 'none';
-        document.getElementById('custName').value = '';
-        document.getElementById('custPhone').value = '';
-        document.getElementById('orderDate').value = '';
-        document.getElementById('orderTime').value = '';
-        document.getElementById('orderDetails').value = '';
-        document.getElementById('notes').value = '';
-        document.getElementById('couponCode').value = '';
-        showToast(isArabic ? 'تم إرسال طلبك بنجاح' : 'Your order has been sent successfully');
+    const adminBtn = document.getElementById('adminModeBtn');
+    function enterAdminMode() { 
+        let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); 
+        if(pwd === ADMIN_PASSWORD) { 
+            isAdmin = true; 
+            adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; 
+            adminBtn.style.background = '#DAA520'; 
+            renderServices(); 
+            updateAddServiceButton();
+            showToast('✅ تم تفعيل وضع الأدمن'); 
+        } else if(pwd !== null) { 
+            showToast('❌ كلمة السر خطأ'); 
+        } 
+    }
+    function exitAdminMode() { 
+        isAdmin = false; 
+        adminBtn.innerHTML = '🔐 دخول الأدمن'; 
+        adminBtn.style.background = '#8B0000'; 
+        renderServices(); 
+        updateAddServiceButton();
+        showToast('✅ تم الخروج من وضع الأدمن'); 
+    }
+    adminBtn.addEventListener('click', () => { 
+        if(isAdmin) exitAdminMode(); 
+        else enterAdminMode(); 
     });
 
-    document.getElementById('carDateFrom').addEventListener('change', calculateCarPrice);
-    document.getElementById('carDateTo').addEventListener('change', calculateCarPrice);
-    document.getElementById('destination').addEventListener('change', calculateCarPrice);
-    
-    document.getElementById('confirmCarOrderBtn').addEventListener('click', () => {
-        let name = document.getElementById('carCustName').value;
-        let phone = document.getElementById('carCustPhone').value;
-        let destination = document.getElementById('destination').value;
-        let fromDate = document.getElementById('carDateFrom').value;
-        let toDate = document.getElementById('carDateTo').value;
-        let persons = document.getElementById('carPersons').value;
-        let notes = document.getElementById('carNotes').value;
-        let days = document.getElementById('daysCount').innerText;
-        let total = document.getElementById('carTotalPrice').innerText;
+    // إظهار/إخفاء حقول السيارة حسب نوع الخدمة
+    document.getElementById('newServiceType')?.addEventListener('change', (e) => {
+        const carFields = document.getElementById('carSpecificFields');
+        if (carFields) {
+            carFields.style.display = e.target.value === 'car' ? 'block' : 'none';
+        }
+    });
+
+    // ========== إضافة خدمة جديدة ==========
+    document.getElementById('addNewServiceBtn')?.addEventListener('click', () => {
+        document.getElementById('newServiceType').value = 'restaurant';
+        document.getElementById('newServiceNameAr').value = '';
+        document.getElementById('newServiceNameEn').value = '';
+        document.getElementById('newServiceDescAr').value = '';
+        document.getElementById('newServiceDescEn').value = '';
+        document.getElementById('newServiceImage').value = 'https://picsum.photos/id/104/400/200';
+        document.getElementById('newServiceMenuImage').value = 'https://picsum.photos/id/106/500/400';
+        document.getElementById('newServicePricePerDay').value = '';
+        document.getElementById('newServicePricePuncak').value = '';
+        document.getElementById('newServicePriceBogor').value = '';
+        document.getElementById('newServicePriceJakarta').value = '';
+        document.getElementById('newServicePriceBandung').value = '';
+        document.getElementById('carSpecificFields').style.display = 'none';
+        document.getElementById('addServiceModal').style.display = 'flex';
+    });
+
+    document.getElementById('confirmAddServiceBtn')?.addEventListener('click', async () => {
+        const type = document.getElementById('newServiceType').value;
+        const nameAr = document.getElementById('newServiceNameAr').value.trim();
+        const nameEn = document.getElementById('newServiceNameEn').value.trim();
+        const descAr = document.getElementById('newServiceDescAr').value.trim();
+        const descEn = document.getElementById('newServiceDescEn').value.trim();
+        const image = document.getElementById('newServiceImage').value.trim();
+        const menuImage = document.getElementById('newServiceMenuImage').value.trim();
         
-        if (!name || !phone || !fromDate || !toDate) { showToast(isArabic ? 'الرجاء ملء جميع البيانات المطلوبة' : 'Please fill all required fields'); return; }
-        
-        let destinationText = '';
-        switch(destination) {
-            case 'puncak': destinationText = isArabic ? 'بونشاك فقط' : 'Puncak Only'; break;
-            case 'puncak_bogor': destinationText = isArabic ? 'بونشاك وبقور' : 'Puncak & Bogor'; break;
-            case 'puncak_jakarta': destinationText = isArabic ? 'بونشاك وجاكرتا' : 'Puncak & Jakarta'; break;
-            case 'puncak_bandung': destinationText = isArabic ? 'بونشاك وباندونق' : 'Puncak & Bandung'; break;
+        if (!nameAr || !nameEn) {
+            showToast(isArabic ? 'الرجاء ملء الاسم بالعربية والإنجليزية' : 'Please fill name in Arabic and English');
+            return;
         }
         
-        let message = `*${isArabic ? 'طلب تأجير سيارات من تطبيق PuncakGO' : 'Car Rental Request from PuncakGO App'}*%0A`;
-        message += `%0A*${isArabic ? 'الوجهة:' : 'Destination:'}* ${destinationText}%0A`;
-        message += `*${isArabic ? 'الاسم:' : 'Name:'}* ${name}%0A`;
-        message += `*${isArabic ? 'الجوال:' : 'Phone:'}* ${phone}%0A`;
-        message += `*${isArabic ? 'عدد الأشخاص:' : 'Persons:'}* ${persons}%0A`;
-        message += `*${isArabic ? 'من تاريخ:' : 'From:'}* ${fromDate}%0A`;
-        message += `*${isArabic ? 'إلى تاريخ:' : 'To:'}* ${toDate}%0A`;
-        message += `*${isArabic ? 'عدد الأيام:' : 'Days:'}* ${days}%0A`;
-        message += `*${isArabic ? 'السعر الإجمالي:' : 'Total Price:'}* ${total} ${isArabic ? 'ألف روبيه' : 'K IDR'}%0A`;
-        if(notes) message += `*${isArabic ? 'ملاحظات:' : 'Notes:'}* ${notes}%0A`;
+        const newId = Math.max(...servicesData.map(s => s.id), 0) + 1;
         
-        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
-        document.getElementById('carRentalModal').style.display = 'none';
-        document.getElementById('carCustName').value = '';
-        document.getElementById('carCustPhone').value = '';
-        document.getElementById('carDateFrom').value = '';
-        document.getElementById('carDateTo').value = '';
-        document.getElementById('carNotes').value = '';
-        document.getElementById('carCouponCode').value = '';
-        showToast(isArabic ? 'تم إرسال طلب تأجير السيارة بنجاح' : 'Car rental request sent successfully');
+        let newService = {
+            id: newId,
+            type: type,
+            nameAr: nameAr,
+            nameEn: nameEn,
+            descAr: descAr || (type === 'car' ? 'سيارة مع سائق خاص' : 'خدمة مميزة'),
+            descEn: descEn || (type === 'car' ? 'Car with private driver' : 'Special service'),
+            image: image || 'https://picsum.photos/id/104/400/200',
+            menuImage: menuImage || 'https://picsum.photos/id/106/500/400',
+            pricePerDay: null,
+            pricesByDestination: null
+        };
+        
+        if (type === 'car') {
+            const pricePerDay = parseInt(document.getElementById('newServicePricePerDay').value);
+            const pricePuncak = parseInt(document.getElementById('newServicePricePuncak').value);
+            const priceBogor = parseInt(document.getElementById('newServicePriceBogor').value);
+            const priceJakarta = parseInt(document.getElementById('newServicePriceJakarta').value);
+            const priceBandung = parseInt(document.getElementById('newServicePriceBandung').value);
+            
+            newService.pricePerDay = pricePerDay || 500;
+            newService.pricesByDestination = {
+                puncak: pricePuncak || 400,
+                puncak_bogor: priceBogor || 600,
+                puncak_jakarta: priceJakarta || 800,
+                puncak_bandung: priceBandung || 700
+            };
+        }
+        
+        servicesData.push(newService);
+        saveServicesData();
+        await saveServiceToSupabase(newService);
+        
+        document.getElementById('addServiceModal').style.display = 'none';
+        renderServices();
+        showToast(isArabic ? '✅ تم إضافة الخدمة بنجاح' : '✅ Service added successfully');
+    });
+
+    document.getElementById('cancelAddServiceBtn')?.addEventListener('click', () => {
+        document.getElementById('addServiceModal').style.display = 'none';
     });
 
     document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
