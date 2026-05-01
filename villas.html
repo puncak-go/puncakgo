@@ -62,7 +62,6 @@
         }
         .pin:hover, .pin.active { background: #ff6600; transform: translate(-50%, -50%) scale(1.15); }
         
-        /* البطاقة المنبثقة - تصميم متجاوب */
         .popup-card {
             position: absolute;
             background: white;
@@ -76,7 +75,6 @@
             animation: popupFadeIn 0.2s ease;
         }
         
-        /* للجوال: البطاقة تظهر في أسفل الشاشة (Bottom Sheet) */
         @media (max-width: 768px) {
             .popup-card {
                 position: fixed !important;
@@ -87,21 +85,19 @@
                 width: auto !important;
                 max-width: none !important;
                 border-radius: 25px !important;
-                z-index: 1000 !important;
                 animation: slideUp 0.3s ease !important;
             }
             @keyframes slideUp {
                 from { transform: translateY(100%); opacity: 0; }
                 to { transform: translateY(0); opacity: 1; }
             }
-            .popup-card .popup-image {
-                height: 180px !important;
-            }
+            .popup-card .popup-image { height: 180px !important; }
+            .pin { width: 28px !important; height: 28px !important; font-size: 12px !important; }
         }
         
         @keyframes popupFadeIn {
             from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 0; transform: translateY(0); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .popup-header {
@@ -229,7 +225,6 @@
             .villas-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
             .slider img { height: 180px !important; }
             .villa-name { font-size: 1rem !important; }
-            .pin { width: 28px !important; height: 28px !important; font-size: 12px !important; }
         }
         
         .toast {
@@ -379,33 +374,78 @@
         } else { showToast('كود غير صالح'); }
     });
 
+    // ========== ترتيب الدبابيس الجديد (مرتب حسب الصفوف) ==========
+    // إحداثيات X و Y لكل فيلا - مرتبة من 1 إلى 25
+    // الصف الأول: فلل 1-5 (Y = 12%)
+    // الصف الثاني: فلل 6-10 (Y = 28%)
+    // الصف الثالث: فلل 11-15 (Y = 44%)
+    // الصف الرابع: فلل 16-20 (Y = 60%)
+    // الصف الخامس: فلل 21-25 (Y = 76%)
+    // كل صف فيه 5 فلل: X من 12% إلى 88% (بزيادة 19% لكل فيلا)
+    
+    const pinPositions = {
+        1: { x: 12, y: 12 },
+        2: { x: 31, y: 12 },
+        3: { x: 50, y: 12 },
+        4: { x: 69, y: 12 },
+        5: { x: 88, y: 12 },
+        6: { x: 12, y: 28 },
+        7: { x: 31, y: 28 },
+        8: { x: 50, y: 28 },
+        9: { x: 69, y: 28 },
+        10: { x: 88, y: 28 },
+        11: { x: 12, y: 44 },
+        12: { x: 31, y: 44 },
+        13: { x: 50, y: 44 },
+        14: { x: 69, y: 44 },
+        15: { x: 88, y: 44 },
+        16: { x: 12, y: 60 },
+        17: { x: 31, y: 60 },
+        18: { x: 50, y: 60 },
+        19: { x: 69, y: 60 },
+        20: { x: 88, y: 60 },
+        21: { x: 12, y: 76 },
+        22: { x: 31, y: 76 },
+        23: { x: 50, y: 76 },
+        24: { x: 69, y: 76 },
+        25: { x: 88, y: 76 }
+    };
+
     let villasData = [
-        { id: 1, name_ar: "فيلا النخيل 1", name_en: "Al Nakheel Villa 1", price: 500000, price_range: 500, pos_x: 10, pos_y: 15, images: ["https://picsum.photos/id/104/400/250"], features_ar: ["🏊 مسبح خاص", "📶 واي فاي"], features_en: ["🏊 Private Pool", "📶 Free WiFi"] },
-        { id: 2, name_ar: "فيلا النخيل 2", name_en: "Al Nakheel Villa 2", price: 500000, price_range: 500, pos_x: 25, pos_y: 18, images: ["https://picsum.photos/id/106/400/250"], features_ar: ["🏊 مسبح", "🍳 مطبخ"], features_en: ["🏊 Pool", "🍳 Kitchen"] },
-        { id: 3, name_ar: "فيلا النخيل 3", name_en: "Al Nakheel Villa 3", price: 500000, price_range: 500, pos_x: 40, pos_y: 12, images: ["https://picsum.photos/id/15/400/250"], features_ar: ["🏊 مسبح", "🌿 حديقة"], features_en: ["🏊 Pool", "🌿 Garden"] },
-        { id: 4, name_ar: "فيلا النخيل 4", name_en: "Al Nakheel Villa 4", price: 500000, price_range: 500, pos_x: 55, pos_y: 20, images: ["https://picsum.photos/id/20/400/250"], features_ar: ["🏊 مسبح", "🛁 جاكوزي"], features_en: ["🏊 Pool", "🛁 Jacuzzi"] },
-        { id: 5, name_ar: "فيلا النخيل 5", name_en: "Al Nakheel Villa 5", price: 500000, price_range: 500, pos_x: 70, pos_y: 14, images: ["https://picsum.photos/id/22/400/250"], features_ar: ["🏊 مسبح", "🧺 غسالة"], features_en: ["🏊 Pool", "🧺 Washing"] },
-        { id: 6, name_ar: "فيلا الساحل 1", name_en: "Al Sahel Villa 1", price: 1000000, price_range: 1000, pos_x: 15, pos_y: 35, images: ["https://picsum.photos/id/96/400/250"], features_ar: ["🏊 مسبح", "🏖️ شاطئ"], features_en: ["🏊 Pool", "🏖️ Beach"] },
-        { id: 7, name_ar: "فيلا الساحل 2", name_en: "Al Sahel Villa 2", price: 1000000, price_range: 1000, pos_x: 30, pos_y: 40, images: ["https://picsum.photos/id/26/400/250"], features_ar: ["🏊 مسبح", "🏖️ شاطئ خاص"], features_en: ["🏊 Pool", "🏖️ Private Beach"] },
-        { id: 8, name_ar: "فيلا الساحل 3", name_en: "Al Sahel Villa 3", price: 1000000, price_range: 1000, pos_x: 45, pos_y: 38, images: ["https://picsum.photos/id/28/400/250"], features_ar: ["🏊 مسبح", "🚤 جت سكي"], features_en: ["🏊 Pool", "🚤 Jet Ski"] },
-        { id: 9, name_ar: "فيلا الساحل 4", name_en: "Al Sahel Villa 4", price: 1000000, price_range: 1000, pos_x: 60, pos_y: 42, images: ["https://picsum.photos/id/29/400/250"], features_ar: ["🏊 مسبح", "🍹 كوكتيل"], features_en: ["🏊 Pool", "🍹 Cocktail"] },
-        { id: 10, name_ar: "فيلا الساحل 5", name_en: "Al Sahel Villa 5", price: 1000000, price_range: 1000, pos_x: 75, pos_y: 36, images: ["https://picsum.photos/id/42/400/250"], features_ar: ["🏊 مسبح", "🛥️ يخت"], features_en: ["🏊 Pool", "🛥️ Yacht"] },
-        { id: 11, name_ar: "فيلا الجبل 1", name_en: "Al Jabal Villa 1", price: 1500000, price_range: 1500, pos_x: 12, pos_y: 60, images: ["https://picsum.photos/id/104/400/250"], features_ar: ["🏊 مسبح", "⛰️ إطلالة جبل"], features_en: ["🏊 Pool", "⛰️ Mountain View"] },
-        { id: 12, name_ar: "فيلا الجبل 2", name_en: "Al Jabal Villa 2", price: 1500000, price_range: 1500, pos_x: 28, pos_y: 65, images: ["https://picsum.photos/id/29/400/250"], features_ar: ["🏊 مسبح", "🔥 مدفأة"], features_en: ["🏊 Pool", "🔥 Fireplace"] },
-        { id: 13, name_ar: "فيلا الجبل 3", name_en: "Al Jabal Villa 3", price: 1500000, price_range: 1500, pos_x: 44, pos_y: 62, images: ["https://picsum.photos/id/96/400/250"], features_ar: ["🏊 مسبح", "🌲 طبيعة"], features_en: ["🏊 Pool", "🌲 Nature"] },
-        { id: 14, name_ar: "فيلا الجبل 4", name_en: "Al Jabal Villa 4", price: 1500000, price_range: 1500, pos_x: 60, pos_y: 68, images: ["https://picsum.photos/id/15/400/250"], features_ar: ["🏊 مسبح", "🧘 يوجا"], features_en: ["🏊 Pool", "🧘 Yoga"] },
-        { id: 15, name_ar: "فيلا الجبل 5", name_en: "Al Jabal Villa 5", price: 1500000, price_range: 1500, pos_x: 76, pos_y: 64, images: ["https://picsum.photos/id/20/400/250"], features_ar: ["🏊 مسبح", "☕ تراس"], features_en: ["🏊 Pool", "☕ Terrace"] },
-        { id: 16, name_ar: "فيلا القصر 1", name_en: "Al Qasr Villa 1", price: 2000000, price_range: 2000, pos_x: 18, pos_y: 85, images: ["https://picsum.photos/id/106/400/250"], features_ar: ["🏊 مسبح", "💆 جاكوزي"], features_en: ["🏊 Pool", "💆 Jacuzzi"] },
-        { id: 17, name_ar: "فيلا القصر 2", name_en: "Al Qasr Villa 2", price: 2000000, price_range: 2000, pos_x: 34, pos_y: 88, images: ["https://picsum.photos/id/108/400/250"], features_ar: ["🏊 مسبح", "💆 ساونا"], features_en: ["🏊 Pool", "💆 Sauna"] },
-        { id: 18, name_ar: "فيلا القصر 3", name_en: "Al Qasr Villa 3", price: 2000000, price_range: 2000, pos_x: 50, pos_y: 82, images: ["https://picsum.photos/id/116/400/250"], features_ar: ["🏊 مسبح", "🎥 سينما"], features_en: ["🏊 Pool", "🎥 Cinema"] },
-        { id: 19, name_ar: "فيلا القصر 4", name_en: "Al Qasr Villa 4", price: 2000000, price_range: 2000, pos_x: 66, pos_y: 86, images: ["https://picsum.photos/id/119/400/250"], features_ar: ["🏊 مسبح", "🍽️ طاه خاص"], features_en: ["🏊 Pool", "🍽️ Private Chef"] },
-        { id: 20, name_ar: "فيلا القصر 5", name_en: "Al Qasr Villa 5", price: 2000000, price_range: 2000, pos_x: 82, pos_y: 84, images: ["https://picsum.photos/id/20/400/250"], features_ar: ["🏊 مسبح", "🏋️ جيم"], features_en: ["🏊 Pool", "🏋️ Gym"] },
-        { id: 21, name_ar: "فيلا الأحلام 1", name_en: "Dream Villa 1", price: 2500000, price_range: 2500, pos_x: 10, pos_y: 92, images: ["https://picsum.photos/id/42/400/250"], features_ar: ["🏊 مسبح أوليمبي", "💆 جاكوزي"], features_en: ["🏊 Olympic Pool", "💆 Jacuzzi"] },
-        { id: 22, name_ar: "فيلا الأحلام 2", name_en: "Dream Villa 2", price: 2500000, price_range: 2500, pos_x: 26, pos_y: 95, images: ["https://picsum.photos/id/43/400/250"], features_ar: ["🏊 مسبح", "💆 سبا"], features_en: ["🏊 Pool", "💆 Spa"] },
-        { id: 23, name_ar: "فيلا الأحلام 3", name_en: "Dream Villa 3", price: 2500000, price_range: 2500, pos_x: 42, pos_y: 90, images: ["https://picsum.photos/id/44/400/250"], features_ar: ["🏊 مسبح", "💆 جاكوزي"], features_en: ["🏊 Pool", "💆 Jacuzzi"] },
-        { id: 24, name_ar: "فيلا الأحلام 4", name_en: "Dream Villa 4", price: 2500000, price_range: 2500, pos_x: 58, pos_y: 93, images: ["https://picsum.photos/id/45/400/250"], features_ar: ["🏊 مسبح", "🏖️ شاطئ"], features_en: ["🏊 Pool", "🏖️ Beach"] },
-        { id: 25, name_ar: "فيلا الأحلام 5", name_en: "Dream Villa 5", price: 2500000, price_range: 2500, pos_x: 74, pos_y: 88, images: ["https://picsum.photos/id/46/400/250"], features_ar: ["🏊 مسبح", "🎥 سينما"], features_en: ["🏊 Pool", "🎥 Cinema"] }
+        { id: 1, name_ar: "فيلا النخيل 1", name_en: "Al Nakheel Villa 1", price: 500000, price_range: 500, images: ["https://picsum.photos/id/104/400/250"], features_ar: ["🏊 مسبح خاص", "📶 واي فاي"], features_en: ["🏊 Private Pool", "📶 Free WiFi"] },
+        { id: 2, name_ar: "فيلا النخيل 2", name_en: "Al Nakheel Villa 2", price: 500000, price_range: 500, images: ["https://picsum.photos/id/106/400/250"], features_ar: ["🏊 مسبح", "🍳 مطبخ"], features_en: ["🏊 Pool", "🍳 Kitchen"] },
+        { id: 3, name_ar: "فيلا النخيل 3", name_en: "Al Nakheel Villa 3", price: 500000, price_range: 500, images: ["https://picsum.photos/id/15/400/250"], features_ar: ["🏊 مسبح", "🌿 حديقة"], features_en: ["🏊 Pool", "🌿 Garden"] },
+        { id: 4, name_ar: "فيلا النخيل 4", name_en: "Al Nakheel Villa 4", price: 500000, price_range: 500, images: ["https://picsum.photos/id/20/400/250"], features_ar: ["🏊 مسبح", "🛁 جاكوزي"], features_en: ["🏊 Pool", "🛁 Jacuzzi"] },
+        { id: 5, name_ar: "فيلا النخيل 5", name_en: "Al Nakheel Villa 5", price: 500000, price_range: 500, images: ["https://picsum.photos/id/22/400/250"], features_ar: ["🏊 مسبح", "🧺 غسالة"], features_en: ["🏊 Pool", "🧺 Washing"] },
+        { id: 6, name_ar: "فيلا الساحل 1", name_en: "Al Sahel Villa 1", price: 1000000, price_range: 1000, images: ["https://picsum.photos/id/96/400/250"], features_ar: ["🏊 مسبح", "🏖️ شاطئ"], features_en: ["🏊 Pool", "🏖️ Beach"] },
+        { id: 7, name_ar: "فيلا الساحل 2", name_en: "Al Sahel Villa 2", price: 1000000, price_range: 1000, images: ["https://picsum.photos/id/26/400/250"], features_ar: ["🏊 مسبح", "🏖️ شاطئ خاص"], features_en: ["🏊 Pool", "🏖️ Private Beach"] },
+        { id: 8, name_ar: "فيلا الساحل 3", name_en: "Al Sahel Villa 3", price: 1000000, price_range: 1000, images: ["https://picsum.photos/id/28/400/250"], features_ar: ["🏊 مسبح", "🚤 جت سكي"], features_en: ["🏊 Pool", "🚤 Jet Ski"] },
+        { id: 9, name_ar: "فيلا الساحل 4", name_en: "Al Sahel Villa 4", price: 1000000, price_range: 1000, images: ["https://picsum.photos/id/29/400/250"], features_ar: ["🏊 مسبح", "🍹 كوكتيل"], features_en: ["🏊 Pool", "🍹 Cocktail"] },
+        { id: 10, name_ar: "فيلا الساحل 5", name_en: "Al Sahel Villa 5", price: 1000000, price_range: 1000, images: ["https://picsum.photos/id/42/400/250"], features_ar: ["🏊 مسبح", "🛥️ يخت"], features_en: ["🏊 Pool", "🛥️ Yacht"] },
+        { id: 11, name_ar: "فيلا الجبل 1", name_en: "Al Jabal Villa 1", price: 1500000, price_range: 1500, images: ["https://picsum.photos/id/104/400/250"], features_ar: ["🏊 مسبح", "⛰️ إطلالة جبل"], features_en: ["🏊 Pool", "⛰️ Mountain View"] },
+        { id: 12, name_ar: "فيلا الجبل 2", name_en: "Al Jabal Villa 2", price: 1500000, price_range: 1500, images: ["https://picsum.photos/id/29/400/250"], features_ar: ["🏊 مسبح", "🔥 مدفأة"], features_en: ["🏊 Pool", "🔥 Fireplace"] },
+        { id: 13, name_ar: "فيلا الجبل 3", name_en: "Al Jabal Villa 3", price: 1500000, price_range: 1500, images: ["https://picsum.photos/id/96/400/250"], features_ar: ["🏊 مسبح", "🌲 طبيعة"], features_en: ["🏊 Pool", "🌲 Nature"] },
+        { id: 14, name_ar: "فيلا الجبل 4", name_en: "Al Jabal Villa 4", price: 1500000, price_range: 1500, images: ["https://picsum.photos/id/15/400/250"], features_ar: ["🏊 مسبح", "🧘 يوجا"], features_en: ["🏊 Pool", "🧘 Yoga"] },
+        { id: 15, name_ar: "فيلا الجبل 5", name_en: "Al Jabal Villa 5", price: 1500000, price_range: 1500, images: ["https://picsum.photos/id/20/400/250"], features_ar: ["🏊 مسبح", "☕ تراس"], features_en: ["🏊 Pool", "☕ Terrace"] },
+        { id: 16, name_ar: "فيلا القصر 1", name_en: "Al Qasr Villa 1", price: 2000000, price_range: 2000, images: ["https://picsum.photos/id/106/400/250"], features_ar: ["🏊 مسبح", "💆 جاكوزي"], features_en: ["🏊 Pool", "💆 Jacuzzi"] },
+        { id: 17, name_ar: "فيلا القصر 2", name_en: "Al Qasr Villa 2", price: 2000000, price_range: 2000, images: ["https://picsum.photos/id/108/400/250"], features_ar: ["🏊 مسبح", "💆 ساونا"], features_en: ["🏊 Pool", "💆 Sauna"] },
+        { id: 18, name_ar: "فيلا القصر 3", name_en: "Al Qasr Villa 3", price: 2000000, price_range: 2000, images: ["https://picsum.photos/id/116/400/250"], features_ar: ["🏊 مسبح", "🎥 سينما"], features_en: ["🏊 Pool", "🎥 Cinema"] },
+        { id: 19, name_ar: "فيلا القصر 4", name_en: "Al Qasr Villa 4", price: 2000000, price_range: 2000, images: ["https://picsum.photos/id/119/400/250"], features_ar: ["🏊 مسبح", "🍽️ طاه خاص"], features_en: ["🏊 Pool", "🍽️ Private Chef"] },
+        { id: 20, name_ar: "فيلا القصر 5", name_en: "Al Qasr Villa 5", price: 2000000, price_range: 2000, images: ["https://picsum.photos/id/20/400/250"], features_ar: ["🏊 مسبح", "🏋️ جيم"], features_en: ["🏊 Pool", "🏋️ Gym"] },
+        { id: 21, name_ar: "فيلا الأحلام 1", name_en: "Dream Villa 1", price: 2500000, price_range: 2500, images: ["https://picsum.photos/id/42/400/250"], features_ar: ["🏊 مسبح أوليمبي", "💆 جاكوزي"], features_en: ["🏊 Olympic Pool", "💆 Jacuzzi"] },
+        { id: 22, name_ar: "فيلا الأحلام 2", name_en: "Dream Villa 2", price: 2500000, price_range: 2500, images: ["https://picsum.photos/id/43/400/250"], features_ar: ["🏊 مسبح", "💆 سبا"], features_en: ["🏊 Pool", "💆 Spa"] },
+        { id: 23, name_ar: "فيلا الأحلام 3", name_en: "Dream Villa 3", price: 2500000, price_range: 2500, images: ["https://picsum.photos/id/44/400/250"], features_ar: ["🏊 مسبح", "💆 جاكوزي"], features_en: ["🏊 Pool", "💆 Jacuzzi"] },
+        { id: 24, name_ar: "فيلا الأحلام 4", name_en: "Dream Villa 4", price: 2500000, price_range: 2500, images: ["https://picsum.photos/id/45/400/250"], features_ar: ["🏊 مسبح", "🏖️ شاطئ"], features_en: ["🏊 Pool", "🏖️ Beach"] },
+        { id: 25, name_ar: "فيلا الأحلام 5", name_en: "Dream Villa 5", price: 2500000, price_range: 2500, images: ["https://picsum.photos/id/46/400/250"], features_ar: ["🏊 مسبح", "🎥 سينما"], features_en: ["🏊 Pool", "🎥 Cinema"] }
     ];
+
+    // إضافة الإحداثيات لكل فيلا من pinPositions
+    villasData.forEach(villa => {
+        if (pinPositions[villa.id]) {
+            villa.pos_x = pinPositions[villa.id].x;
+            villa.pos_y = pinPositions[villa.id].y;
+        }
+    });
 
     let currentFilter = "all";
     let currentVilla = null;
@@ -464,7 +504,6 @@
         popup.className = 'popup-card';
         
         if (!isMobile) {
-            // على الكمبيوتر: تحسب الموقع فوق الدبوس
             const pinRect = pinElement.getBoundingClientRect();
             const mapRect = document.getElementById('mapContainer').getBoundingClientRect();
             let popupTop = (pinRect.top - mapRect.top) - 170;
@@ -475,7 +514,6 @@
             popup.style.top = popupTop + 'px';
             popup.style.left = popupLeft + 'px';
         } else {
-            // على الجوال: تثبت في الأسفل
             popup.style.position = 'fixed';
             popup.style.bottom = '20px';
             popup.style.left = '10px';
@@ -508,7 +546,6 @@
         
         pinElement.classList.add('active');
         
-        // إغلاق عند الضغط خارج البطاقة
         setTimeout(() => {
             const closeHandler = (e) => {
                 if (!popup.contains(e.target) && !pinElement.contains(e.target)) {
