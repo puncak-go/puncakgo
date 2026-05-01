@@ -1,46 +1,25 @@
 {
-  "name": "بونشاك جو",
-  "short_name": "PuncakGo",
-  "id": "/puncakgo/index.html",
-  "start_url": "/puncakgo/index.html",
+  "name": "PuncakGO - السياحة في بونشاك",
+  "short_name": "PuncakGO",
+  "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#1976D2",
+  "theme_color": "#DAA520",
   "background_color": "#ffffff",
-  "categories": ["travel", "lifestyle", "tourism"],
+  "categories": ["travel", "tourism"],
   "icons": [
     {
       "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "screen1.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow"
-    },
-    {
-      "src": "screen2.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow"
-    },
-    {
-      "src": "screen3.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
-  ],
-  "description": "هل تخطط لزيارة منطقة بنشاك الساحرة في إندونيسيا؟ تطبيق Puncak Go هو رفيقك المثالي في السفر. حجز الفيلات، تأجير السيارات، الدليل السياحي، واجهة سهلة. مع Puncak Go، جمال إندونيسيا بات بين يديك."
+  "description": "تطبيق حجز الفلل والجولات السياحية في بونشاك - إندونيسيا"
 }
