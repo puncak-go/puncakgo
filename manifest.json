@@ -6,7 +6,10 @@
   "orientation": "portrait",
   "theme_color": "#DAA520",
   "background_color": "#ffffff",
-  "categories": ["travel", "tourism"],
+  "categories": [
+    "travel",
+    "tourism"
+  ],
   "icons": [
     {
       "src": "icon-192.png",
