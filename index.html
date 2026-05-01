@@ -1,510 +1,292 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>PuncakGO - الخدمات الأخرى</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s ease; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #333; padding-bottom: 30px; }
-        .container { max-width: 1200px; margin: auto; padding: 20px; }
-        
-        .page-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 25px; flex-wrap: wrap; }
-        .back-btn { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; }
-        .lang-switch { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; }
-        h2 { color: #B8860B; }
-        
-        .welcome-section { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border-radius: 25px; padding: 30px; margin-bottom: 30px; text-align: center; }
-        .welcome-section h1 { font-size: 2rem; margin-bottom: 15px; }
-        .welcome-section p { font-size: 1.1rem; line-height: 1.6; opacity: 0.95; }
-        
-        .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 20px; }
-        .service-card { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 1px solid #DAA520; transition: transform 0.2s; }
-        .service-card:hover { transform: translateY(-5px); }
-        
-        .service-img { width: 100%; height: 220px; object-fit: cover; }
-        .service-info { padding: 20px; }
-        .service-name { font-size: 1.5rem; font-weight: bold; color: #B8860B; margin-bottom: 10px; }
-        .service-desc { color: #666; margin-bottom: 15px; font-size: 0.9rem; }
-        .book-btn { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        
-        .admin-buttons { display: flex; gap: 8px; margin-top: 10px; }
-        .admin-btn { background: #DAA520; color: white; border: none; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; width: 48%; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 25px; border-radius: 30px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; border-top: 5px solid #DAA520; }
-        .modal-content h3 { color: #B8860B; margin-bottom: 15px; text-align: center; }
-        .modal-content input, .modal-content textarea, .modal-content select { width: 100%; margin: 8px 0; padding: 12px; border-radius: 25px; border: 1px solid #DAA520; font-family: inherit; }
-        .menu-image { width: 100%; max-height: 300px; object-fit: contain; margin: 15px 0; border-radius: 15px; border: 1px solid #DAA520; }
-        .order-summary { background: #f9f9f9; padding: 15px; border-radius: 20px; margin: 15px 0; text-align: center; }
-        .total-price { font-size: 1.3rem; font-weight: bold; color: #DAA520; }
-        .modal-content button { background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 12px; border-radius: 30px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        .cancel-btn { background: #8B0000 !important; }
-        
-        .admin-toggle-btn { background: #8B0000; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 30px; display: block; width: 200px; margin-left: auto; margin-right: auto; }
-        
-        .services-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-        .services-grid .service-card:first-child { order: 1; }
-        .services-grid .service-card:last-child { order: 2; }
-        .services-grid .service-card:nth-child(4n+3) { order: 2; }
-        .services-grid .service-card:nth-child(4n+4) { order: 1; }
-        
-        @media (max-width: 768px) {
-            .services-grid {
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-                gap: 12px !important;
-            }
-            .services-grid .service-card { order: 0 !important; }
-            .service-img { height: 180px !important; }
-            .service-name { font-size: 0.85rem !important; }
-            .service-desc { font-size: 0.7rem !important; margin-bottom: 8px !important; }
-            .service-info { padding: 8px !important; }
-            .book-btn { padding: 6px !important; font-size: 0.7rem !important; }
-            .welcome-section h1 { font-size: 1.2rem !important; }
-            .welcome-section p { font-size: 0.8rem !important; }
-            .welcome-section { padding: 15px !important; }
-        }
-        
-        @media (max-width: 480px) {
-            .service-img { height: 150px !important; }
-            .service-name { font-size: 0.75rem !important; }
-        }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            z-index: 9999;
-            animation: fadeInOut 3s ease;
-            font-weight: bold;
-        }
-        @keyframes fadeInOut {
-            0% { opacity: 0; bottom: 60px; }
-            15% { opacity: 1; bottom: 80px; }
-            85% { opacity: 1; bottom: 80px; }
-            100% { opacity: 0; bottom: 60px; }
-        }
-    </style>
+    <title>PuncakGO - السياحة في بونشاك</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
-<div class="container">
-    <div class="page-header">
-        <button class="back-btn" id="backBtn">← رجوع</button>
-        <h2 id="pageTitle">✨ خدمات أخرى</h2>
-        <select id="currencySelector" style="background: linear-gradient(135deg, #DAA520, #B8860B); color: white; border: none; padding: 8px 15px; border-radius: 30px; font-weight: bold; cursor: pointer;">
-            <option value="IDR" selected>🇮🇩 IDR - روبيه</option>
-            <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
-            <option value="USD">🇺🇸 USD - دولار أمريكي</option>
-        </select>
-        <button class="lang-switch" id="langBtn">English</button>
+<div class="overlay">
+    <div class="container">
+        <!-- الصفحة الرئيسية -->
+        <div id="home-page" class="page active-page">
+            <div class="top-bar">
+                <div class="currency-box" id="currencyBtn">
+                    <span data-ar="💰 صرف العملات" data-en="💰 Currency Exchange">💰 صرف العملات</span>
+                </div>
+                
+                <button class="lang-switch" id="langBtn">English</button>
+            </div>
+
+            <div id="currencyModal" class="modal">
+                <div class="modal-content" style="max-width: 350px;">
+                    <h3 data-ar="💱 تحويل العملات" data-en="💱 Currency Exchange">💱 تحويل العملات</h3>
+                    <select id="currencyType">
+                        <option value="SAR" data-ar="🇸🇦 ريال سعودي" data-en="🇸🇦 Saudi Riyal">🇸🇦 ريال سعودي</option>
+                        <option value="USD" data-ar="🇺🇸 دولار أمريكي" data-en="🇺🇸 US Dollar">🇺🇸 دولار أمريكي</option>
+                    </select>
+                    <input type="number" id="currencyAmount" placeholder="أدخل المبلغ" data-ar-placeholder="أدخل المبلغ" data-en-placeholder="Enter amount">
+                    <div id="currencyResult" style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 15px; font-weight: bold;">
+                        <span data-ar="النتيجة: " data-en="Result: ">النتيجة: </span> <span id="resultValue">0</span> IDR
+                    </div>
+                    <button id="closeCurrencyModal" class="cancel-btn" data-ar="إغلاق" data-en="Close">إغلاق</button>
+                </div>
+            </div>
+
+            <div class="logo">
+                <img src="logo.jpg" alt="PuncakGO Logo" onerror="this.src='https://picsum.photos/id/104/120/120'">
+            </div>
+
+            <div class="promo-bar">
+                <div class="promo-marquee">
+                    <span data-ar="🎉 احجز الآن واحصل على تخفيض يصل إلى 30% - عروض حصرية لفترة محدودة! 🎉" 
+                          data-en="🎉 Book now and get up to 30% discount - Exclusive limited time offers! 🎉">
+                        🎉 احجز الآن واحصل على تخفيض يصل إلى 30% - عروض حصرية لفترة محدودة! 🎉
+                    </span>
+                </div>
+            </div>
+
+            <div class="three-fields">
+                <div class="field-card" onclick="window.location.href='villas.html'">
+                    <div class="field-text" data-ar="🏡 فلل" data-en="🏡 Villas">🏡 فلل</div>
+                </div>
+                <div class="field-card" onclick="window.location.href='tours.html'">
+                    <div class="field-text" data-ar="🗺️ جولات سياحية" data-en="🗺️ Tours">🗺️ جولات سياحية</div>
+                </div>
+                <div class="field-card" onclick="window.location.href='visa.html'">
+                    <div class="field-text" data-ar="📄 خدمات الفيزا" data-en="📄 Visa Services">📄 خدمات الفيزا</div>
+                </div>
+            </div>
+
+            <div class="wide-field" onclick="window.location.href='other-services.html'">
+                <div class="field-text" data-ar="✨ خدمات أخرى" data-en="✨ Other Services">✨ خدمات أخرى</div>
+            </div>
+
+            <div class="slider-container">
+                <h3 data-ar="📸 العروضات" data-en="📸 Offers">📸 العروضات</h3>
+                <div class="slider" id="slider"></div>
+            </div>
+
+            <h3 data-ar="🌟 اكتشف" data-en="🌟 Discover">🌟 اكتشف</h3>
+            <div id="discover-container"></div>
+        </div>
+
+        <!-- صفحة رحلاتي -->
+        <div id="bookings-page" class="page">
+            <h2 data-ar="📋 رحلاتي" data-en="📋 My Bookings">📋 رحلاتي</h2>
+            <div id="bookingsList" data-ar="لا توجد حجوزات بعد" data-en="No bookings yet">لا توجد حجوزات بعد</div>
+        </div>
+
+        <!-- صفحة البروفايل -->
+        <div id="profile-page" class="page">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar" id="avatarImg">
+                    <div class="avatar-edit" id="editAvatarBtn">✏️</div>
+                </div>
+                <h3 id="profileName">أحمد محمد</h3>
+                <p id="profileEmail">ahmed@example.com</p>
+            </div>
+
+            <div class="profile-card-collapsible">
+                <div class="card-header" data-target="accountContent">
+                    <h3 class="section-title" data-ar="👤 حسابي" data-en="👤 My Account">👤 حسابي</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="card-content" id="accountContent">
+                    <div class="profile-field">
+                        <label data-ar="الاسم الكامل" data-en="Full Name">الاسم الكامل</label>
+                        <input type="text" id="userFullName" value="أحمد محمد">
+                    </div>
+                    <div class="profile-field">
+                        <label data-ar="رقم الجوال" data-en="Phone Number">رقم الجوال</label>
+                        <input type="tel" id="userPhone" value="+966 5XXXX XXX">
+                    </div>
+                    <button id="saveProfileBtn" class="profile-save-btn" data-ar="💾 حفظ" data-en="💾 Save">💾 حفظ</button>
+                    <button id="deleteAccountBtn" class="profile-delete-btn" data-ar="🗑️ حذف حسابي" data-en="🗑️ Delete My Account">🗑️ حذف حسابي</button>
+                </div>
+            </div>
+
+            <div class="profile-card-collapsible">
+                <div class="card-header" data-target="bookingsContent">
+                    <h3 class="section-title" data-ar="📋 حجوزاتي" data-en="📋 My Bookings">📋 حجوزاتي</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="card-content" id="bookingsContent">
+                    <div id="profileBookingsList" class="bookings-list" data-ar="لا توجد حجوزات بعد" data-en="No bookings yet">لا توجد حجوزات بعد</div>
+                </div>
+            </div>
+
+            <div class="profile-card-collapsible">
+                <div class="card-header" data-target="favoritesContent">
+                    <h3 class="section-title" data-ar="❤️ المفضلة" data-en="❤️ Favorites">❤️ المفضلة</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="card-content" id="favoritesContent">
+                    <div id="favoritesList" class="favorites-list">
+                        <p class="empty-message" data-ar="لا توجد عناصر في المفضلة" data-en="No favorites yet">لا توجد عناصر في المفضلة</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-card-collapsible">
+                <div class="card-header" data-target="couponsContent">
+                    <h3 class="section-title" data-ar="🎫 كوبوناتي" data-en="🎫 My Coupons">🎫 كوبوناتي</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="card-content" id="couponsContent">
+                    <div class="coupons-list">
+                        <p class="empty-message" data-ar="لا يوجد كوبونات حالياً" data-en="No coupons available">لا يوجد كوبونات حالياً</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-card-collapsible">
+                <div class="card-header" data-target="settingsContent">
+                    <h3 class="section-title" data-ar="⚙️ الإعدادات" data-en="⚙️ Settings">⚙️ الإعدادات</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="card-content" id="settingsContent">
+                    <div class="setting-item">
+                        <label data-ar="🌐 اللغة" data-en="🌐 Language">🌐 اللغة</label>
+                        <select id="settingsLanguage">
+                            <option value="ar" data-ar="العربية" data-en="Arabic">العربية</option>
+                            <option value="en" data-ar="الإنجليزية" data-en="English">English</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label data-ar="💰 العملة" data-en="💰 Currency">💰 العملة</label>
+                        <select id="settingsCurrency">
+                            <option value="IDR" data-ar="IDR - روبيه إندونيسي" data-en="IDR - Indonesian Rupiah">IDR - روبيه إندونيسي</option>
+                            <option value="SAR" data-ar="SAR - ريال سعودي" data-en="SAR - Saudi Riyal">SAR - ريال سعودي</option>
+                            <option value="USD" data-ar="USD - دولار أمريكي" data-en="USD - US Dollar">USD - دولار أمريكي</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-card-collapsible">
+                <div class="card-header" data-target="shareContent">
+                    <h3 class="section-title" data-ar="📤 مشاركة" data-en="📤 Share">📤 مشاركة</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="card-content" id="shareContent">
+                    <div class="share-buttons">
+                        <button id="showQrBtn" class="share-btn" data-ar="📱 رمز QR" data-en="📱 QR Code">📱 رمز QR</button>
+                        <button id="inviteFriendsBtn" class="share-btn" data-ar="👥 دعوة الأصدقاء" data-en="👥 Invite Friends">👥 دعوة الأصدقاء</button>
+                        <button id="shareAppBtn" class="share-btn">📢 مشاركة التطبيق</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-card-collapsible">
+                <div class="card-header" data-target="ownersContent">
+                    <h3 class="section-title" data-ar="🏠 مالك عقار" data-en="🏠 Property Owner">🏠 مالك عقار</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="card-content" id="ownersContent">
+                    <button id="listPropertyBtn" class="owner-btn" data-ar="📝 اعرض منتجك" data-en="📝 List Your Property">📝 اعرض منتجك</button>
+                </div>
+            </div>
+
+            <div class="profile-card-collapsible">
+                <div class="card-header" data-target="supportContent">
+                    <h3 class="section-title" data-ar="🆘 الدعم" data-en="🆘 Support">🆘 الدعم</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="card-content" id="supportContent">
+                    <button id="aboutUsBtn" class="support-btn" data-ar="ℹ️ عن التطبيق" data-en="ℹ️ About Us">ℹ️ عن التطبيق</button>
+                    <button id="contactManagerBtn" class="support-btn" data-ar="📞 تواصل مع المدير" data-en="📞 Contact Manager">📞 تواصل مع المدير</button>
+                </div>
+            </div>
+
+            <div class="profile-card-collapsible">
+                <div class="card-header" data-target="adminContent">
+                    <h3 class="section-title" data-ar="🔐 منطقة الأدمن" data-en="🔐 Admin Area">🔐 منطقة الأدمن</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="card-content" id="adminContent">
+                    <div id="adminLoginDiv" class="admin-login">
+                        <input type="password" id="adminPassword" data-ar-placeholder="أدخل كلمة السر" data-en-placeholder="Enter password" placeholder="أدخل كلمة السر">
+                        <button id="adminLoginBtn" data-ar="دخول" data-en="Login">دخول</button>
+                    </div>
+                    <div id="adminPanel" class="admin-panel" style="display:none;">
+                        <h4 data-ar="📸 إدارة السلايدر (10 حقول)" data-en="📸 Slider Management (10 fields)">📸 إدارة السلايدر (10 حقول)</h4>
+                        <div class="admin-controls">
+                            <input type="number" id="sliderIndex" placeholder="رقم الحقل (1-10)" min="1" max="10">
+                            <button id="sliderUploadBtn" class="upload-btn" data-ar="📁 اختيار ملف" data-en="📁 Choose File">📁 اختيار ملف</button>
+                            <input type="file" id="sliderFileInput" accept="image/*,video/*" style="display:none;">
+                            <span id="sliderFileName"></span>
+                            <select id="sliderMediaType">
+                                <option value="image" data-ar="صورة" data-en="Image">صورة</option>
+                                <option value="video" data-ar="فيديو" data-en="Video">فيديو</option>
+                            </select>
+                            <button id="updateSliderItem" data-ar="تحديث" data-en="Update">تحديث</button>
+                        </div>
+                        <h4 data-ar="🌟 إدارة الديسكفر (9 حقول)" data-en="🌟 Discover Management (9 fields)">🌟 إدارة الديسكفر (9 حقول)</h4>
+                        <div class="admin-controls">
+                            <input type="number" id="discoverIndex" placeholder="رقم الحقل (1-9)" min="1" max="9">
+                            <button id="discoverUploadBtn" class="upload-btn" data-ar="📁 اختيار ملف" data-en="📁 Choose File">📁 اختيار ملف</button>
+                            <input type="file" id="discoverFileInput" accept="image/*,video/*" style="display:none;">
+                            <span id="discoverFileName"></span>
+                            <input type="text" id="newDiscoverLabel" data-ar-placeholder="النص التعريفي" data-en-placeholder="Label text" placeholder="النص التعريفي">
+                            <select id="discoverMediaType">
+                                <option value="big" data-ar="حقل كبير (صورة)" data-en="Big field (Image)">حقل كبير (صورة)</option>
+                                <option value="small" data-ar="حقل صغير (فيديو)" data-en="Small field (Video)">حقل صغير (فيديو)</option>
+                            </select>
+                            <button id="updateDiscoverItem" data-ar="تحديث" data-en="Update">تحديث</button>
+                        </div>
+                        <button id="logoutAdminBtn" class="cancel-btn" data-ar="تسجيل خروج" data-en="Logout">تسجيل خروج</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-logo">
+                <img src="logo.jpg" alt="PuncakGO Logo" onerror="this.src='https://picsum.photos/id/104/80/80'">
+                <p>© 2025 PuncakGO</p>
+            </div>
+        </div>
     </div>
 
-    <div class="welcome-section">
-        <h1 id="welcomeTitle">🌟 خدمات إضافية لراحتكم</h1>
-        <p id="welcomeText">نقدم لكم مجموعة من الخدمات الإضافية لتجعل رحلتكم أكثر راحة ومتعة. مطعم عربي، بقالة عربية، متجر عود، وتأجير سيارات مع سائق خاص.</p>
+    <div class="bottom-nav">
+        <div class="nav-item" data-nav="home" data-ar="🏠 الرئيسية" data-en="🏠 Home">🏠 الرئيسية</div>
+        <div class="nav-item" data-nav="bookings" data-ar="📅 رحلاتي" data-en="📅 My Bookings">📅 رحلاتي</div>
+        <div class="nav-item" data-nav="profile" data-ar="👤 البروفايل" data-en="👤 Profile">👤 البروفايل</div>
     </div>
-
-    <div id="servicesGrid" class="services-grid"></div>
-
-    <button id="adminModeBtn" class="admin-toggle-btn">🔐 دخول الأدمن</button>
 </div>
 
 <div id="orderModal" class="modal">
     <div class="modal-content">
-        <h3 id="modalTitle">📝 حجز</h3>
-        <img id="menuImage" class="menu-image" src="" alt="Menu">
-        <input type="text" id="custName" placeholder="الاسم الكامل">
-        <input type="tel" id="custPhone" placeholder="رقم الجوال">
-        <input type="date" id="orderDate">
-        <input type="time" id="orderTime">
-        <textarea id="orderDetails" rows="3" placeholder="تفاصيل الطلب (اكتب طلبك هنا يدويًا)"></textarea>
-        <textarea id="notes" rows="2" placeholder="ملاحظات إضافية"></textarea>
+        <h3 data-ar="📝 طلب جديد" data-en="📝 New Order">📝 طلب جديد</h3>
+        <input type="text" id="orderName" data-ar-placeholder="الاسم الكامل" data-en-placeholder="Full name" placeholder="الاسم الكامل">
+        <input type="tel" id="orderPhone" data-ar-placeholder="رقم الجوال" data-en-placeholder="Phone number" placeholder="رقم الجوال">
+        <textarea id="orderNotes" data-ar-placeholder="ملاحظات" data-en-placeholder="Notes" placeholder="ملاحظات"></textarea>
         <div class="order-summary">
             <input type="text" id="couponCode" placeholder="كود الخصم" style="width: 70%; display: inline-block;">
             <button id="applyCouponBtn" style="width: 25%; display: inline-block;">تطبيق</button>
         </div>
-        <button id="confirmOrderBtn">✅ تأكيد الحجز</button>
-        <button id="cancelOrderBtn" class="cancel-btn">إلغاء</button>
-    </div>
-</div>
-
-<div id="carRentalModal" class="modal">
-    <div class="modal-content">
-        <h3 id="carModalTitle">🚗 تأجير سيارات مع سائق</h3>
-        <img id="carMenuImage" class="menu-image" src="" alt="Car">
-        <select id="destination">
-            <option value="puncak">📍 بونشاك فقط</option>
-            <option value="puncak_bogor">📍 بونشاك وبقور</option>
-            <option value="puncak_jakarta">📍 بونشاك وجاكرتا</option>
-            <option value="puncak_bandung">📍 بونشاك وباندونق</option>
-        </select>
-        <input type="text" id="carCustName" placeholder="الاسم الكامل">
-        <input type="tel" id="carCustPhone" placeholder="رقم الجوال">
-        <input type="number" id="carPersons" placeholder="عدد الأشخاص" min="1" value="2">
-        <input type="date" id="carDateFrom">
-        <input type="date" id="carDateTo">
-        <textarea id="carNotes" rows="2" placeholder="ملاحظات إضافية"></textarea>
-        <div class="order-summary" id="carSummary">
-            <p>📅 عدد الأيام: <span id="daysCount">0</span></p>
-            <p>💰 السعر لليوم: <span id="pricePerDay">0</span> ألف روبيه</p>
-            <p class="total-price">💎 الإجمالي: <span id="carTotalPrice">0</span> ألف روبيه</p>
-        </div>
-        <div class="order-summary">
-            <input type="text" id="carCouponCode" placeholder="كود الخصم" style="width: 70%; display: inline-block;">
-            <button id="applyCarCouponBtn" style="width: 25%; display: inline-block;">تطبيق</button>
-        </div>
-        <button id="confirmCarOrderBtn">✅ تأكيد الحجز</button>
-        <button id="cancelCarOrderBtn" class="cancel-btn">إلغاء</button>
-    </div>
-</div>
-
-<div id="editServiceModal" class="modal">
-    <div class="modal-content">
-        <h3 id="editModalTitle">✏️ تعديل الخدمة</h3>
-        <input type="text" id="editNameAr" placeholder="الاسم بالعربية">
-        <input type="text" id="editNameEn" placeholder="الاسم بالإنجليزية">
-        <input type="text" id="editDescAr" placeholder="الوصف بالعربية">
-        <input type="text" id="editDescEn" placeholder="الوصف بالإنجليزية">
-        <input type="text" id="editImageUrl" placeholder="رابط الصورة">
-        <input type="text" id="editMenuUrl" placeholder="رابط صورة المنيو (للمطعم/البقالة/المتجر)">
-        <input type="text" id="editPricePerDay" placeholder="سعر اليوم للسيارة (ألف روبيه)">
-        <button id="saveServiceBtn">💾 حفظ التغييرات</button>
-        <button id="closeEditModal" class="cancel-btn">إلغاء</button>
+        <button id="submitOrder" data-ar="إرسال الطلب" data-en="Submit Order">إرسال الطلب</button>
+        <button id="closeModal" class="cancel-btn" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
     </div>
 </div>
 
 <a href="https://wa.me/6281234567890?text=مرحباً، أحتاج مساعدة" target="_blank" style="position: fixed; bottom: 80px; right: 20px; background: #25D366; color: white; padding: 12px; border-radius: 50px; text-decoration: none; z-index: 99; font-weight: bold;">💬 واتساب</a>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<script src="script.js"></script>
 <script>
-    // العملات
-    let currentCurrency = localStorage.getItem('preferredCurrency') || 'IDR';
-    function convertPrice(priceInKIDR) {
-        let priceInIDR = priceInKIDR * 1000;
-        if (currentCurrency === 'IDR') return priceInKIDR.toLocaleString() + ' IDR';
-        if (currentCurrency === 'SAR') return ((priceInIDR / 3800).toFixed(2)).toLocaleString() + ' SAR';
-        if (currentCurrency === 'USD') return ((priceInIDR / 15000).toFixed(2)).toLocaleString() + ' USD';
-    }
-    
-    document.getElementById('currencySelector').value = currentCurrency;
-    document.getElementById('currencySelector').addEventListener('change', (e) => {
-        currentCurrency = e.target.value;
-        localStorage.setItem('preferredCurrency', currentCurrency);
-        renderServices();
-    });
-
-    // Toast function
-    function showToast(message) {
-        let toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerText = message;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
-
-    // Coupons
-    const coupons = { 'SAVE10': 0.9, 'WELCOME': 0.95, 'PUNCAK20': 0.8 };
-    document.getElementById('applyCouponBtn')?.addEventListener('click', () => {
-        let code = document.getElementById('couponCode')?.value;
-        if (!code) { showToast('الرجاء إدخال كود الخصم'); return; }
-        if (coupons[code.toUpperCase()]) {
-            let totalElement = document.getElementById('totalPrice');
-            if (totalElement) {
-                let total = parseFloat(totalElement.innerText.replace(/[^0-9.-]/g, ''));
-                let newTotal = total * coupons[code.toUpperCase()];
-                totalElement.innerText = newTotal.toFixed(0);
-                showToast('تم تطبيق الخصم بنجاح!');
-            }
-        } else { showToast('كود غير صالح'); }
-    });
-
-    document.getElementById('applyCarCouponBtn')?.addEventListener('click', () => {
-        let code = document.getElementById('carCouponCode')?.value;
-        if (!code) { showToast('الرجاء إدخال كود الخصم'); return; }
-        if (coupons[code.toUpperCase()]) {
-            let totalElement = document.getElementById('carTotalPrice');
-            if (totalElement) {
-                let total = parseFloat(totalElement.innerText.replace(/[^0-9.-]/g, ''));
-                let newTotal = total * coupons[code.toUpperCase()];
-                totalElement.innerText = newTotal.toFixed(0);
-                showToast('تم تطبيق الخصم بنجاح!');
-            }
-        } else { showToast('كود غير صالح'); }
-    });
-
-    let servicesData = [
-        { id: 1, type: "restaurant", nameAr: "🍽️ مطعم عربي", nameEn: "🍽️ Arabic Restaurant", 
-          descAr: "أشهى المأكولات العربية في بونشاك. جودة عالية وأسعار مناسبة.", 
-          descEn: "The best Arabic cuisine in Puncak. High quality and reasonable prices.",
-          image: "https://picsum.photos/id/106/400/200", menuImage: "https://picsum.photos/id/104/500/400", pricePerDay: null, pricesByDestination: null },
-        { id: 2, type: "grocery", nameAr: "🛒 بقالة عربية", nameEn: "🛒 Arabic Grocery", 
-          descAr: "جميع المستلزمات العربية والمنتجات الطازجة في مكان واحد.", 
-          descEn: "All Arabic supplies and fresh products in one place.",
-          image: "https://picsum.photos/id/108/400/200", menuImage: "https://picsum.photos/id/116/500/400", pricePerDay: null, pricesByDestination: null },
-        { id: 3, type: "oud", nameAr: "🪵 متجر عود", nameEn: "🪵 Oud Store", 
-          descAr: "أجود أنواع العود والبخور والعطور الشرقية الفاخرة.", 
-          descEn: "The finest types of oud, incense, and luxury oriental perfumes.",
-          image: "https://picsum.photos/id/119/400/200", menuImage: "https://picsum.photos/id/20/500/400", pricePerDay: null, pricesByDestination: null },
-        { id: 4, type: "car", nameAr: "🚗 تأجير سيارات مع سائق", nameEn: "🚗 Car Rental with Driver", 
-          descAr: "سيارات حديثة مع سائق خاص يتحدث العربية. جولات مريحة وآمنة.", 
-          descEn: "Modern cars with a private Arabic-speaking driver. Comfortable and safe tours.",
-          image: "https://picsum.photos/id/107/400/200", menuImage: "https://picsum.photos/id/15/500/400", 
-          pricePerDay: 500, pricesByDestination: { puncak: 400, puncak_bogor: 600, puncak_jakarta: 800, puncak_bandung: 700 } }
-    ];
-
-    let currentService = null;
-    let isArabic = true;
-    let isAdmin = false;
-    const ADMIN_PASSWORD = "admin123";
-
-    const supabaseClient = window.supabase.createClient(
-        'https://nynusiouhgjmjpunfpod.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bnVzaW91aGdqbWpwdW5mcG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5Nzc3OTYsImV4cCI6MjA5MTU1Mzc5Nn0.82pLG_PDqke5dxQCKZQL31X8c9D3ISQP3M8wQRcjOik'
-    );
-
-    async function saveServiceToSupabase(service) {
-        try {
-            const { error } = await supabaseClient.from('other_services').upsert({
-                id: service.id,
-                type: service.type,
-                name_ar: service.nameAr,
-                name_en: service.nameEn,
-                desc_ar: service.descAr,
-                desc_en: service.descEn,
-                image: service.image,
-                menu_image: service.menuImage,
-                price_per_day: service.pricePerDay,
-                prices_by_destination: service.pricesByDestination
-            });
-            if (error) console.error('Supabase error:', error);
-            else console.log('✅ Saved service', service.id);
-        } catch(e) { console.error(e); }
-    }
-
-    function loadServicesData() { let saved = localStorage.getItem('servicesData'); if(saved) servicesData = JSON.parse(saved); }
-    function saveServicesData() { localStorage.setItem('servicesData', JSON.stringify(servicesData)); }
-
-    function renderServices() {
-        let container = document.getElementById('servicesGrid');
-        container.innerHTML = '';
-        
-        servicesData.forEach(service => {
-            let card = document.createElement('div');
-            card.className = 'service-card';
-            card.setAttribute('data-id', service.id);
-            
-            card.innerHTML = `
-                <img src="${service.image}" class="service-img" onerror="this.src='https://picsum.photos/id/104/400/200'">
-                <div class="service-info">
-                    <div class="service-name">${isArabic ? service.nameAr : service.nameEn}</div>
-                    <div class="service-desc">${isArabic ? service.descAr : service.descEn}</div>
-                    <button class="book-btn" data-id="${service.id}">📝 ${isArabic ? 'احجز الآن' : 'Book Now'}</button>
-                    ${isAdmin ? `<div class="admin-buttons"><button class="admin-btn" data-action="edit" data-id="${service.id}">✏️ تعديل</button></div>` : ''}
-                </div>
-            `;
-            container.appendChild(card);
-        });
-        
-        document.querySelectorAll('.book-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); currentService = servicesData.find(s => s.id === id); openServiceModal(); });
-        });
-        
-        if(isAdmin) {
-            document.querySelectorAll('.admin-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => { e.stopPropagation(); let id = parseInt(btn.getAttribute('data-id')); currentService = servicesData.find(s => s.id === id); openEditModal(); });
-            });
-        }
-    }
-
-    function openServiceModal() {
-        if(currentService.type === 'car') {
-            openCarRentalModal();
-        } else {
-            openNormalOrderModal();
-        }
-    }
-
-    function openNormalOrderModal() {
-        document.getElementById('modalTitle').innerText = isArabic ? `📝 حجز ${currentService.nameAr}` : `📝 Book ${currentService.nameEn}`;
-        document.getElementById('menuImage').src = currentService.menuImage;
-        document.getElementById('orderModal').style.display = 'flex';
-    }
-
-    function openCarRentalModal() {
-        document.getElementById('carModalTitle').innerText = isArabic ? `🚗 حجز ${currentService.nameAr}` : `🚗 Book ${currentService.nameEn}`;
-        document.getElementById('carMenuImage').src = currentService.menuImage;
-        document.getElementById('pricePerDay').innerText = currentService.pricePerDay;
-        document.getElementById('carRentalModal').style.display = 'flex';
-        calculateCarPrice();
-    }
-
-    function calculateCarPrice() {
-        let from = document.getElementById('carDateFrom').value;
-        let to = document.getElementById('carDateTo').value;
-        let destination = document.getElementById('destination').value;
-        let days = 0;
-        if (from && to) {
-            let start = new Date(from);
-            let end = new Date(to);
-            days = Math.max(0, (end - start) / (1000 * 60 * 60 * 24));
-        }
-        document.getElementById('daysCount').innerText = days;
-        
-        let pricePerDay = currentService.pricesByDestination ? currentService.pricesByDestination[destination] : currentService.pricePerDay;
-        document.getElementById('pricePerDay').innerText = pricePerDay;
-        let total = days * pricePerDay;
-        document.getElementById('carTotalPrice').innerText = total.toLocaleString();
-    }
-
-    function openEditModal() {
-        document.getElementById('editModalTitle').innerText = isArabic ? `✏️ تعديل ${currentService.nameAr}` : `✏️ Edit ${currentService.nameEn}`;
-        document.getElementById('editNameAr').value = currentService.nameAr;
-        document.getElementById('editNameEn').value = currentService.nameEn;
-        document.getElementById('editDescAr').value = currentService.descAr;
-        document.getElementById('editDescEn').value = currentService.descEn;
-        document.getElementById('editImageUrl').value = currentService.image;
-        document.getElementById('editMenuUrl').value = currentService.menuImage || '';
-        document.getElementById('editPricePerDay').value = currentService.pricePerDay || '';
-        document.getElementById('editServiceModal').style.display = 'flex';
-    }
-
-    document.getElementById('saveServiceBtn').addEventListener('click', async () => {
-        currentService.nameAr = document.getElementById('editNameAr').value;
-        currentService.nameEn = document.getElementById('editNameEn').value;
-        currentService.descAr = document.getElementById('editDescAr').value;
-        currentService.descEn = document.getElementById('editDescEn').value;
-        currentService.image = document.getElementById('editImageUrl').value;
-        if(document.getElementById('editMenuUrl').value) currentService.menuImage = document.getElementById('editMenuUrl').value;
-        if(document.getElementById('editPricePerDay').value) currentService.pricePerDay = parseInt(document.getElementById('editPricePerDay').value);
-        
-        saveServicesData();
-        await saveServiceToSupabase(currentService);
-        renderServices();
-        document.getElementById('editServiceModal').style.display = 'none';
-        showToast(isArabic ? 'تم حفظ التغييرات بنجاح' : 'Changes saved successfully');
-    });
-
-    function changeLanguage() {
-        isArabic = !isArabic;
-        document.body.style.direction = isArabic ? 'rtl' : 'ltr';
-        document.getElementById('pageTitle').innerText = isArabic ? '✨ خدمات أخرى' : '✨ Other Services';
-        document.getElementById('langBtn').innerText = isArabic ? 'English' : 'العربية';
-        document.getElementById('welcomeTitle').innerHTML = isArabic ? '🌟 خدمات إضافية لراحتكم' : '🌟 Additional Services for Your Comfort';
-        document.getElementById('welcomeText').innerHTML = isArabic ? 'نقدم لكم مجموعة من الخدمات الإضافية لتجعل رحلتكم أكثر راحة ومتعة. مطعم عربي، بقالة عربية، متجر عود، وتأجير سيارات مع سائق خاص.' : 'We offer a range of additional services to make your trip more comfortable and enjoyable. Arabic restaurant, Arabic grocery, Oud store, and car rental with driver.';
-        
-        let destinationSelect = document.getElementById('destination');
-        if(destinationSelect) {
-            destinationSelect.options[0].text = isArabic ? '📍 بونشاك فقط' : '📍 Puncak Only';
-            destinationSelect.options[1].text = isArabic ? '📍 بونشاك وبقور' : '📍 Puncak & Bogor';
-            destinationSelect.options[2].text = isArabic ? '📍 بونشاك وجاكرتا' : '📍 Puncak & Jakarta';
-            destinationSelect.options[3].text = isArabic ? '📍 بونشاك وباندونق' : '📍 Puncak & Bandung';
-        }
-        renderServices();
-    }
-
-    const adminBtn = document.getElementById('adminModeBtn');
-    function enterAdminMode() { let pwd = prompt('🔐 دخول الأدمن - أدخل كلمة السر:'); if(pwd === ADMIN_PASSWORD) { isAdmin = true; adminBtn.innerHTML = '🚪 الخروج من وضع الأدمن'; adminBtn.style.background = '#DAA520'; renderServices(); showToast('✅ تم تفعيل وضع الأدمن'); } else if(pwd !== null) showToast('❌ كلمة السر خطأ'); }
-    function exitAdminMode() { isAdmin = false; adminBtn.innerHTML = '🔐 دخول الأدمن'; adminBtn.style.background = '#8B0000'; renderServices(); showToast('✅ تم الخروج من وضع الأدمن'); }
-    adminBtn.addEventListener('click', () => { if(isAdmin) exitAdminMode(); else enterAdminMode(); });
-
-    document.getElementById('confirmOrderBtn').addEventListener('click', () => {
-        let name = document.getElementById('custName').value;
-        let phone = document.getElementById('custPhone').value;
-        let date = document.getElementById('orderDate').value;
-        let time = document.getElementById('orderTime').value;
-        let orderDetails = document.getElementById('orderDetails').value;
-        let notes = document.getElementById('notes').value;
-        
-        if (!name || !phone || !date || !orderDetails) { showToast(isArabic ? 'الرجاء ملء جميع البيانات المطلوبة' : 'Please fill all required fields'); return; }
-        
-        let message = `*${isArabic ? 'طلب جديد من تطبيق PuncakGO' : 'New Order from PuncakGO App'}*%0A`;
-        message += `%0A*${isArabic ? 'الخدمة:' : 'Service:'}* ${isArabic ? currentService.nameAr : currentService.nameEn}%0A`;
-        message += `*${isArabic ? 'الاسم:' : 'Name:'}* ${name}%0A`;
-        message += `*${isArabic ? 'الجوال:' : 'Phone:'}* ${phone}%0A`;
-        message += `*${isArabic ? 'التاريخ:' : 'Date:'}* ${date}%0A`;
-        if(time) message += `*${isArabic ? 'الوقت:' : 'Time:'}* ${time}%0A`;
-        message += `*${isArabic ? 'تفاصيل الطلب:' : 'Order Details:'}* ${orderDetails}%0A`;
-        if(notes) message += `*${isArabic ? 'ملاحظات:' : 'Notes:'}* ${notes}%0A`;
-        
-        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
-        document.getElementById('orderModal').style.display = 'none';
-        document.getElementById('custName').value = '';
-        document.getElementById('custPhone').value = '';
-        document.getElementById('orderDate').value = '';
-        document.getElementById('orderTime').value = '';
-        document.getElementById('orderDetails').value = '';
-        document.getElementById('notes').value = '';
-        document.getElementById('couponCode').value = '';
-        showToast(isArabic ? 'تم إرسال طلبك بنجاح' : 'Your order has been sent successfully');
-    });
-
-    document.getElementById('carDateFrom').addEventListener('change', calculateCarPrice);
-    document.getElementById('carDateTo').addEventListener('change', calculateCarPrice);
-    document.getElementById('destination').addEventListener('change', calculateCarPrice);
-    
-    document.getElementById('confirmCarOrderBtn').addEventListener('click', () => {
-        let name = document.getElementById('carCustName').value;
-        let phone = document.getElementById('carCustPhone').value;
-        let destination = document.getElementById('destination').value;
-        let fromDate = document.getElementById('carDateFrom').value;
-        let toDate = document.getElementById('carDateTo').value;
-        let persons = document.getElementById('carPersons').value;
-        let notes = document.getElementById('carNotes').value;
-        let days = document.getElementById('daysCount').innerText;
-        let total = document.getElementById('carTotalPrice').innerText;
-        
-        if (!name || !phone || !fromDate || !toDate) { showToast(isArabic ? 'الرجاء ملء جميع البيانات المطلوبة' : 'Please fill all required fields'); return; }
-        
-        let destinationText = '';
-        switch(destination) {
-            case 'puncak': destinationText = isArabic ? 'بونشاك فقط' : 'Puncak Only'; break;
-            case 'puncak_bogor': destinationText = isArabic ? 'بونشاك وبقور' : 'Puncak & Bogor'; break;
-            case 'puncak_jakarta': destinationText = isArabic ? 'بونشاك وجاكرتا' : 'Puncak & Jakarta'; break;
-            case 'puncak_bandung': destinationText = isArabic ? 'بونشاك وباندونق' : 'Puncak & Bandung'; break;
-        }
-        
-        let message = `*${isArabic ? 'طلب تأجير سيارات من تطبيق PuncakGO' : 'Car Rental Request from PuncakGO App'}*%0A`;
-        message += `%0A*${isArabic ? 'الوجهة:' : 'Destination:'}* ${destinationText}%0A`;
-        message += `*${isArabic ? 'الاسم:' : 'Name:'}* ${name}%0A`;
-        message += `*${isArabic ? 'الجوال:' : 'Phone:'}* ${phone}%0A`;
-        message += `*${isArabic ? 'عدد الأشخاص:' : 'Persons:'}* ${persons}%0A`;
-        message += `*${isArabic ? 'من تاريخ:' : 'From:'}* ${fromDate}%0A`;
-        message += `*${isArabic ? 'إلى تاريخ:' : 'To:'}* ${toDate}%0A`;
-        message += `*${isArabic ? 'عدد الأيام:' : 'Days:'}* ${days}%0A`;
-        message += `*${isArabic ? 'السعر الإجمالي:' : 'Total Price:'}* ${total} ${isArabic ? 'ألف روبيه' : 'K IDR'}%0A`;
-        if(notes) message += `*${isArabic ? 'ملاحظات:' : 'Notes:'}* ${notes}%0A`;
-        
-        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
-        document.getElementById('carRentalModal').style.display = 'none';
-        document.getElementById('carCustName').value = '';
-        document.getElementById('carCustPhone').value = '';
-        document.getElementById('carDateFrom').value = '';
-        document.getElementById('carDateTo').value = '';
-        document.getElementById('carNotes').value = '';
-        document.getElementById('carCouponCode').value = '';
-        showToast(isArabic ? 'تم إرسال طلب تأجير السيارة بنجاح' : 'Car rental request sent successfully');
-    });
-
-    document.getElementById('backBtn').addEventListener('click', () => { window.location.href = 'index.html'; });
-    document.getElementById('langBtn').addEventListener('click', changeLanguage);
-    document.getElementById('cancelOrderBtn').addEventListener('click', () => { document.getElementById('orderModal').style.display = 'none'; });
-    document.getElementById('cancelCarOrderBtn').addEventListener('click', () => { document.getElementById('carRentalModal').style.display = 'none'; });
-    document.getElementById('closeEditModal').addEventListener('click', () => { document.getElementById('editServiceModal').style.display = 'none'; });
-
-    loadServicesData();
-    renderServices();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js', { scope: './' })
+      .then(reg => console.log('PuncakGo App Ready!'))
+      .catch(err => console.log('Registration Failed', err));
+  }
 </script>
+<div style="text-align: center; padding: 15px; margin-top: 20px; border-top: 1px solid #ddd;">
+    <a href="privacy.html" style="color: #1976D2; text-decoration: none;" data-ar="🔒 سياسة الخصوصية" data-en="🔒 Privacy Policy">🔒 سياسة الخصوصية</a>
+    <span style="margin: 0 10px">|</span>
+    <span data-ar="© 2025 PuncakGO" data-en="© 2025 PuncakGO">© 2025 PuncakGO</span>
+</div>
 </body>
 </html>
