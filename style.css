@@ -683,6 +683,22 @@ body.dark-mode .admin-controls {
         font-size: 0.8rem;
     }
 
+    /* ==== التعديل الجديد: تكبير الحقول الأربعة في الجوال ==== */
+    .field-card .field-text {
+        font-size: 1.3rem !important;
+        font-weight: bold;
+    }
+
+    .wide-field .field-text {
+        font-size: 1.5rem !important;
+        font-weight: bold;
+    }
+
+    .field-card, .wide-field {
+        padding: 18px 8px !important;
+    }
+    /* ==== نهاية التعديل ==== */
+
     .discover-row {
         display: flex !important;
         flex-direction: row !important;
