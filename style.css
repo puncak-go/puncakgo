@@ -179,10 +179,12 @@ body {
     border: 2px solid #DAA520;
 }
 
+/* تعديل السلايدر - الصورة تظهر كاملة */
 .slider-item img, .slider-item video {
     width: 100%;
     height: 180px;
-    object-fit: cover;
+    object-fit: contain;
+    background: #000;
 }
 
 /* ديسكفر */
@@ -214,26 +216,38 @@ body {
     order: 2;
 }
 
+/* تعديل الحقل الكبير - الصورة تظهر كاملة */
 .big-card {
-    background: #f5f5f5;
+    background: #000;
     border-radius: 25px;
     min-height: 250px;
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
     border: 2px solid #DAA520;
     cursor: pointer;
     position: relative;
 }
 
+/* تعديل الحقل الصغير - الصورة تظهر كاملة */
 .small-card {
-    background: #f5f5f5;
+    background: #000;
     border-radius: 25px;
     min-height: 115px;
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
     border: 2px solid #DAA520;
     cursor: pointer;
     position: relative;
+}
+
+/* للفيديو داخل الحقل الصغير */
+.small-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
 }
 
 .card-label {
@@ -245,6 +259,7 @@ body {
     padding: 5px 12px;
     border-radius: 20px;
     font-size: 0.8rem;
+    z-index: 10;
 }
 
 /* مودالات */
@@ -760,4 +775,14 @@ body.dark-mode .admin-controls {
     .promo-marquee {
         font-size: 0.8rem;
     }
+}
+
+/* لجعل الفيديوهات تظهر كاملة في جميع الأماكن */
+.slider-item video,
+.big-card video,
+.small-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
 }
